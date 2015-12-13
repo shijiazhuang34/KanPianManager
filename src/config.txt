@@ -1,0 +1,45 @@
+#默认数据库链接参数
+jdbcdriver = org.postgresql.Driver
+jdbcUrl = jdbc:postgresql://localhost:5432/kanpian
+user = postgres
+password = 65604225
+
+#管理后台参数begin
+#基本参数
+hotlist=2000
+pagesize=20
+tmpsavedir=D://tmp
+rootdir=/kan
+rootsavedir=javsrc/
+
+#bt来源站点
+bthost=http://sukebei.nyaa.se/
+bthost2=http://www.torrentkitty.net/search/
+
+#资讯来源站点
+censoredhost=http://www.javmoo.xyz/cn/
+uncensoredhost=http://www.avless.com/cn/
+westporn=http://pornleech.com/
+
+#代理配置
+isproxy=1
+host=localhost
+port=1088
+
+#管理后台登录账号密码
+root=root
+pass=root
+
+#bt获取逻辑参数控制
+# 其它数字：全部站点依次获取，0：nyaa优先，1：kitty优先
+selectbt=3
+#管理后台参数end
+
+#web前端分页控制
+webpagesize=20
+#移动前端分页控制
+mbpagesize=20
+#移动前端草榴反代站点接口
+clweb=http://get.xunfs.com/app/listapp.php
+#是否只显示今天之内的数据（仅作用于客户端，1：true，0：false）
+showintoday=1

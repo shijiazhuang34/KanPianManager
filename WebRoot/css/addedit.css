@@ -1,0 +1,39 @@
+.addeditdiv{
+    background: #fff;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.addedit{width: 100%;text-align: center;position: relative;border-bottom:1px solid #ccc; padding: 20px 0;}
+.importExl{padding: 20px 0;  width: 100%; text-align: center; }
+
+#postimg #result{
+    margin-top: 10px;
+}
+#postimg #result img{
+    width: 100%;
+}
+.tagspan span{
+    color: #fff;
+    padding: 5px;
+    border-radius: 10px;
+    margin: 8px 4px;
+    float: left;
+    cursor: pointer;
+    position: relative;
+}
+.tagspan span i{
+    position: absolute;
+    left: -3px;
+    top: -10px;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    text-align: center;
+    border-radius: 10px;
+}
+#addtag{
+    margin-top: 20px;
+    width: 8px;
+    height: 8px;
+    line-height: 8px;
+}

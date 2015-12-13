@@ -1,0 +1,279 @@
+ul,ol,li,dl,dt,dd,em,p,div,h1,h2,h3,h4,form,table,tr,td,label,i{margin: 0;padding: 0;list-style: none;}
+body{
+    width:100%;min-width:320px;
+    overflow-x:hidden;
+    -webkit-text-size-adjust:none;
+    -webkit-tap-highlight-color:rgba(0, 0, 0, 0);
+    -webkit-font-smoothing:subpixel-antialiased;
+    margin: 0;padding: 0;
+}
+a {
+    text-decoration: none;
+}
+a:visited{
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: none;
+}
+.fl{float: left;}
+.fr{float: right;}
+.dl{width: 28%;line-height: 30px;font-weight: bolder;font-size: 18px;text-align: right;}
+.dr{width: 72%;text-align: left;}
+.pr{position: relative;}
+header{width: 100%;}
+footer{
+    height: 4em;
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 2em;
+    font-weight: bold;
+    padding-top: 10px;
+}
+.tabbar li{cursor: pointer}
+.mainpage{height: auto;width: 100%;margin: 0 auto;overflow:hidden;}
+.leftcontext{width: 94%;height:auto;margin: 0 3%;}
+.rightcontext{
+    width: 100%;
+    height: auto;
+    background: #FFF;
+    margin-top: 10px;
+}
+.rightcontext .rightlist{
+    overflow: hidden;
+    float: right;
+    padding: 0 5%;
+    width: 90%;
+}
+.rightcontext .rightlist h5{
+    text-align: left;
+}
+
+.contextdiv.mdl-card {
+    width: 100%;
+    margin: 0 0 15px 0;
+}
+.contextdiv > .mdl-card__menu {
+    color: #fff;
+}
+.contextdiv > .mdl-card__supporting-text > h2 {
+    font-weight: 900;
+    font-size: 16px;
+}
+.contextdiv > .mdl-card__supporting-text > span {
+    display: block;
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+}
+.contextdiv > .mdl-card__title {
+    color: #fff;
+    height: auto;
+    background: #fff;
+    padding: 0px;
+}
+.contextdiv > .mdl-card__title > a {
+    width: 100%;
+}
+.contextdiv > .mdl-card__title > a >img{
+    width: 100%;
+    border: 0px;
+}
+
+
+
+
+.pagediv .pagelink:hover {
+    color: #ffffff;
+}
+.pagediv .pagelink {
+    box-sizing: border-box;
+    border-radius: 30px;
+}
+.pagediv .nowpage {
+    color: #ffffff;
+}
+.pagediv .pagelink {
+    float: left;
+    margin-left: 3px;
+    min-width: 28px;
+    height: 28px;
+    text-align: center;
+    line-height: 28px;
+    cursor: pointer;
+    padding: 0 6px;
+}
+.pagediv{
+    overflow: hidden;
+    padding: 10px 0;
+}
+.search{
+    width: 90%;
+    padding: 0 5%;
+}
+.timelist{
+    text-align: center;
+}
+.hotlist a{
+    margin: 6px;
+    display: inline-block;
+    float: left;
+}
+.hotlist span{
+    white-space: normal;
+    word-break: normal;
+    word-wrap: break-word;
+}
+.mdl-card__bottom{
+    text-align: right;
+}
+.mdl-card__bottom .isdownload {
+    color: #00BCD4;
+}
+#isbtlist{
+    display: none;
+}
+
+
+
+.gbdialog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+#masklayer{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    z-index: 99;
+    -webkit-user-select: none;
+}
+#thedialog{
+    position: fixed;
+    top: 150px;
+    margin: 0 20%;
+    width: 60%;
+    height: auto;
+    background: #fff;
+    z-index: 100;
+    -webkit-user-select: none;
+    border-radius: 5px;
+    text-align: center;
+}
+#thedialogcontext{
+    -webkit-user-select: initial;
+    padding: 20px;
+}
+#delalog{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    color: #fff;
+    padding: 3px;
+    width: 10px;
+    height: 10px;
+    line-height: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+
+.addeditlist{overflow: hidden;}
+.addeditlist li{padding: 10px;overflow: hidden;}
+.addeditlist input{height: 30px;padding: 0px;outline: none;text-indent: 5px;}
+.addeditlist select{
+    margin-left: 10px;
+    height: 30px;
+    border: 0px;
+    outline: none;
+    width: 200px;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    font-size: 16px;
+    color: #616161 !important;
+}
+.inputdiv{
+    margin-left: 10px;
+    width: 200px;
+    padding: 0;
+}
+.inputdiv label{
+    bottom: 0px;
+}
+.inputdiv label:after{
+    bottom: 0px;
+}
+.selectclip{
+    position: absolute;
+    top: 0px;
+    left: 180px;
+    height: 29px;
+    width: 30px;
+    margin-left: 10px;
+    background: #fff;
+}
+.spanbtn{
+    background: #5e35b1;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    display: block;
+    margin-top: 10px;
+}
+
+.ismenu{
+    background-color: rgba(0,0,0,0.1);
+}
+
+.mdl-layout__tab-bar-container .tabbar{
+    padding: 0px;
+}
+.mdl-mega-footer input{
+    left: 0;
+    height: 20px;
+    padding: 0px;
+    margin: 0px;
+}
+.mdl-demo .mdl-card__actions a {
+    font-size: 10px;
+}
+.searchmin{
+    background: rgba(0,0,0,0.7);
+    height: 67px;
+    text-align: center;
+    z-index: 98;
+}
+.searchmin .mdl-textfield--expandable{
+    padding: 10px 0;
+    height: 67px;
+}
+.searchmin label{
+    color: #fff;
+}
+.searchmin input{
+    border-bottom: 1px solid rgba(255,255,255,1);
+    color: #fff;
+}
+#coftext{
+    width: 95%;
+    height:240px;
+}
+
+#add{
+    display: none;
+}
+#delallinpage{
+    display: none;
+}
+.searchmax{
+    display: none;
+}
+.totop{
+    display: none;
+}
+.onekydownmb{
+    display: none;
+}

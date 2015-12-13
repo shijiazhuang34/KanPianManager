@@ -1,0 +1,12 @@
+.setting{
+    text-align: center;
+    background: #fff;
+    overflow: hidden;
+    padding: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#seletype{
+    padding: 5px;
+    width: 200px;
+}

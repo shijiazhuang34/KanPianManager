@@ -1,0 +1,31 @@
+.tagspan span {
+    background: #ff4081;
+}
+.tagspan span i {
+    background: #ff4081;
+}
+.pagediv .pagelink:hover {
+    background: #ff4081;
+}
+.pagediv .pagelink {
+    color: #ff4081;
+}
+.pagediv .nowpage {
+    background: #ff4081;
+    border: 1px solid #ff4081;
+}
+#delalog {
+    background: #ff4081;
+}
+.selectdellist span{
+    border: 3px solid #ff4081;
+}
+.selectdellist .selected{
+    background: #ff4081;
+}
+.selectdellist .selectedAll{
+    background: #ff4081;
+}
+.totop {
+    background: #ff4081;
+}
