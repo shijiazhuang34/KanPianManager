@@ -7,6 +7,8 @@
 ### 如何使用？
 * WebRoot下文件放入java容器中运行（如：tomcat）
 * 也可以下载整个项目，运行MainConfig。
+* 访问目录 http://localhost:端口/kan
+* 账号密码 root:root
 
 ### sql目录
 需要运行sql对数据库进行初始化
