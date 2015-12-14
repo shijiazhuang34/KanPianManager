@@ -28,7 +28,7 @@
 *******************************************************************************
 
 # KanPianManager
-Open source (top service Your Dick Bigger) resource management platform, look at the cover, search mash, seeds.
+Open source (Makes Your Dick Bigger) resource management platform, look at the cover, search mash, seeds.
 
 ### use of technology
 Backend jFinal based framework, and postgresql database. The front-end based on Material Design Lite, and jquery.
