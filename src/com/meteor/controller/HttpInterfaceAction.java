@@ -110,7 +110,7 @@ public class HttpInterfaceAction extends Controller {
 				rp=new HashMap();
 				rp.put("LTE_times",overtime);
 			}else{
-				if(null==rp.get("times")){
+				if(null==rp.get("times")||rp.get("times").equals("")){
 					rp.put("LTE_times",overtime);
 				}
 			}
