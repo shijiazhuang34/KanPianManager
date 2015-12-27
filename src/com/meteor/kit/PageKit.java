@@ -630,6 +630,13 @@ public class PageKit {
 		return bg+ed;
 	}
 
+	public static String replace20All(String url){
+		Pattern p = Pattern.compile("\\s+");
+		Matcher m = p.matcher(url);
+		url=m.replaceAll("%20");
+		return url;
+	}
+
 
 	/**
 	 * @author Meteor
@@ -926,12 +933,12 @@ public class PageKit {
 		}
 	}
 
-
 	private static String getBase64Img(String imgurl,String tmpdir){
 		String img = "";
 		Map head = new HashMap();
-		head.put("Referer", "http://www.avmask.net/cn/movie/");
-		imgurl = PageKit.replace20(imgurl);
+		String ref=PropKit.get("uncensoredhost");
+		head.put("Referer", ref);
+		imgurl = PageKit.replace20All(imgurl);
 		String res = MultitHttpClient.getFileDownByPath(imgurl, tmpdir, 1, head);
 		Map<String, String> p = JsonKit.json2Map(res);
 		if (p.get("status").equals("0")) {
