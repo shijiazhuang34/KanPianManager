@@ -96,11 +96,13 @@ public class PageKit {
 			String overtime = DateKit.getStringDate();
 			sql="SELECT * from (select replace(replace(replace(regexp_split_to_table(tags,','),'\"',''),']',''),'[','') tags,count(1) from javsrc where times <= '"+overtime+"'" +
 					"GROUP BY replace(replace(replace(regexp_split_to_table(tags,','),'\"',''),']',''),'[','') ORDER BY count(1) desc) t1 "+
-					"where t1.tags not LIKE '%WESTPORN%' and t1.tags not LIKE '%CENSORED%' and t1.tags not LIKE '%CLASSICAL%' and t1.tags not LIKE '%单片%'  LIMIT 80 OFFSET 0";
+					"where t1.tags not LIKE '%WESTPORN%' and t1.tags not LIKE '%CENSORED%' and t1.tags not LIKE '%CLASSICAL%' and t1.tags not LIKE '%单片%' and  t1.tags not LIKE '%高画质%' " +
+					"LIMIT 100 OFFSET 0";
 		}else {
 			sql="SELECT * from (select replace(replace(replace(regexp_split_to_table(tags,','),'\"',''),']',''),'[','') tags,count(1) from javsrc " +
 					"GROUP BY replace(replace(replace(regexp_split_to_table(tags,','),'\"',''),']',''),'[','') ORDER BY count(1) desc) t1 "+
-					"where t1.tags not LIKE '%WESTPORN%' and t1.tags not LIKE '%CENSORED%' and t1.tags not LIKE '%CLASSICAL%' and t1.tags not LIKE '%单片%'  LIMIT 80 OFFSET 0";
+					"where t1.tags not LIKE '%WESTPORN%' and t1.tags not LIKE '%CENSORED%' and t1.tags not LIKE '%CLASSICAL%' and t1.tags not LIKE '%单片%' and  t1.tags not LIKE '%高画质%' " +
+					"LIMIT 100 OFFSET 0";
 		}
 		List<Record> list= Db.find(sql);
 		List<Map.Entry> mappingList = new ArrayList<Map.Entry>();
@@ -129,7 +131,8 @@ public class PageKit {
 	private static List<Map.Entry> getHotlist() throws Exception {
 		String sql="SELECT * from (select replace(replace(replace(regexp_split_to_table(tags,','),'\"',''),']',''),'[','') tags,count(1) from javsrc " +
 				"GROUP BY replace(replace(replace(regexp_split_to_table(tags,','),'\"',''),']',''),'[','') ORDER BY count(1) desc) t1 "+
-				"where t1.tags not LIKE '%WESTPORN%' and t1.tags not LIKE '%CENSORED%' and t1.tags not LIKE '%CLASSICAL%' and t1.tags not LIKE '%单片%'  LIMIT 80 OFFSET 0";
+				"where t1.tags not LIKE '%WESTPORN%' and t1.tags not LIKE '%CENSORED%' and t1.tags not LIKE '%CLASSICAL%' and t1.tags not LIKE '%单片%' and  t1.tags not LIKE '%高画质%' " +
+				"LIMIT 100 OFFSET 0";
 		List<Record> list= Db.find(sql);
 		List<Map.Entry> mappingList = new ArrayList<Map.Entry>();
 		for (int i=0 ; i < list.size() ; i++){

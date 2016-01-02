@@ -108,12 +108,8 @@ public class HttpInterfaceAction extends Controller {
 			Map rp=p.getParameters();
 			if(rp==null){
 				rp=new HashMap();
-				rp.put("LTE_times",overtime);
-			}else{
-				if(null==rp.get("times")||rp.get("times").equals("")){
-					rp.put("LTE_times",overtime);
-				}
 			}
+			rp.put("LTE_times",overtime);
 			p.setParameters(rp);
 		}
 		return p;
