@@ -777,7 +777,7 @@ public class PageKit {
 		/**得到图片地址**/
 		Elements imgs=doc.getElementsByClass("bigImage");
 		String img=imgs.get(0).attr("href");
-		if(img.contains("img.netcdn.pw")){
+		if(img.contains("netcdn.pw")){
 			String tmpdir=PropKit.get("tmpsavedir");
 			String newimg=getBase64Img(img,tmpdir);
 			if(StringUtils.isNotBlank(newimg)){
@@ -961,14 +961,15 @@ public class PageKit {
 	public static void tobase64() throws Exception {
 		SearchQueryP sp=new SearchQueryP();
 		Map p=new HashMap();
-		p.put("imgsrc","img.netcdn.pw");
+		p.put("imgsrc","netcdn.pw");
+		p.put("tabtype","uncensored");
 		sp.setParameters(p);
 		List<javsrc> js = new ArrayList<javsrc>();
 		Map res=PgsqlKit.findByCondition(ClassKit.javClass, sp);
 		js = (List<javsrc>) res.get("list");
 		for (javsrc one:js){
 			String img = one.getImgsrc();
-			if(img.contains("img.netcdn.pw")){
+			if(img.contains("netcdn.pw")){
 				String tmpdir=PropKit.get("tmpsavedir");
 				String newimg=getBase64Img(img, tmpdir);
 				if(StringUtils.isNotBlank(newimg)){
