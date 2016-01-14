@@ -7,6 +7,9 @@ body{
     -webkit-font-smoothing:subpixel-antialiased;
     margin: 0;padding: 0;
 }
+body{font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial,
+"Microsoft YaHei", FreeSans, Arimo, "Droid Sans","wenquanyi micro hei",
+"Hiragino Sans GB", "Hiragino Sans GB W3", Arial, sans-serif;}
 a {
     text-decoration: none;
 }
