@@ -27,6 +27,7 @@ import com.meteor.kit.getpage.PageRun;
 import com.meteor.kit.http.MultitDownload;
 import com.meteor.kit.http.MultitHttpClient;
 import com.meteor.kit.http.TaskThreadManagers;
+import com.meteor.model.po.errpage;
 import com.meteor.model.po.javsrc;
 import com.meteor.model.vo.SearchQueryP;
 import com.meteor.model.vo.InExl;
@@ -126,6 +127,21 @@ public class BaseAction extends Controller {
 			// TODO Auto-generated catch block
 			logger.error("newsrc: "+e.toString());
 			renderText("<br>"+e.toString());
+		}
+	}
+
+	public void addToErrList(){
+		try {
+			String type=getPara("type");
+			String fhkey=getPara("fhkey");
+			String jsonlist=getPara("jsonlist");
+			errpage err= new errpage(type,jsonlist,"numlist",fhkey);
+			PgsqlKit.save(ClassKit.errTableName, err);
+			String res="ok";
+			renderText(res);
+		} catch (Exception e) {
+			logger.error("addToErrList: "+e.toString());
+			renderText("<br>" + e.toString());
 		}
 	}
 

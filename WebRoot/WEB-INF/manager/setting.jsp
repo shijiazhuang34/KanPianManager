@@ -38,6 +38,9 @@
 			<button id="fildpage" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
 				获取输入页码数据
 			</button>
+			<button id="addpage" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+				加入到自动获取列表(errlist)
+			</button>
 		</div>
 		<hr>
 		<button id="updatecache" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">

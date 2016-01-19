@@ -41,6 +41,23 @@ $("#fildpage").on("click",function(){
     }
 });
 
+$("#addpage").on("click",function(){
+    var fild=$("#fild").val();
+    if(!!!fild){
+        alert("页码数不能为空！");
+        return;
+    }
+    var fhkey=$("#fhkey").val();
+    if(confirm("确定么?")){;
+        var searchtype=$("#settype").val();
+        var jsonstr="{type:'"+searchtype+"',fhkey:'"+fhkey+"',jsonlist:'"+fild+"'}";
+        var jsonres=eval("("+jsonstr+")");
+        $.post("manager/addToErrList",jsonres,function(data){
+            alert(data);
+        });
+    }
+});
+
 $("#tobase64").on("click",function(){
     if(confirm("确定么?")){
         $.post("manager/tobase64",function(data){
