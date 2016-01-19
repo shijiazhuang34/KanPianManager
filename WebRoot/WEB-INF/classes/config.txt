@@ -1,6 +1,6 @@
 #默认数据库链接参数
 jdbcdriver = org.postgresql.Driver
-jdbcUrl = jdbc:postgresql://localhost:5432/myJAV
+jdbcUrl = jdbc:postgresql://localhost:5432/kanpian
 user = postgres
 password = 65604225
 

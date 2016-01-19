@@ -233,3 +233,18 @@ footer{
     width: 95%;
     height:300px;
 }
+.mdl-layout.is-upgraded .mdl-layout__tab::after {
+    height: 0px;
+    width: 100%;
+    display: block;
+    content: " ";
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    background: #fff;
+    -webkit-transition: all .2s;
+    transition: all .2s;
+}
+.mdl-layout.is-upgraded .mdl-layout__tab:hover::after {
+    height: 4px;
+}
