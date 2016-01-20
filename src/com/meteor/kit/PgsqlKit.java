@@ -14,7 +14,7 @@ import java.util.*;
  * @category (这里用一句话描述这个类的作用)
  */
 public class PgsqlKit {
-    private static String operator=" GT, LT, GTE, LTE, NOT,NOTNULL,ISNULL";
+    private static String operator=" GT, LT, GTE, LTE, NOT,NOTNULL,ISNULL,LIKE";
     private static Map opmap=new HashMap();
     static{
         opmap.put("GT"," > ");
@@ -24,6 +24,7 @@ public class PgsqlKit {
         opmap.put("NOT"," != ");
         opmap.put("NOTNULL"," != null ");
         opmap.put("ISNULL"," == null ");
+        opmap.put("LIKE"," LIKE ");
     }
 
     private  static String getClazzName(Class<?> clazz){
@@ -46,6 +47,8 @@ public class PgsqlKit {
                     if(operator.contains(opkey)){
                         if(opkey.contains("NULL")){
                             sb.append(" and " + pairs.getKey().toString().split("_")[1] + opmap.get(opkey));
+                        }else if(opkey.contains("LIKE")){
+                            sb.append(" and " + pairs.getKey().toString().split("_")[1] + opmap.get(opkey) + "'%" + pairs.getValue().toString() + "%'");
                         }else{
                             sb.append(" and " + pairs.getKey().toString().split("_")[1] + opmap.get(opkey) + " '" + pairs.getValue().toString() + "'");
                         }
@@ -71,7 +74,7 @@ public class PgsqlKit {
     public static List findall(Class<?> clazz,Map p) throws Exception {
         String objName=getClazzName(clazz);
         String queryParams=addQueryParams(p);
-        List<Record> list=Db.find("select * from " + objName+queryParams);
+        List<Record> list=Db.find("select * from " + objName+queryParams +" order by id asc");
         return BeanKit.copyRec(list,clazz);
     }
 
