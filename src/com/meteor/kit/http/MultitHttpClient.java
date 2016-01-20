@@ -414,6 +414,7 @@ public class MultitHttpClient {
 	protected static CloseableHttpResponse getResponse(CloseableHttpClient httpClient,HttpRequestBase hr) throws Exception{
 		CloseableHttpResponse response = httpClient.execute(hr);
 		if (response.getStatusLine().getStatusCode() >= 400) {
+			response.close();
 			throw new IOException("Got bad response, error code = "+ response.getStatusLine().getStatusCode());
 		}
 		return response;

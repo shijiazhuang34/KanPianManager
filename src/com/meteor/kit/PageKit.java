@@ -654,13 +654,18 @@ public class PageKit {
 		if(StringUtils.isBlank(searchval)){
 			url=censoredhost+"currentPage/"+num;
 		}else{
-			searchval=java.net.URLEncoder.encode(searchval.toLowerCase(),"UTF-8");
-			url=censoredhost+"search/"+searchval+"/currentPage/"+num;
+			if(searchval.contains("#")){
+				searchval=searchval.split("#")[1];
+				url = censoredhost + searchval +"/"+ num;
+			}else {
+				searchval = java.net.URLEncoder.encode(searchval.toLowerCase(), "UTF-8");
+				url = censoredhost + "search/" + searchval + "/currentPage/" + num;
+			}
 		}
 		//拉取页面得到doc对象
 		Map head = new HashMap();
-		String ref=PropKit.get("censoredhost");
-		head.put("Referer", ref);
+		String ref=censoredhost.replace("/cn/","");
+		head.put("Referer", censoredhost);
 		String html=MultitHttpClient.getInHeaders(url, head);
 		Document doc = Jsoup.parse(html);
 		Elements news = doc.select(".item");
@@ -721,12 +726,17 @@ public class PageKit {
 		if(StringUtils.isBlank(searchval)){
 			url=uncensoredhost+"currentPage/"+num;
 		}else{
-			searchval=java.net.URLEncoder.encode(searchval.toLowerCase(),"UTF-8");
-			url=uncensoredhost+"search/"+searchval+"/currentPage/"+num;
+			if(searchval.contains("#")){
+				searchval=searchval.split("#")[1];
+				url = uncensoredhost + searchval +"/"+ num;
+			}else {
+				searchval = java.net.URLEncoder.encode(searchval.toLowerCase(), "UTF-8");
+				url = uncensoredhost + "search/" + searchval + "/currentPage/" + num;
+			}
 		}
 		//拉取页面得到doc对象
 		Map head = new HashMap();
-		String ref=PropKit.get("uncensoredhost");
+		String ref=uncensoredhost.replace("/cn/","");
 		head.put("Referer", ref);
 		String html=MultitHttpClient.getInHeaders(url, head);
 		Document doc = Jsoup.parse(html);
@@ -781,6 +791,7 @@ public class PageKit {
 			 ref=PropKit.get("censoredhost");
 		}
 		Map head = new HashMap();
+		ref=ref.replace("/cn/","");
 		head.put("Referer", ref);
 		String html=MultitHttpClient.getInHeaders(blink, head);
 
@@ -835,8 +846,8 @@ public class PageKit {
 		if(StringUtils.isBlank(searchval)){
 			url=westporn+"index.php?page=torrents&&category=66&main=68active=0&category=66&search=&&options=0&order=3&by=2&pages="+(num-1);
 		}else{
-			searchval=java.net.URLEncoder.encode(searchval.toLowerCase(),"UTF-8");
-			url=westporn+"index.php?page=torrents&&category=66&main=68active=0&category=66&search="+searchval+"&&options=0&order=3&by=2&pages="+(num-1);
+			searchval = java.net.URLEncoder.encode(searchval.toLowerCase(), "UTF-8");
+			url = westporn + "index.php?page=torrents&&category=66&main=68active=0&category=66&search=" + searchval + "&&options=0&order=3&by=2&pages=" + (num - 1);
 		}
 		//拉取页面得到doc对象
 		String html=MultitHttpClient.get(url);

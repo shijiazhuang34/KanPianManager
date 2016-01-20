@@ -21,7 +21,7 @@
 				</div></li>
 				<li><div class="fl dl">关键字:</div><div class="fr dr">
 					<div class="inputdiv mdl-textfield mdl-js-textfield is-upgraded is-dirty" data-upgraded=",MaterialTextfield">
-						<input class="mdl-textfield__input formparam" id="fhkey" placeholder="输入 番号关键字" type="text"/>
+						<input class="mdl-textfield__input formparam" id="fhkey" placeholder="番号关键字或#网站路径" type="text"/>
 						<label class="mdl-textfield__label" for="fhkey"></label>
 					</div>
 				</div></li>
@@ -53,7 +53,7 @@
 			读取并刷新设备号
 		</button>
 		<button id="tobase64" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-			img.netcdn.pw获取
+			netcdn.pw获取
 		</button>
 		<hr>
 		<div class="settingtwo">
