@@ -659,7 +659,8 @@ public class PageKit {
 		}
 		//拉取页面得到doc对象
 		Map head = new HashMap();
-		//head.put("Referer", "http://www.avmask.net/");
+		String ref=PropKit.get("censoredhost");
+		head.put("Referer", ref);
 		String html=MultitHttpClient.getInHeaders(url, head);
 		Document doc = Jsoup.parse(html);
 		Elements news = doc.select(".item");
@@ -725,7 +726,8 @@ public class PageKit {
 		}
 		//拉取页面得到doc对象
 		Map head = new HashMap();
-		head.put("Referer", "http://www.avmask.net/");
+		String ref=PropKit.get("uncensoredhost");
+		head.put("Referer", ref);
 		String html=MultitHttpClient.getInHeaders(url, head);
 		Document doc = Jsoup.parse(html);
 		Elements news = doc.select(".item");
@@ -772,7 +774,17 @@ public class PageKit {
 	}
 
 	private static void getJavsChild(String blink,javsrc bean,String typename) throws Exception {
-		String html=MultitHttpClient.get(blink);
+		String ref=null;
+		if(typename.equals("uncensored")){
+			 ref=PropKit.get("uncensoredhost");
+		}else{
+			 ref=PropKit.get("censoredhost");
+		}
+		Map head = new HashMap();
+		head.put("Referer", ref);
+		String html=MultitHttpClient.getInHeaders(blink, head);
+
+//		String html=MultitHttpClient.get(blink);
 		Document doc = Jsoup.parse(html);
 		/**得到图片地址**/
 		Elements imgs=doc.getElementsByClass("bigImage");

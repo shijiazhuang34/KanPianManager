@@ -72,7 +72,7 @@ public class MultitHttpClient {
 	private static final int TIMEOUT = 30 * 1000;
 	private static final int MAX_HTTP_CONNECTION = 60;
 	private static final int MAX_HTTP_CONNECTION_D = 128;
-	private static final int MAX_PER_ROUTE = 60;
+	private static final int MAX_PER_ROUTE = 100;
 	private static final String encode = "UTF-8";
 
 	public static String getFileroot() {
@@ -490,7 +490,11 @@ public class MultitHttpClient {
 	 */
 	private static String read(InputStream inputStream, String encode)
 			throws Exception {
-		return IOUtils.toString(inputStream, encode);
+		String res=IOUtils.toString(inputStream, encode);
+		if(inputStream!=null){
+			inputStream.close();
+		}
+		return res;
 	}
 
 	/**

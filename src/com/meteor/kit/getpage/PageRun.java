@@ -26,7 +26,7 @@ public class PageRun {
     }
 
     public void doit(double threadnum,String nums,String type,String fhkey) {
-        logger.error("正在获取"+type+"的资源,page:"+nums);
+        logger.error("正在获取"+type+"的资源,page:"+nums+"---"+fhkey);
         pm.setBgtime(new Date().getTime());
         List parentArray=filterNums( threadnum, nums);
         int threadnumint=(int)threadnum;
@@ -157,7 +157,7 @@ class SubGetPage implements Runnable {
                 } catch (Exception e) {
                     if(!e.toString().contains("404")) {
                         pm.setErrnums(nownum);
-                        logger.error(type+" 当前请求：" + nownum + "---" + e.toString());
+                        logger.error(type+" 当前请求：" + nownum +"---"+searchval+ "---" + e.toString());
                         errpage err= new errpage(type,nownum+"",e.toString(),searchval);
                         PgsqlKit.save(ClassKit.errTableName,err);
                     }
@@ -169,7 +169,7 @@ class SubGetPage implements Runnable {
                 } catch(Throwable t) {
                     if(!t.toString().contains("404")) {
                         pm.setErrnums(nownum);
-                        logger.error(type+" 当前请求：" + nownum + "---" + t.toString());
+                        logger.error(type+" 当前请求：" + nownum +"---"+searchval+ "---" + t.toString());
                         errpage err= new errpage(type,nownum+"",t.toString(),searchval);
                         PgsqlKit.save(ClassKit.errTableName,err);
                     }
