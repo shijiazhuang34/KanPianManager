@@ -1,0 +1,126 @@
+.searchbt{
+    background-color: #FFF;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 10px;
+    overflow: hidden;
+    padding: 10px 0;
+}
+.searchbt input{
+    border: 1px solid #362F2B;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    font-family: 'Galdeano',sans-serif;
+    background-color: #362F2B;
+    color: white;
+    font-size: 20px;
+}
+.searchbt input[type="submit"]{
+    cursor: pointer;
+    -webkit-appearance: button;
+}
+.searchbt .searchbtn{
+    display: inline-block;
+    position: relative;
+}
+.searchbt .searchbtn .loading{
+    position: absolute;
+    width: 100%;
+    height: 42px;
+    background-color: #fff;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+.searchbt .searchbtn .loading span{
+    width: 8px;
+    height: 8px;
+    background-color: #000;
+    display: -webkit-inline-box;
+    border-radius: 10px;
+    margin-left: 10px;
+}
+
+.searchbt .searchbtn .loading span:nth-child(1){
+    animation: loadingspan 0.5s ease 0s infinite alternate;
+    /* Safari 和 Chrome: */
+    -webkit-animation: loadingspan 0.5s ease 0s infinite alternate;
+    /* Firefox: */
+    -moz-animation: loadingspan  0.5s ease 0s infinite alternate;
+    /* Opera: */
+    -o-animation: loadingspan 0.5s ease 0s infinite alternate;
+}
+.searchbt .searchbtn .loading span:nth-child(2){
+    animation: loadingspan 0.5s ease 0.5s infinite alternate;
+    /* Safari 和 Chrome: */
+    -webkit-animation: loadingspan 0.5s ease 0.5s infinite alternate;
+    /* Firefox: */
+    -moz-animation: loadingspan  0.5s ease 0.5s infinite alternate;
+    /* Opera: */
+    -o-animation: loadingspan  0.5s ease 0.5s infinite alternate;
+}
+.searchbt .searchbtn .loading span:nth-child(3){
+    animation: loadingspan 0.5s ease 1s infinite alternate;
+    /* Safari 和 Chrome: */
+    -webkit-animation: loadingspan 0.5s ease 1s infinite alternate;
+    /* Firefox: */
+    -moz-animation: loadingspan  0.5s ease 1s infinite alternate;
+    /* Opera: */
+    -o-animation: loadingspan  0.5s ease 1s infinite alternate;
+}
+
+@keyframes loadingspan
+{
+    from {transform: scale(1)}
+    to {transform: scale(2)}
+}
+
+@-webkit-keyframes loadingspan /* Safari 和 Chrome */
+{
+    from {transform: scale(1)}
+    to {transform: scale(2)}
+}
+
+@-o-keyframes loadingspan /* Opera */
+{
+    from {transform: scale(1)}
+    to {transform: scale(2)}
+}
+@-moz-keyframes loadingspan /* Firefox */
+{
+    from {transform: scale(1)}
+    to {transform: scale(2)}
+}
+
+fieldset{
+    text-align: center;
+    line-height: 58px;
+}
+.searchbt .selectWebsite{
+    text-align: center;
+}
+.searchbt .selectWebsite span{
+    cursor: pointer;
+}
+.searchbt .selectWebsite .active{
+    background-color: #ff4081;
+    color: #fff;
+}
+
+.context{
+    margin-top: 10px;
+}
+.contextlist{
+    background-color: #fff;
+}
+.contextlist li{
+    padding: 10px;
+    border-top: 1px solid #eee;
+    text-align: left;
+}
+.contextlist .title{
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+}

@@ -280,3 +280,10 @@ footer{
 .onekydownmb{
     display: none;
 }
+.searchbt .selectWebsite span{
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+.mdl-demo .mdl-layout:not(.is-small-screen) .mdl-layout__tab-bar, .mdl-demo .mdl-layout:not(.is-small-screen) .mdl-layout__tab-bar-container{
+    overflow-x: auto;
+}

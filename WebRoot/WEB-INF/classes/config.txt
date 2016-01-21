@@ -12,10 +12,6 @@ tmpsavedir=D://tmp
 rootdir=/kan
 rootsavedir=javsrc/
 
-#bt来源站点
-bthost=http://sukebei.nyaa.se/
-bthost2=http://www.torrentkitty.net/search/
-
 #资讯来源站点
 censoredhost=http://www.javmoo.xyz/cn/
 uncensoredhost=http://www.avless.com/cn/
@@ -30,9 +26,15 @@ port=1088
 root=root
 pass=root
 
+#bt来源站点
+bthost=http://sukebei.nyaa.se/
+bthost2=http://www.torrentkitty.net/search/
+bthost3=http://www.bt2mag.com/search/
+
 #bt获取逻辑参数控制
-# 其它数字：全部站点依次获取，0：nyaa优先，1：kitty优先
-selectbt=3
+# 全部站点依次获取:all，nyaa:t1，kitty:t2，BtSow:t3
+# 多个站点用 “--” 隔开
+selectbt=t1--t2
 #管理后台参数end
 
 #web前端分页控制

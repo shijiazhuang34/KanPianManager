@@ -504,7 +504,6 @@ public class BaseAction extends Controller {
 		
 	}
 
-
 	/**
 	 * @author Meteor
 	 * @Title
@@ -515,7 +514,25 @@ public class BaseAction extends Controller {
 			javsrc jav = getModel(javsrc.class);
 			String sv = getPara("searchval");
 			String id = getPara("mgid");
-			String res = PageKit.getBtLinks(sv, id, jav);
+			String idtype=PropKit.get("selectbt");
+			String res=PageKit.selectbt(idtype, sv, id, jav);
+			renderText(res);
+		}catch (Exception e){
+			logger.error("getBt: " + e.toString());
+			renderText("");
+		}
+	}
+
+	/**
+	 * @author Meteor
+	 * @Title
+	 * @category 获取bt数据
+	 */
+	public  void pageGetBt(){
+		try {
+			String sv = getPara("searchval");
+			String idtype = getPara("idtype");
+			String res = PageKit.selectbt(idtype, sv, null, null);
 			renderText(res);
 		}catch (Exception e){
 			logger.error("getBt: " + e.toString());

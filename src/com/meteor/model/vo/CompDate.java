@@ -60,11 +60,21 @@ public class CompDate implements Comparable{
 		// TODO Auto-generated method stub
 		try {
 			CompDate cp=(CompDate) o;
-			SimpleDateFormat sdf = new SimpleDateFormat("MMM d, YYYY", Locale.US);
+			SimpleDateFormat sdf=null;
+			if(this.date.contains("-")){
+				sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+			}else{
+				sdf = new SimpleDateFormat("MMM d, YYYY", Locale.US);
+			}
 			Date date1 = sdf.parse(this.date);
-			Date date2 = sdf.parse(((CompDate) o).getDate());
+			Date date2 = sdf.parse(cp.getDate());
 			long reslong=date2.getTime()-date1.getTime();
-			int res=new Long(reslong).intValue();
+			int res=0;
+			if(reslong>0){
+				res=1;
+			}else if(reslong<0){
+				res=-1;
+			}
 			return res;
 		} catch (ParseException e) {
 //			e.printStackTrace();

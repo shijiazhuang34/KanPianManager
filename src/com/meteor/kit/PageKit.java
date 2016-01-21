@@ -344,65 +344,77 @@ public class PageKit {
 		return webpath;
 	}
 
+	public static String selectbt(String idtype,String sv,String id,javsrc jav){
+		String res = null;
+		if(idtype.equals("all")){
+			res = getBtLinksAll(sv, id, jav);
+		}else {
+			String[] typearray = idtype.split("--");
+			res = getBtLinksByType(sv, typearray, id, jav);
+		}
+		return res;
+	}
+
+	private static List filterSuccess(List<BtList> list) {
+		if(list!=null&&list.size()>0){
+			BtList bt = list.get(0);
+			if (bt.getBtlink().equals("###")) {
+				return new ArrayList<BtList>();
+			} else {
+				return list;
+			}
+		}else{
+			return new ArrayList<BtList>();
+		}
+
+
+	}
+
 	/**
 	 * @author Meteor
 	 * @Title
 	 * @category 获取bt
 	 */
-	public static String getBtLinks(String sv, String id, javsrc jav) {
+	private static String getBtLinksAll(String sv, String id,javsrc jav) {
+		String types="t1--t2--t3";
+		String[] typearray=types.split("--");
+		String rejson=getBtLinksByType(sv,typearray,id,jav);
+		return rejson;
+	}
+
+	/**
+	 * @author Meteor
+	 * @Title
+	 * @category 获取bt
+	 */
+	private static String getBtLinksByType(String sv,String[] typearray ,String id,javsrc jav) {
 		List<BtList> btlist=new ArrayList();
 		try {
-			int selectbt = PropKit.getInt("selectbt");
-			if (selectbt == 0) {
-				List one = getBtNyaa(sv);
-				if (isSuccess(one)) {
-					savebtlist(jav, id, one);
-					btlist=one;
-				}else {
-					List two = getBtKitty(sv);
-					if (isSuccess(two)) {
-						savebtlist(jav, id, two);
-						btlist=two;
-					}else{
-						btlist.add(errlistOne());
-					}
+			for (int i=0;i<typearray.length;i++){
+				String type=typearray[i];
+				if(type.equals("t1")){
+					List one = getBtNyaa(sv, id);
+					List bl1=filterSuccess(one);
+					btlist=ListUtils.union(btlist, bl1);
 				}
-			} else if (selectbt == 1) {
-				List one = getBtKitty(sv);
-				if (isSuccess(one)) {
-					savebtlist(jav, id, one);
-					btlist=one;
-				}else {
-					List two = getBtNyaa(sv);
-					if (isSuccess(two)) {
-						savebtlist(jav, id, two);
-						btlist=two;
-					}else{
-						btlist.add(errlistOne());
-					}
+				if(type.equals("t2")){
+					List two = getBtKitty(sv,id);
+					List bl2=filterSuccess(two);
+					btlist=ListUtils.union(btlist, bl2);
 				}
-
-			} else {
-				List one = getBtNyaa(sv);
-				List two = getBtKitty(sv);
-				if (isSuccess(one)) {
-					if (isSuccess(two)) {
-						List newlist = ListUtils.union(one, two);
-						savebtlist(jav, id, newlist);
-						btlist=newlist;
-					}else{
-						savebtlist(jav, id, one);
-						btlist=one;
-					}
-				} else {
-					if (isSuccess(two)) {
-						savebtlist(jav, id, two);
-						btlist=two;
-					}else{
-						btlist.add(errlistOne());
-					}
+				if(type.equals("t3")){
+					List three = getBtSow(sv,id);
+					List bl3=filterSuccess(three);
+					btlist=ListUtils.union(btlist, bl3);
 				}
 			}
+
+			if (btlist.size()==0) {
+				btlist.add(errlistOne());
+			}else{
+				savebtlist(jav, id, btlist);
+			}
+
 		} catch (Exception e) {
 			logger.error("getBtLinks: " + e.toString());
 			btlist=new ArrayList();
@@ -429,15 +441,6 @@ public class PageKit {
 		return files;
 	}
 
-	private static boolean isSuccess(List<BtList> list) {
-		BtList bt = list.get(0);
-		if (bt.getBtlink().equals("###")) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
 	private static BtList errlistOne() {
 		BtList bl = new BtList();
 		bl.setBtlink("###");
@@ -453,14 +456,16 @@ public class PageKit {
 	}
 
 	private static void savebtlist(javsrc jav,String id,List list) throws Exception {
-		List btfiles = getlistpath(list);
-		List btnames = getlistname(list);
-		jav.setBtfile(JsonKit.bean2JSON(btfiles));
-		jav.setBtname(JsonKit.bean2JSON(btnames));
-		jav.setId(id);
-		String jsonbean=JsonKit.bean2JSON(jav);
-		Map p=JsonKit.json2Bean(jsonbean, HashMap.class);
-		PgsqlKit.updateById(ClassKit.javTableName, p);
+		if(StringUtils.isNotBlank(id)) {
+			List btfiles = getlistpath(list);
+			List btnames = getlistname(list);
+			jav.setBtfile(JsonKit.bean2JSON(btfiles));
+			jav.setBtname(JsonKit.bean2JSON(btnames));
+			jav.setId(id);
+			String jsonbean = JsonKit.bean2JSON(jav);
+			Map p = JsonKit.json2Bean(jsonbean, HashMap.class);
+			PgsqlKit.updateById(ClassKit.javTableName, p);
+		}
 	}
 
 	/**
@@ -468,10 +473,86 @@ public class PageKit {
 	 * @Title
 	 * @category 获取bt
 	 */
-	public static List getBtKitty(String sv){
+	public static List getBtSow(String sv,String id){
 		List<BtList> btlist=new ArrayList();
 		try {
-			String bthost="http://www.torrentkitty.net/search/";//PropKit.get("bthost2");
+			String bthost=PropKit.get("bthost3");
+			String url=bthost+java.net.URLEncoder.encode(sv,"UTF-8");
+			String html=MultitHttpClient.get(url);
+
+			Document doc = Jsoup.parse(html);
+			Elements news = doc.select(".data-list .row");
+			if(news.size()>0){
+				List<CompDate> elelist=new ArrayList();
+				for (int i = 1; i < news.size(); i++) {
+					Element one= (Element)news.get(i);
+					String date=one.child(2).text();
+					String btname=one.child(0).attr("title");
+					btname=btname.toLowerCase();
+					sv=sv.toLowerCase();
+					if(btname.contains(sv)||btname.replace("-","").contains(sv.replace("-",""))) {
+						CompDate cd=new CompDate();
+						cd.setIndex(i);
+						cd.setDate(date);
+						cd.setEle(one);
+						elelist.add(cd);
+					}
+				}
+				Collections.sort(elelist);
+
+				if(StringUtils.isNotBlank(id)) {
+					int ed = elelist.size() > 3 ? 3 : elelist.size();
+					for (int i = 0; i < ed; i++) {
+						BtList bl = getbtlist3(elelist.get(i).getEle());
+						btlist.add(bl);
+					}
+				}else{
+					if(elelist.size()>=1) {
+						BtList bl0 = new BtList();
+						bl0.setBtlink("#");
+						bl0.setBtname("BtSow");
+						btlist.add(bl0);
+					}else{
+						btlist.add(errlistOne());
+					}
+					for (int i = 0; i < elelist.size(); i++) {
+						BtList bl = getbtlist3(elelist.get(i).getEle());
+						btlist.add(bl);
+					}
+				}
+			}else{
+				btlist.add(errlistOne());
+			}
+		}catch (Exception e) {
+			logger.error("getBtSow: " + e.toString());
+			btlist=new ArrayList();
+			btlist.add(errlistOne(e.toString()));
+		}
+		return btlist;
+	}
+
+	private static BtList getbtlist3(Element one) throws Exception{
+		String btname=one.child(0).attr("title");
+		String baseurl=one.child(0).attr("href");
+		String basehtml= MultitHttpClient.get(baseurl);
+		Document basedoc = Jsoup.parse(basehtml);
+		Elements basenews = basedoc.select(".magnet-link");
+		String btlink=basenews.get(0).text();
+		BtList bl=new BtList();
+		bl.setBtlink(btlink);
+		bl.setBtname("magnet:?xt="+btname);
+		return bl;
+	}
+
+	/**
+	 * @author Meteor
+	 * @Title
+	 * @category 获取bt
+	 */
+	public static List getBtKitty(String sv,String id){
+		List<BtList> btlist=new ArrayList();
+		try {
+			String bthost=PropKit.get("bthost2");
 			String url=bthost+java.net.URLEncoder.encode(sv,"UTF-8")+"/";
 			String html=MultitHttpClient.get(url);
 
@@ -483,18 +564,38 @@ public class PageKit {
 					for (int i = 1; i < news.size(); i++) {
 						Element one= (Element)news.get(i);
 						String date=one.child(2).text();
-						CompDate cd=new CompDate();
-						cd.setIndex(i);
-						cd.setDate(date);
-						cd.setEle(one);
-						elelist.add(cd);
+						String btname=one.child(0).text();
+						btname=btname.toLowerCase();
+						sv=sv.toLowerCase();
+						if(btname.contains(sv)||btname.replace("-","").contains(sv.replace("-",""))) {
+							CompDate cd=new CompDate();
+							cd.setIndex(i);
+							cd.setDate(date);
+							cd.setEle(one);
+							elelist.add(cd);
+						}
 					}
 					Collections.sort(elelist);
 
-					int ed=elelist.size() > 3 ? 3 : elelist.size();
-					for (int i =0 ; i <ed ; i++) {
-						BtList bl=getbtlist2(elelist.get(i).getEle());
-						btlist.add(bl);
+					if(StringUtils.isNotBlank(id)) {
+						int ed = elelist.size() > 3 ? 3 : elelist.size();
+						for (int i = 0; i < ed; i++) {
+							BtList bl = getbtlist2(elelist.get(i).getEle());
+							btlist.add(bl);
+						}
+					}else{
+						if(elelist.size()>=1) {
+							BtList bl0 = new BtList();
+							bl0.setBtlink("#");
+							bl0.setBtname("TorrentKitty");
+							btlist.add(bl0);
+						}else{
+							btlist.add(errlistOne());
+						}
+						for (int i = 0; i < elelist.size(); i++) {
+							BtList bl = getbtlist2(elelist.get(i).getEle());
+							btlist.add(bl);
+						}
 					}
 				}else{
 					btlist.add(errlistOne());
@@ -524,7 +625,7 @@ public class PageKit {
 	 * @Title
 	 * @category 获取bt
 	 */
-	public static List getBtNyaa(String sv){
+	public static List getBtNyaa(String sv,String id){
 		List<BtList> btlist=new ArrayList();
 		try {
 			String bthost=PropKit.get("bthost");
@@ -539,23 +640,44 @@ public class PageKit {
 					Element one= (Element)news.get(i);
 					Elements dlse=one.getElementsByClass("tlistdn");
 					int dls=Integer.parseInt(dlse.get(0).html());
-					CompDls cd=new CompDls();
-					cd.setIndex(i);
-					cd.setDls(dls);
-					cd.setEle(one);
-					elelist.add(cd);
+					Elements tlistname=one.getElementsByClass("tlistname");
+					String btname=tlistname.get(0).getElementsByTag("a").text();
+					btname=btname.toLowerCase();
+					sv=sv.toLowerCase();
+					if(btname.contains(sv)||btname.replace("-","").contains(sv.replace("-",""))) {
+						CompDls cd=new CompDls();
+						cd.setIndex(i);
+						cd.setDls(dls);
+						cd.setEle(one);
+						elelist.add(cd);
+					}
 				}
 				Collections.sort(elelist);
 
-				if(news.size()>=3){
-					int bg=news.size()-1;
-					int ed=news.size()-3;
-					for (int i =bg ; i >=ed; i--) {
-						BtList bl=getbtlist(elelist.get(i).getEle());
-						btlist.add(bl);
+				if(StringUtils.isNotBlank(id)){
+					if(news.size()>=3){
+						int bg=news.size()-1;
+						int ed=news.size()-3;
+						for (int i =bg ; i >=ed; i--) {
+							BtList bl=getbtlist(elelist.get(i).getEle());
+							btlist.add(bl);
+						}
+					}else{
+						for (int i =0 ; i<news.size(); i++) {
+							BtList bl=getbtlist(elelist.get(i).getEle());
+							btlist.add(bl);
+						}
 					}
 				}else{
-					for (int i =0 ; i<news.size(); i++) {
+					if(elelist.size()>=1) {
+						BtList bl0 = new BtList();
+						bl0.setBtlink("#");
+						bl0.setBtname("Nyaa");
+						btlist.add(bl0);
+					}else{
+						btlist.add(errlistOne());
+					}
+					for (int i =0 ; i<elelist.size(); i++) {
 						BtList bl=getbtlist(elelist.get(i).getEle());
 						btlist.add(bl);
 					}

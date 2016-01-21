@@ -248,3 +248,8 @@ footer{
 .mdl-layout.is-upgraded .mdl-layout__tab:hover::after {
     height: 4px;
 }
+.searchbt .selectWebsite span{
+    margin: 0 30px;
+    padding: 5px 10px;
+    border-radius: 10px;
+}

@@ -119,6 +119,83 @@ function delselect(){
     }
 }
 
+function searchspanClick(){
+    console.log($(this));
+    var that=$(this);
+    if(that.attr("id")=='all'){
+        $(".selectWebsite span").removeClass("active");
+        that.addClass("active");
+    }else{
+        if(that.hasClass("active")){
+            if($(".active").length>1){
+                that.removeClass("active");
+            }
+        }else {
+            $(".selectWebsite span[id=all]").removeClass("active");
+            that.addClass("active");
+        }
+
+        var flag=$(".active").length== $(".selectWebsite span").length-1;
+        console.log(flag)
+        if(flag){
+            $(".selectWebsite span").removeClass("active");
+            $(".selectWebsite span[id=all]").addClass("active");
+        }
+    }
+}
+$(".selectWebsite span").on("click",searchspanClick);
+
+function searchbt(){
+    var sv=$("#btsearch").val();
+    if(!!!sv){
+        alert("不能为空！");
+        return;
+    }
+
+    var idlist=new Array();
+    $(".selectWebsite .active").each(function(index,item){
+        idlist.push($(item).attr("id"));
+    });
+    var ids=idlist.join("--");
+
+    var thatol=$(".contextlist");
+    $(".loading").off("click");
+    $(".loading").css("opacity","1");
+
+    $.post('manager/pageGetBt',{"searchval":sv,"idtype":ids},function(data) {
+        if(!!data){
+            $(thatol).empty();
+            var rejson=eval("("+data+")");
+            if(rejson.length<=1){
+                var li = "<li class='clearnum'>暂无种子下载</li>";
+                $(thatol).append(li);
+            }else {
+                for (var i = 0; i < rejson.length; i++) {
+                    var btname = rejson[i].btname;
+                    var btlink = rejson[i].btlink;
+                    if (btlink != "###") {
+                        if (btlink != "#") {
+                            var li = "<li><a target=\"_blank\" href=\"" + btlink + "\">" + btname + "</a></li>";
+                        } else {
+                            var li = "<li class='title'><a href=\"javascript:void(0)\">" + btname + "</a></li>";
+                        }
+                    } else {
+                        var li = "<li class='clearnum'>" + btname + "</li>";
+                    }
+                    $(thatol).append(li);
+                }
+            }
+        }else{
+            $(thatol).empty();
+            var li="<li class='errorli'><div>数据获取异常，请点击重新获取</div></li>";
+            $(thatol).append(li);
+        }
+        $(".loading").on("click",searchbt);
+        $(".loading").css("opacity","0");
+    });
+
+}
+$(".loading").on("click",searchbt);
 
 function isdownloadclick(){
         $(this).children().children().addClass("is-animating");

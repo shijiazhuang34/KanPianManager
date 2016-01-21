@@ -120,7 +120,8 @@ public class HttpInterfaceAction extends Controller {
 			javsrc jav = getModel(javsrc.class);
 			String sv = getPara("searchval");
 			String id = getPara("mgid");
-			String res = PageKit.getBtLinks(sv, id, jav);
+			String idtype=PropKit.get("selectbt");
+			String res=PageKit.selectbt(idtype, sv, id, jav);
 
 			String callback=getPara("callback");
 			if(StringUtils.isNotBlank(callback)){
