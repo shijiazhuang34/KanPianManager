@@ -69,7 +69,7 @@ public class MultitHttpClient {
 	
 	private static Builder unbRequestConfig = null;
 	private static Map<String, String> headers = null;
-	private static final int TIMEOUT = 30 * 1000;
+	private static final int TIMEOUT = 60 * 1000;
 	private static final int MAX_HTTP_CONNECTION = 60;
 	private static final int MAX_HTTP_CONNECTION_D = 128;
 	private static final int MAX_PER_ROUTE = 100;

@@ -515,7 +515,7 @@ public class BaseAction extends Controller {
 			String sv = getPara("searchval");
 			String id = getPara("mgid");
 			String idtype=PropKit.get("selectbt");
-			String res=PageKit.selectbt(idtype, sv, id, jav);
+			String res=PageKit.selectbt(idtype, sv, id, jav,false);
 			renderText(res);
 		}catch (Exception e){
 			logger.error("getBt: " + e.toString());
@@ -532,7 +532,12 @@ public class BaseAction extends Controller {
 		try {
 			String sv = getPara("searchval");
 			String idtype = getPara("idtype");
-			String res = PageKit.selectbt(idtype, sv, null, null);
+			String flag = getPara("islike");
+			boolean likeflag=true;
+			if(flag.equalsIgnoreCase("false")){
+				likeflag=false;
+			}
+			String res = PageKit.selectbt(idtype, sv, null, null,likeflag);
 			renderText(res);
 		}catch (Exception e){
 			logger.error("getBt: " + e.toString());

@@ -4,7 +4,8 @@
 <link rel="stylesheet" href="css/btlist.css">
 	<div class="mdl-shadow--3dp searchbt">
 		<fieldset>
-			<input type="text" size="35" name="q" id="btsearch" style="width:212px;">
+			<span class="likesearch">模糊</span>
+			<input type="text" size="35" name="q" id="btsearch" style="width:40%;">
 			<div class="searchbtn">
 				<input type="submit" value="Search" id="btsearchbtn">
 				<div class="loading">
@@ -15,9 +16,9 @@
 			</div>
 		</fieldset>
 		<div class="selectWebsite">
-			<span id="all" class="active">全选</span>
+			<span id="all">全选</span>
+			<span id="t2" class="active">TorrentKitty</span>
 			<span id="t1">Nyaa</span>
-			<span id="t2">TorrentKitty</span>
 			<span id="t3">BtSow</span>
 		</div>
 	</div>

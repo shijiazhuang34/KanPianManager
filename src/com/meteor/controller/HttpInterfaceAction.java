@@ -121,7 +121,30 @@ public class HttpInterfaceAction extends Controller {
 			String sv = getPara("searchval");
 			String id = getPara("mgid");
 			String idtype=PropKit.get("selectbt");
-			String res=PageKit.selectbt(idtype, sv, id, jav);
+			String res=PageKit.selectbt(idtype, sv, id, jav,false);
+
+			String callback=getPara("callback");
+			if(StringUtils.isNotBlank(callback)){
+				renderText("jsonp(" + res+")");
+			}else {
+				renderText(res);
+			}
+		}catch (Exception e){
+			logger.error("getBt: " + e.toString());
+			renderText("");
+		}
+	}
+
+	public void pageGetBt() {
+		try {
+			String sv = getPara("searchval");
+			String idtype = getPara("idtype");
+			String flag = getPara("islike");
+			boolean likeflag=true;
+			if(flag.equalsIgnoreCase("false")){
+				likeflag=false;
+			}
+			String res = PageKit.selectbt(idtype, sv, null, null,likeflag);
 
 			String callback=getPara("callback");
 			if(StringUtils.isNotBlank(callback)){

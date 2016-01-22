@@ -344,13 +344,13 @@ public class PageKit {
 		return webpath;
 	}
 
-	public static String selectbt(String idtype,String sv,String id,javsrc jav){
+	public static String selectbt(String idtype,String sv,String id,javsrc jav,boolean flag){
 		String res = null;
 		if(idtype.equals("all")){
-			res = getBtLinksAll(sv, id, jav);
+			res = getBtLinksAll(sv, id, jav,flag);
 		}else {
 			String[] typearray = idtype.split("--");
-			res = getBtLinksByType(sv, typearray, id, jav);
+			res = getBtLinksByType(sv, typearray, id, jav,flag);
 		}
 		return res;
 	}
@@ -375,10 +375,10 @@ public class PageKit {
 	 * @Title
 	 * @category 获取bt
 	 */
-	private static String getBtLinksAll(String sv, String id,javsrc jav) {
+	private static String getBtLinksAll(String sv, String id,javsrc jav,boolean flag) {
 		String types="t1--t2--t3";
 		String[] typearray=types.split("--");
-		String rejson=getBtLinksByType(sv,typearray,id,jav);
+		String rejson=getBtLinksByType(sv,typearray,id,jav,flag);
 		return rejson;
 	}
 
@@ -387,23 +387,23 @@ public class PageKit {
 	 * @Title
 	 * @category 获取bt
 	 */
-	private static String getBtLinksByType(String sv,String[] typearray ,String id,javsrc jav) {
+	private static String getBtLinksByType(String sv,String[] typearray ,String id,javsrc jav,boolean flag) {
 		List<BtList> btlist=new ArrayList();
 		try {
 			for (int i=0;i<typearray.length;i++){
 				String type=typearray[i];
 				if(type.equals("t1")){
-					List one = getBtNyaa(sv, id);
+					List one = getBtNyaa(sv, id,flag);
 					List bl1=filterSuccess(one);
 					btlist=ListUtils.union(btlist, bl1);
 				}
 				if(type.equals("t2")){
-					List two = getBtKitty(sv,id);
+					List two = getBtKitty(sv,id,flag);
 					List bl2=filterSuccess(two);
 					btlist=ListUtils.union(btlist, bl2);
 				}
 				if(type.equals("t3")){
-					List three = getBtSow(sv,id);
+					List three = getBtSow(sv,id,flag);
 					List bl3=filterSuccess(three);
 					btlist=ListUtils.union(btlist, bl3);
 				}
@@ -473,7 +473,7 @@ public class PageKit {
 	 * @Title
 	 * @category 获取bt
 	 */
-	public static List getBtSow(String sv,String id){
+	public static List getBtSow(String sv,String id,boolean  likeflag){
 		List<BtList> btlist=new ArrayList();
 		try {
 			String bthost=PropKit.get("bthost3");
@@ -490,7 +490,7 @@ public class PageKit {
 					String btname=one.child(0).attr("title");
 					btname=btname.toLowerCase();
 					sv=sv.toLowerCase();
-					if(btname.contains(sv)||btname.replace("-","").contains(sv.replace("-",""))) {
+					if( likeflag||(btname.contains(sv)||btname.replace("-","").contains(sv.replace("-","")))) {
 						CompDate cd=new CompDate();
 						cd.setIndex(i);
 						cd.setDate(date);
@@ -549,7 +549,7 @@ public class PageKit {
 	 * @Title
 	 * @category 获取bt
 	 */
-	public static List getBtKitty(String sv,String id){
+	public static List getBtKitty(String sv,String id,boolean  likeflag){
 		List<BtList> btlist=new ArrayList();
 		try {
 			String bthost=PropKit.get("bthost2");
@@ -567,7 +567,7 @@ public class PageKit {
 						String btname=one.child(0).text();
 						btname=btname.toLowerCase();
 						sv=sv.toLowerCase();
-						if(btname.contains(sv)||btname.replace("-","").contains(sv.replace("-",""))) {
+						if( likeflag||(btname.contains(sv)||btname.replace("-","").contains(sv.replace("-","")))) {
 							CompDate cd=new CompDate();
 							cd.setIndex(i);
 							cd.setDate(date);
@@ -625,7 +625,7 @@ public class PageKit {
 	 * @Title
 	 * @category 获取bt
 	 */
-	public static List getBtNyaa(String sv,String id){
+	public static List getBtNyaa(String sv,String id,boolean  likeflag){
 		List<BtList> btlist=new ArrayList();
 		try {
 			String bthost=PropKit.get("bthost");
@@ -644,7 +644,7 @@ public class PageKit {
 					String btname=tlistname.get(0).getElementsByTag("a").text();
 					btname=btname.toLowerCase();
 					sv=sv.toLowerCase();
-					if(btname.contains(sv)||btname.replace("-","").contains(sv.replace("-",""))) {
+					if( likeflag||(btname.contains(sv)||btname.replace("-","").contains(sv.replace("-","")))) {
 						CompDls cd=new CompDls();
 						cd.setIndex(i);
 						cd.setDls(dls);

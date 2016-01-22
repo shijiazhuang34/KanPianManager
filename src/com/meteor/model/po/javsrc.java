@@ -1,13 +1,11 @@
 package com.meteor.model.po;
 
-import com.meteor.kit.DateKit;
 import com.meteor.kit.JsonKit;
 import com.meteor.kit.PageKit;
-import com.meteor.kit.PgsqlKit;
 
 import java.util.List;
 
-public class javsrc implements Comparable {
+public class javsrc  {
 
     private String id;
     private String title;
@@ -91,7 +89,11 @@ public class javsrc implements Comparable {
     }
 
     public void setTimes(String times) {
-        this.times = times;
+        if(times.contains("00:00:00")){
+            this.times = times.replace("00:00:00","");
+        }else {
+            this.times = times;
+        }
     }
 
     public String getImgsrc() {
@@ -157,39 +159,5 @@ public class javsrc implements Comparable {
 
     public String getClassName() {
         return "JavSrc";
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        // TODO Auto-generated method stub
-        javsrc js = (javsrc) o;
-        Long thistime = DateKit.strToDateLong(this.getTimes()).getTime();
-        Long comptime = DateKit.strToDateLong(js.getTimes()).getTime();
-        int cp = thistime == comptime ? 0 : (thistime > comptime ? -1 : 1);
-        return cp;
-    }
-
-    /**
-     * 以下两个方法用于set集合去重复
-     */
-    /**
-     * 如果对象类型是Baby_user 的话 则返回true 去比较hashCode值
-     */
-    @Override
-    public boolean equals(Object obj) {
-          if(obj == null) return false;
-          if(this == obj) return true;
-          if(obj instanceof javsrc){
-              javsrc js =(javsrc)obj;
-              if(js.title.equals(this.title)) return true;
-          }
-          return false;
-    }
-    /**
-     * 重写hashcode 方法，返回的hashCode 不一样才认定为不同的对象
-     */
-    @Override
-    public int hashCode() {
-        return title.hashCode();
     }
 }

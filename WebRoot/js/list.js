@@ -119,8 +119,17 @@ function delselect(){
     }
 }
 
+function likesearchClick(){
+    if($(this).hasClass("likeactive")){
+        $(this).removeClass("likeactive")
+    }else{
+        $(this).addClass("likeactive")
+    }
+}
+$(".likesearch").on("click",likesearchClick);
+
+
 function searchspanClick(){
-    console.log($(this));
     var that=$(this);
     if(that.attr("id")=='all'){
         $(".selectWebsite span").removeClass("active");
@@ -136,7 +145,6 @@ function searchspanClick(){
         }
 
         var flag=$(".active").length== $(".selectWebsite span").length-1;
-        console.log(flag)
         if(flag){
             $(".selectWebsite span").removeClass("active");
             $(".selectWebsite span[id=all]").addClass("active");
@@ -158,13 +166,22 @@ function searchbt(){
     });
     var ids=idlist.join("--");
 
+    var likeflag=$(".likesearch").hasClass("likeactive");
+
     var thatol=$(".contextlist");
     $(".loading").off("click");
     $(".loading").css("opacity","1");
+    var bgtime=new Date().getTime();
 
-    $.post('manager/pageGetBt',{"searchval":sv,"idtype":ids},function(data) {
+    $.post('manager/pageGetBt',{"searchval":sv,"idtype":ids,"islike":likeflag},function(data) {
         if(!!data){
             $(thatol).empty();
+
+            var edtime=new Date().getTime();
+            var timecount=(edtime-bgtime)/1000;
+            var times = "<li class='clearnum'>耗时："+timecount+"秒</li>";
+            $(thatol).append(times);
+
             var rejson=eval("("+data+")");
             if(rejson.length<=1){
                 var li = "<li class='clearnum'>暂无种子下载</li>";
@@ -193,7 +210,6 @@ function searchbt(){
         $(".loading").on("click",searchbt);
         $(".loading").css("opacity","0");
     });
-
 }
 $(".loading").on("click",searchbt);
 
