@@ -1094,6 +1094,10 @@ public class PageKit {
 			if (StringUtils.isNotBlank(img)) {
 				img = "data:image/jpg;base64," + img;
 			}
+		}else{
+			if(p.get("errmsg").contains("404")){
+				img=imgurl.replace("netcdn.pw","");
+			}
 		}
 		return img;
 	}

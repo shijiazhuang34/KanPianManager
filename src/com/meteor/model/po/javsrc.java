@@ -85,15 +85,14 @@ public class javsrc  {
     }
 
     public String getTimes() {
+        if(times.contains("00:00:00")){
+            times = times.replace("00:00:00","");
+        }
         return times;
     }
 
     public void setTimes(String times) {
-        if(times.contains("00:00:00")){
-            this.times = times.replace("00:00:00","");
-        }else {
-            this.times = times;
-        }
+        this.times = times;
     }
 
     public String getImgsrc() {
