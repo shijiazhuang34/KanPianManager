@@ -966,10 +966,10 @@ public class PageKit {
 		String url="";
 		//根据搜索条件选择页面地址
 		if(StringUtils.isBlank(searchval)){
-			url=westporn+"index.php?page=torrents&&category=66&main=68active=0&category=66&search=&&options=0&order=3&by=2&pages="+(num-1);
+			url=westporn+"index.php?page=torrents&&category=64;65;66;77&main=68&active=1&search=&&options=0&order=3&by=2&pages="+(num-1);
 		}else{
 			searchval = java.net.URLEncoder.encode(searchval.toLowerCase(), "UTF-8");
-			url = westporn + "index.php?page=torrents&&category=66&main=68active=0&category=66&search=" + searchval + "&&options=0&order=3&by=2&pages=" + (num - 1);
+			url = westporn + "index.php?page=torrents&&main=68&active=1&search="+searchval+"&&options=0&order=3&by=2&pages=1" + (num - 1);
 		}
 		//拉取页面得到doc对象
 		String html=MultitHttpClient.get(url);
