@@ -19,7 +19,7 @@
 * 获取最新的资源
 * 管理资源，并可以自己上传资源进行管理（管理自己的资源）
 * 直接获取BT（看到中意的立即下载不用再搜索）
-* 为网页web版提供接口（https://github.com/justlikemaki/KanPianWeb）
+* 为网页web版提供接口(https://github.com/justlikemaki/KanPianWeb)
 * 为手机客户端提供接口（未开源）
 
 ### 警告
@@ -52,4 +52,4 @@ Need to run the SQL database for initialization
 * to provide mobile phone client interface (not open)
 
 ### warning
-#### please use in the local environment, please do not upload and outside network access, protect minors, starts from you and me.
+#### please use in the local environment, please do not upload or outside network access, protect minors, starts from you and me.
