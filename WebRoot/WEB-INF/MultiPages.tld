@@ -29,6 +29,12 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<description>搜索分类</description>
+			<name>searchtype</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<description>搜索参数名</description>
 			<name>searchname</name>
 			<required>true</required>

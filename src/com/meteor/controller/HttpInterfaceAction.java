@@ -58,7 +58,7 @@ public class HttpInterfaceAction extends Controller {
 				if(StringUtils.isBlank(uuid)){
 					throw new Exception("没有权限的设备！");
 				}
-				logger.error("当前访问设备号："+uuid);
+				logger.info("当前访问设备号："+uuid);
 				Prop pk=PropKit.getProp("accessuuid.txt");
 				boolean flag=false;
 				Iterator it= pk.getProperties().entrySet().iterator();

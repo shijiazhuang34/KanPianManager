@@ -3,8 +3,15 @@
 <link rel="stylesheet" href="css/list.css">
 <span id="delallinpage" class="mdl-button  mdl-button--raised mdl-button--colored">
 删除本页</span>
-<lf:MultiPages allcount="${pagecount}"  actionUrl="${actionUrl}" nowpage="${pagenum}" searchname="${searchname}" searchvalue="${searchvalue}"  count="${countsize}"></lf:MultiPages>
-${pagelist}
+<lf:MultiPages allcount="${pagecount}"  actionUrl="${actionUrl}" nowpage="${pagenum}" searchtype="${searchtype}"
+			   searchname="${searchname}" searchvalue="${searchvalue}"  count="${countsize}"></lf:MultiPages>
+
+<c:if test="${fn:contains(pagelist, 'empty')}">
+	</br>没有数据！
+</c:if>
+<c:if test="${!fn:contains(pagelist, 'empty')}">
+	${pagelist}
+</c:if>
 	<div class="context">
 		<ul class="contextlist" >
 		<c:forEach var="item" items="${srcs}">
@@ -62,7 +69,9 @@ ${pagelist}
 		</c:forEach>	
 		</ul>	
 	</div>
-${pagelist}
+<c:if test="${!fn:contains(pagelist, 'empty')}">
+	${pagelist}
+</c:if>
 <div class="schedulebar"><ul class="schedulelist"></ul></div>
 <div class="totop">去顶部</div>
 <script type="text/javascript" src="js/touch-baidu.min.js"></script>

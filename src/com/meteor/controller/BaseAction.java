@@ -457,7 +457,7 @@ public class BaseAction extends Controller {
 			String id = getPara("mgid");
 			javsrc jav = (javsrc) PgsqlKit.findById(ClassKit.javClass, id);
 			request.setAttribute("javobj", jav);
-			render(PageKit.topage(request,0, 0, "editsrc", "addedit", "")+ ".jsp");
+			render(PageKit.topage(request,0, 0, "editsrc", "addedit", null)+ ".jsp");
 		}catch (Exception e){
 			logger.error("toedit: " + e.toString());
 			renderError(500);
@@ -635,7 +635,7 @@ public class BaseAction extends Controller {
 					FileUtils.copyFile(new File(fileorig), new File(filedest));
 				} else {
 					if(bts[i].contains("magnet:?xt=")){
-						logger.error("createPackage: 忽略磁力链接下载");
+						logger.info("createPackage: 忽略磁力链接下载");
 					}else {
 						String url = PageKit.replace20(bts[i]);
 						String filename = null;

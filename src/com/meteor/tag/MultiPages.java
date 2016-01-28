@@ -2,14 +2,13 @@ package com.meteor.tag;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
-
-import com.jfinal.kit.PropKit;
 import org.apache.commons.lang.StringUtils;
 
 
 public class MultiPages extends TagSupport {
 	private String actionUrl,searchname,searchvalue;
 	private int count,start,allcount,nowpage;
+	private String searchtype;
 
 	public String getSearchname() {
 		return searchname;
@@ -67,6 +66,14 @@ public class MultiPages extends TagSupport {
 		this.allcount = allcount;
 	}
 
+	public String getSearchtype() {
+		return searchtype;
+	}
+
+	public void setSearchtype(String searchtype) {
+		this.searchtype = searchtype;
+	}
+
 	public int doStartTag() throws JspException {
 		//String pageUrl = calculateURL();//页面路径
 		int pagecount=(allcount+count-1)/count;//总页数
@@ -74,6 +81,9 @@ public class MultiPages extends TagSupport {
 		String searchstr="";
 		if(StringUtils.isNotBlank(searchname)){
 			searchstr="?"+searchname+"="+searchvalue;
+		}
+		if(StringUtils.isNotBlank(searchtype)){
+			searchstr=searchstr+"&type="+searchtype;
 		}
 		
 		StringBuffer sb=new StringBuffer();
@@ -119,7 +129,7 @@ public class MultiPages extends TagSupport {
 		}
 		else{
 			if(nowpage!=pagecount){
-				sb.append("没有数据！");
+				sb.append("empty");
 			}		
 		}
 		sb.append("</div>");
