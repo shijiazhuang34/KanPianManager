@@ -42,6 +42,7 @@ footer{
     height: auto;
     background: #FFF;
     margin-top: 10px;
+    margin-bottom: 10px;
 }
 .rightcontext .rightlist{
     overflow: hidden;

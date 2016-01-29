@@ -637,7 +637,9 @@ public class BaseAction extends Controller {
 				} else {
 					if(bts[i].contains("magnet:?xt=")){
 						logger.info("createPackage: 忽略磁力链接下载");
-						return "4";
+						if(i==0) {
+							return "4";
+						}
 					}else {
 						String url = PageKit.replace20(bts[i]);
 						String filename = null;

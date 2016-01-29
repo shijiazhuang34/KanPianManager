@@ -1,6 +1,10 @@
 <%@ page language="java"  pageEncoding="UTF-8"%>
 <%@include file="taglib.jsp"%>
 <link rel="stylesheet" href="css/list.css">
+<c:if test="${ streammode eq 1 }">
+	<link rel="stylesheet" href="css/streammode.css">
+</c:if>
+
 <span id="delallinpage" class="mdl-button  mdl-button--raised mdl-button--colored">
 删除本页</span>
 <lf:MultiPages allcount="${pagecount}"  actionUrl="${actionUrl}" nowpage="${pagenum}" searchtype="${searchtype}"
@@ -76,3 +80,6 @@
 <div class="totop">去顶部</div>
 <script type="text/javascript" src="js/touch-baidu.min.js"></script>
 <script type="text/javascript" src="js/list.js"></script>
+<c:if test="${ streammode eq 1 }">
+	<script type="text/javascript" src="js/streammode.js"></script>
+</c:if>

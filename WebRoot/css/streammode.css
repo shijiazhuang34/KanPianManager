@@ -1,0 +1,30 @@
+.streamdiv {
+    width: 30%;
+    margin: 0.6%;
+    float: left;
+}
+.contextdiv > .mdl-card__supporting-text > h2{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    font-size: 16px;
+}
+.mdl-demo .mdl-card__actions{
+    /**
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    height: 76px;
+    **/
+    font-size: 10px;
+}
+.context{
+    overflow: hidden;
+}
+.pagediv{
+    width: 100%;
+}

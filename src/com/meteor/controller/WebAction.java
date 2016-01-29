@@ -266,6 +266,9 @@ public class WebAction extends Controller {
 			request.setAttribute("pagetype", "list");
 			request.setAttribute("tab", "newspage");
 		}
+
+		int streammode=PropKit.getInt("streammode");
+		request.setAttribute("streammode", streammode);
 	}
 
 }
