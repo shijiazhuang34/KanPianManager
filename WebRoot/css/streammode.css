@@ -24,7 +24,9 @@
 .mdl-menu__container.is-visible0 .mdl-menu__item {
     opacity: 1;
 }
-
+#isbtlist a{
+    font-size: 12px;
+}
 .context{
     overflow: hidden;
 }

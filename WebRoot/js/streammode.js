@@ -13,7 +13,7 @@ function changelist(){
     var list3="";
     $(".contextlist .singlediv").each(function(index,item){
         //item=$(item);
-        if(index%3==1){
+        if(index%3==0){
             //list1.push(item);
             list1=list1+item.outerHTML;
         }else if(index%3==2){
