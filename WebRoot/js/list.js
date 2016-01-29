@@ -344,6 +344,9 @@ function createPackage(iszip,bts,imgs,basedir,thisobj,id){
         }else if(data=="3"){
             changeScheduleBar(id,"-1");
             addScheduleErr(id,"下载图片出错");
+        }else if(data=="4"){
+            changeScheduleBar(id,"-1");
+            addScheduleErr(id,"忽略磁力链接");
         }else{
             changeScheduleBar(id,"1");
             var imgid = Math.random();
