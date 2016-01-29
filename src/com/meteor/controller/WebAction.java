@@ -9,6 +9,7 @@ import com.jfinal.core.Controller;
 import com.jfinal.kit.PropKit;
 import com.meteor.interceptor.LoginCheck;
 import com.meteor.kit.ClassKit;
+import com.meteor.kit.JsonKit;
 import com.meteor.kit.PageKit;
 import com.meteor.kit.PgsqlKit;
 import com.meteor.model.po.errpage;
@@ -60,6 +61,36 @@ public class WebAction extends Controller {
 //				}
 //				PgsqlKit.deleteById(ClassKit.errTableName, ep.getId());
 //			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+
+//		try {
+//
+//			SearchQueryP sp=new SearchQueryP();
+//			sp.setCount(0);
+//			sp.setNowpage(0);
+//			sp.setSorttype("desc");
+//			sp.setSortname("id");
+//			Map mp=new HashMap();
+//			mp.put("LIKE_imgsrc", ".netcdn.xyz");
+//			mp.put("tabtype", "censored");
+//			sp.setParameters(mp);
+//			List<javsrc> searchlist = new ArrayList<javsrc>();
+//			Map res= null;
+//			res = PgsqlKit.findByCondition(ClassKit.javClass, sp);
+//			searchlist = (List<javsrc>) res.get("list");
+//			for( javsrc jav:searchlist){
+//				String img=jav.getImgsrc();
+//				String repstr=img.substring(0,30);
+//				img=img.replace(repstr,"http://pics.dmm.co.jp/");
+//				jav.setImgsrc(img);
+//
+//				String jsonbean=JsonKit.bean2JSON(jav);
+//				Map p= JsonKit.json2Bean(jsonbean, HashMap.class);
+//				PgsqlKit.updateById(ClassKit.javTableName, p);
+//			}
+//
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}

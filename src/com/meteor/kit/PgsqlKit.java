@@ -56,9 +56,11 @@ public class PgsqlKit {
                         if (pairs.getKey().equals("id") || pairs.getKey().equals("tabtype") || pairs.getKey().equals("type")) {
                             sb.append(" and " + pairs.getKey().toString() + " = '" + pairs.getValue().toString() + "'");
                         } else if (pairs.getKey().equals("tags")) {
-                            sb.append(" and ( " + pairs.getKey().toString() + " like '%\"" + pairs.getValue().toString() + "%'");
-                            sb.append(" or sbm like '%" + pairs.getValue().toString() + "%'");
-                            sb.append(" or UPPER(title) like '%" + pairs.getValue().toString() + "%' ) ");
+                            String sekey=pairs.getValue().toString();
+                            sekey=sekey.toUpperCase();
+                            sb.append(" and ( " + pairs.getKey().toString() + " like '%\"" + sekey + "%'");
+                            sb.append(" or sbm like '%" + sekey + "%'");
+                            sb.append(" or UPPER(title) like '%" + sekey + "%' ) ");
                         } else {
                             sb.append(" and " + pairs.getKey().toString() + " like '%" + pairs.getValue().toString() + "%'");
                         }
