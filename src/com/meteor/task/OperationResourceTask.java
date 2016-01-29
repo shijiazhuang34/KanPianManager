@@ -1,6 +1,7 @@
 package com.meteor.task;
 
 import com.jfinal.kit.PropKit;
+import com.meteor.common.MainConfig;
 import com.meteor.kit.*;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -25,7 +26,7 @@ public class OperationResourceTask implements Job{
 			logger.error("图片转换异常: " + e.toString());
 		}
 		//清空临时文件夹
-		String tmpdir= PropKit.get("tmpsavedir");
+		String tmpdir= MainConfig.tmpsavedir;//PropKit.get("tmpsavedir");
 		File[] files=new File(tmpdir).listFiles();
 		for(File file:files){
 			try {

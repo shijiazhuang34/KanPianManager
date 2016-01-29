@@ -20,6 +20,7 @@ import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
+import com.meteor.common.MainConfig;
 import com.meteor.interceptor.LoginCheck;
 import com.meteor.kit.*;
 import com.meteor.kit.getpage.PageManager;
@@ -221,7 +222,7 @@ public class BaseAction extends Controller {
 			UploadFile uf=getFile("imgtorFile");//先上传到upload文件夹
 	        String imgFileName=uf.getOriginalFileName();
 			String fliename=imgFileName.substring(0,imgFileName.indexOf("."));
-			String tmpdir=PropKit.get("tmpsavedir");
+			String tmpdir= MainConfig.tmpsavedir;//PropKit.get("tmpsavedir");
 			String tmppath=tmpdir+"/"+imgFileName;
 
 			if(StringUtils.isNotBlank(oldpath)){
@@ -304,7 +305,7 @@ public class BaseAction extends Controller {
 			final HttpServletRequest request=getRequest();
 			UploadFile uf=getFile("theExlFile");
 			String imgFileName=uf.getOriginalFileName();
-			String tmpdir=PropKit.get("tmpsavedir");
+			String tmpdir=MainConfig.tmpsavedir;//PropKit.get("tmpsavedir");
 			String tmppath=tmpdir+"/"+imgFileName;
 			FileInputStream is=FileUtils.openInputStream(new File(tmppath));
 			List<InExl> inelist= CzExlKit.readexl(is);//exl转对象

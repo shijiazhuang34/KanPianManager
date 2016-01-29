@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
  * API引导式配置
  */
 public class MainConfig extends JFinalConfig {
+	public static String tmpsavedir;
 	/**
 	 * 配置常量
 	 */
@@ -33,7 +34,11 @@ public class MainConfig extends JFinalConfig {
 		PropKit.use("contenttype.properties");
 		me.setDevMode(PropKit.getBoolean("devMode", false));
 		me.setViewType(ViewType.JSP);// 设置视图类型为Jsp，否则默认为FreeMarker
-		me.setUploadedFileSaveDirectory(PropKit.get("tmpsavedir"));
+
+		tmpsavedir=PropKit.get("tmpsavedir");
+		tmpsavedir=System.getProperty("catalina.home")+tmpsavedir;
+
+		me.setUploadedFileSaveDirectory(tmpsavedir);
 		me.setError404View("/WEB-INF/manager/error.jsp");
 	}
 	

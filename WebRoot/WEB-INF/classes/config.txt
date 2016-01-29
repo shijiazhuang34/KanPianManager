@@ -6,9 +6,11 @@ password = 65604225
 
 #管理后台参数begin
 #基本参数
-hotlist=2000
+dataintoday=0
+#是否只显示今天之内的数据（仅作用于客户端，1：true，0：false）
 pagesize=20
-tmpsavedir=D://tmp
+#tmpsavedir=D://Development/Servers/Tomcats/Tomcat7-JAV/temp/kan
+tmpsavedir=/temp/kan/
 rootdir=/kan
 rootsavedir=javsrc/
 
@@ -23,8 +25,8 @@ host=localhost
 port=1088
 
 #管理后台登录账号密码
-root=root
-pass=root
+root=rootoor
+pass=rootoor
 
 #bt来源站点
 bthost=http://sukebei.nyaa.se/

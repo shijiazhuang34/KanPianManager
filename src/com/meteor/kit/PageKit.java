@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+import com.meteor.common.MainConfig;
 import com.meteor.kit.http.MultitHttpClient;
 import com.meteor.model.vo.*;
 import org.apache.commons.collections.ListUtils;
@@ -225,6 +226,20 @@ public class PageKit {
 		return "ok";
 	}
 
+	private static SearchQueryP istodayRoot(SearchQueryP p){
+		int istoday=PropKit.getInt("dataintoday");
+		if(istoday==1){
+			String overtime=DateKit.getStringDateShort();
+			Map rp=p.getParameters();
+			if(rp==null){
+				rp=new HashMap();
+			}
+			rp.put("LTE_times",overtime);
+			p.setParameters(rp);
+		}
+		return p;
+	}
+
 	/**
 	 * @标题: BaseAction.java
 	 * @版权: Copyright (c) 2014
@@ -247,6 +262,7 @@ public class PageKit {
 					mp=searchzd;
 				}
 				p.setParameters(mp);
+				p=istodayRoot(p);
 				Map res = PgsqlKit.findByCondition(ClassKit.javClass, p);
 				List<javsrc> srcs = (List<javsrc>) res.get("list");
 				long pagecount = Long.valueOf(res.get("count").toString());
@@ -947,8 +963,7 @@ public class PageKit {
 		Elements imgs=doc.getElementsByClass("bigImage");
 		String img=imgs.get(0).attr("href");
 		if(img.contains("netcdn.pw")){
-			String tmpdir=PropKit.get("tmpsavedir");
-			String newimg=getBase64Img(img,tmpdir);
+			String newimg=getBase64Img(img);
 			if(StringUtils.isNotBlank(newimg)){
 				img=newimg;
 			}
@@ -1105,7 +1120,8 @@ public class PageKit {
 		}
 	}
 
-	private static String getBase64Img(String imgurl,String tmpdir){
+	private static String getBase64Img(String imgurl){
+		String tmpdir= MainConfig.tmpsavedir;//PropKit.get("tmpsavedir");
 		String img = "";
 		Map head = new HashMap();
 		String ref=PropKit.get("uncensoredhost");
@@ -1143,8 +1159,7 @@ public class PageKit {
 		for (javsrc one:js){
 			String img = one.getImgsrc();
 			if(img.contains("netcdn.pw")){
-				String tmpdir=PropKit.get("tmpsavedir");
-				String newimg=getBase64Img(img, tmpdir);
+				String newimg=getBase64Img(img);
 				if(StringUtils.isNotBlank(newimg)){
 					img=newimg;
 				}
