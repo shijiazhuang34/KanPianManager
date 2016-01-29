@@ -8,29 +8,30 @@ $(function(){
 
 $("body").on("click",function(){
     $(".mdl-menu-list").removeClass("is-visible");
-})
+});
 
 $(".mdl-card__menu").on("click",function(e){
     e.stopPropagation();
-})
+});
 
-$(".ismenu").on("click",function(){
+function ismenuClick(){
     var that=$(this).next();
     if(that.hasClass("is-visible")){
         that.removeClass("is-visible");
     }else {
         that.addClass("is-visible");
     }
-})
+}
+$(".ismenu").on("click",ismenuClick);
 
-
-$(".editbtn").on("click",function(){
+function editbtnClick(){
     if(confirm("确定要编辑么？")){
         window.location.href="manager/toedit?mgid="+$(this).attr("id")+"&isedit=1";
     }
-})
+}
+$(".editbtn").on("click",editbtnClick);
 
-$(".delbtn").on("click",function(){
+function delbtnClick(){
     if(confirm("确定要删除么？")){
         var delobj=$(this);
         $.post('manager/deleteData',{"id":delobj.attr("id")},function(data) {
@@ -42,7 +43,8 @@ $(".delbtn").on("click",function(){
             }
         });
     }
-})
+}
+$(".delbtn").on("click",delbtnClick);
 
 $("#delallinpage").on("click",function(){
     var alogdata='<div class="deldiv"> <ul class="selectdellist">';

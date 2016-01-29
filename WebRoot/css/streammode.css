@@ -1,5 +1,5 @@
 .streamdiv {
-    width: 30%;
+    width: 32%;
     margin: 0.6%;
     float: left;
 }
@@ -11,17 +11,20 @@
     -webkit-box-orient: vertical;
     font-size: 16px;
 }
-.mdl-demo .mdl-card__actions{
-    /**
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    height: 76px;
-    **/
-    font-size: 10px;
+.contextdiv > .mdl-card__supporting-text > span {
+    font-size: 12px;
 }
+.mdl-demo .mdl-card__actions{
+    font-size: 12px;
+}
+.mdl-menu__container.is-visible0{
+    z-index: 999;
+    visibility: visible;
+}
+.mdl-menu__container.is-visible0 .mdl-menu__item {
+    opacity: 1;
+}
+
 .context{
     overflow: hidden;
 }
