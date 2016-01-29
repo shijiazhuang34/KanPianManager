@@ -3,7 +3,6 @@ function changelist(){
     var list2="";
     var list3="";
     $(".contextlist .singlediv").each(function(index,item){
-        console.log(item)
         //item=$(item);
         if(index%3==1){
             //list1.push(item);
