@@ -625,6 +625,47 @@ public class BaseAction extends Controller {
 		String basedir=getPara("basedir");
 		String filepath=fileorigpath;
 		filepath=filepath+"/onekeytmp/"+basedir+"/";
+
+		try {
+			if (img.contains("data:image/")) {
+				img = img.replace("data:image/jpg;base64,", "");
+				String filename = DateKit.getUUID() + ".jpg";
+				String filedest = filepath + filename;
+				SecurityEncodeKit.GenerateImage(img, filedest);
+			} else if (img.contains(rootsavedir)) {
+				String imgpaht = img.replace(rootsavedir, "");
+				String fileorig = fileorigpath + imgpaht;
+				String filename = img.substring(img.lastIndexOf("/") + 1, img.length());
+				String filedest = filepath + filename;
+				FileUtils.copyFile(new File(fileorig), new File(filedest));
+			} else {
+				String url = PageKit.replace20(img);
+				String filename = img.substring(img.lastIndexOf("/") + 1, img.length());
+				String filedest = filepath + filename;
+				//FileUtils.copyURLToFile(new URL(img), new File(filedest), timeout, timeout);
+
+				File f = new File(filedest);
+				if (!f.exists()) {
+					String res = MultitHttpClient.getFileDownByPathFull(url, filedest);
+					Map resp = JsonKit.json2Map(res);
+					if (resp.get("status").equals("-1")) {
+						logger.error("createPackage: " + resp.get("errmsg").toString());
+						//renderText("3");//下载图片出错。
+						return "3";
+					} else if (resp.get("status").equals("-2")) {
+						logger.error("createPackage: " + resp.get("errmsg").toString());
+						//renderText("3");//下载图片出错。
+						return "3";
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.error("createPackage: " + e.toString());
+			//renderText("3");//下载图片出错。
+			return "3";
+		}
+
+
 		try {
 			String[] bts = btlist.split("--");
 			for (int i = 0; i < bts.length; i++) {
@@ -675,44 +716,6 @@ public class BaseAction extends Controller {
 			return "2";
 		}
 
-		try {
-			if (img.contains("data:image/")) {
-				img = img.replace("data:image/jpg;base64,", "");
-				String filename = DateKit.getUUID() + ".jpg";
-				String filedest = filepath + filename;
-				SecurityEncodeKit.GenerateImage(img, filedest);
-			} else if (img.contains(rootsavedir)) {
-				String imgpaht = img.replace(rootsavedir, "");
-				String fileorig = fileorigpath + imgpaht;
-				String filename = img.substring(img.lastIndexOf("/") + 1, img.length());
-				String filedest = filepath + filename;
-				FileUtils.copyFile(new File(fileorig), new File(filedest));
-			} else {
-				String url = PageKit.replace20(img);
-				String filename = img.substring(img.lastIndexOf("/") + 1, img.length());
-				String filedest = filepath + filename;
-				//FileUtils.copyURLToFile(new URL(img), new File(filedest), timeout, timeout);
-
-				File f = new File(filedest);
-				if (!f.exists()) {
-					String res = MultitHttpClient.getFileDownByPathFull(url, filedest);
-					Map resp = JsonKit.json2Map(res);
-					if (resp.get("status").equals("-1")) {
-						logger.error("createPackage: " + resp.get("errmsg").toString());
-						//renderText("3");//下载图片出错。
-						return "3";
-					} else if (resp.get("status").equals("-2")) {
-						logger.error("createPackage: " + resp.get("errmsg").toString());
-						//renderText("3");//下载图片出错。
-						return "3";
-					}
-				}
-			}
-		} catch (Exception e) {
-			logger.error("createPackage: " + e.toString());
-			//renderText("3");//下载图片出错。
-			return "3";
-		}
 		return "0";
 	}
 
