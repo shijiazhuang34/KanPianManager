@@ -19,7 +19,7 @@
 	<div class="context">
 		<ul class="contextlist" >
 		<c:forEach var="item" items="${srcs}">
-			<div delid="${item.id}" class="singlediv contextdiv mdl-card mdl-shadow--2dp">
+			<div delid="${item.id}" class="tmpdiv singlediv contextdiv mdl-card mdl-shadow--2dp">
 				<span id="${item.id}"></span><!-- 锚连接跳转位置 -->
 				<div class="mdl-card__supporting-text">
 					<h2 class="actitle mdl-card__title-text">${item.title}</h2>

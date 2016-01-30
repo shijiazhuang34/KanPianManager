@@ -1,6 +1,14 @@
+.contextdiv.mdl-card {
+    margin: 0 0 5px 0;
+}
 .streamdiv {
-    width: 32%;
-    margin: 0.6%;
+    width: 24%;
+    margin: 0.3%;
+    float: left;
+}
+.tmpdiv.contextdiv.mdl-card {
+    width: 24%;
+    margin: 0.3%;
     float: left;
 }
 .contextdiv > .mdl-card__supporting-text > h2{
@@ -32,4 +40,18 @@
 }
 .pagediv{
     width: 100%;
+}
+.rightcontext{
+    display: none;
+}
+.leftcontext {
+    width: 100%;
+}
+.searchmin{
+    display: block;
+    width: 260px;
+    position: absolute;
+    top: 240px;
+    right: 0px;
+    padding: 0;
 }
