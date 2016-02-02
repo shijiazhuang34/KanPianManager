@@ -81,9 +81,9 @@
 				<script type="text/javascript">
 					//动态改变搜索的位置
 					var wid=$(document).width();
-					var marg_rit=(wid-1000)/2+"px";
+					var mainwidth=+$(".mainpage").css("width").replace("px","");
+					var marg_rit=(wid-mainwidth)/2+"px";
 					$(".searchmin").css("margin-right",marg_rit);
-
 					$("#searchmin").keypress(function (e) {
 						var thisid=$(this).attr("id");
 						var key = e.which;

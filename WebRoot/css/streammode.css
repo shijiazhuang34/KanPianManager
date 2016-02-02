@@ -3,12 +3,12 @@
 }
 .streamdiv {
     width: 24%;
-    margin: 5px;
+    margin:0.48%;
     float: left;
 }
 .tmpdiv.contextdiv.mdl-card {
     width: 24%;
-    margin: 5px;
+    margin:0.48%;
     float: left;
 }
 .contextdiv > .mdl-card__supporting-text > h2{

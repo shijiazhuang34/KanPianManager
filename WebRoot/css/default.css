@@ -35,10 +35,31 @@ footer{
     padding-top: 10px;
 }
 .tabbar li{cursor: pointer}
-.mainpage{height: auto;width: 1000px;margin: 0 auto;overflow:hidden;}
-.leftcontext{width: 700px;height:auto;}
+
+@media screen and (max-device-width: 1365px) {
+    .mainpage{
+        height: auto;width: 1000px;margin: 0 auto;overflow:hidden;
+    }
+}
+@media screen and (max-device-width: 1599px) and  (min-device-width: 1366px){
+    .mainpage{
+        height: auto;width: 1000px;margin: 0 auto;overflow:hidden;
+    }
+}
+@media screen and (max-device-width: 1919px) and  (min-device-width: 1600px){
+    .mainpage{
+        height: auto;width: 1300px;margin: 0 auto;overflow:hidden;
+    }
+}
+@media screen and (min-device-width: 1920px) {
+    .mainpage{
+        height: auto;width: 1600px;margin: 0 auto;overflow:hidden;
+    }
+}
+
+.leftcontext{width: 70%;height:auto;}
 .rightcontext{
-    width: 280px;
+    width: 28%;
     height: auto;
     background: #FFF;
     margin-top: 10px;
