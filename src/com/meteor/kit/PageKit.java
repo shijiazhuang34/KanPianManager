@@ -1250,6 +1250,32 @@ public class PageKit {
 		}
 	}
 
+	public static String magnetToTorcacheLink(String url){
+		try {
+			url = java.net.URLDecoder.decode(url,"UTF-8");
+			url = url.replace("magnet:","http://xxx");
+			URL u=new URL(url);
+			String query=u.getQuery();
+			String[] querys=query.split("&");
+			String hash=null;
+			for (int i=0;i<querys.length;i++){
+				String q=querys[i];
+				if(q.startsWith("xt=")){
+					hash=q.replace("xt=urn:btih:","").toUpperCase();
+					break;
+				}
+			}
+			String TorcacheLink=null;
+			if(StringUtils.isNotBlank(hash)){
+				TorcacheLink="http://torcache.net/torrent/"+hash+".torrent";
+			}
+			return TorcacheLink;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+
 	public static String  downloadWithStatus(String url,String filedest,String errcode){
 		File f = new File(filedest);
 		if (!f.exists()) {

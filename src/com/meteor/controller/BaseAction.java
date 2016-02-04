@@ -672,7 +672,7 @@ public class BaseAction extends Controller {
 //						if(i==0) {
 //							return "4";
 //						}
-						url =PageKit.magnetToXunleiLink(bts[i]) ;
+						url =PageKit.magnetToTorcacheLink(bts[i]) ;
 						if(StringUtils.isBlank(url)) {
 							return "4";
 						}
