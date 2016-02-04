@@ -654,7 +654,7 @@ public class BaseAction extends Controller {
 			return "3";
 		}
 
-
+		String reCode="0";
 		try {
 			String[] bts = btlist.split("--");
 			for (int i = 0; i < bts.length; i++) {
@@ -691,17 +691,19 @@ public class BaseAction extends Controller {
 					}
 					String returncode=PageKit.downloadWithStatus(url,filedest,"2");
 					if(!returncode.equals("0")){
-						return returncode;
+						//return returncode;
+						reCode=returncode;
 					}
 				}
 			}
 		} catch (Exception e) {
 			logger.error("createPackage: " + e.toString());
 			//renderText("2");//下载种子出错。
-			return "2";
+			//return "2";
+			reCode="2";
 		}
 
-		return "0";
+		return reCode;
 	}
 
 	/**
