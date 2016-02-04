@@ -1,5 +1,7 @@
 package com.meteor.kit;
 
+import java.io.File;
+import java.net.URL;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1216,5 +1218,51 @@ public class PageKit {
 			}
 		}
 		return flag;
+	}
+
+	public static String magnetToXunleiLink(String url){
+		try {
+			url = java.net.URLDecoder.decode(url,"UTF-8");
+			url = url.replace("magnet:","http://xxx");
+			URL u=new URL(url);
+			String query=u.getQuery();
+			String[] querys=query.split("&");
+			String hash=null;
+			String bg1=null;
+			String bg2=null;
+			for (int i=0;i<querys.length;i++){
+				String q=querys[i];
+				if(q.startsWith("xt=")){
+					hash=q.replace("xt=urn:btih:","").toUpperCase();
+					bg1=hash.substring(0,2);
+					int hashlength=hash.length();
+					bg2=hash.substring(hashlength-2,hashlength);
+					break;
+				}
+			}
+			String XunleiLink=null;
+			if(StringUtils.isNotBlank(hash)){
+				XunleiLink="http://bt.box.n0808.com"+"/"+bg1+"/"+bg2+"/"+hash+".torrent";
+			}
+			return XunleiLink;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static String  downloadWithStatus(String url,String filedest,String errcode){
+		File f = new File(filedest);
+		if (!f.exists()) {
+			String res = MultitHttpClient.getFileDownByPathFull(url, filedest);
+			Map resp = JsonKit.json2Map(res);
+			if (resp.get("status").equals("-1")) {
+				logger.error("createPackage: " + resp.get("errmsg").toString());
+				return errcode;
+			} else if (resp.get("status").equals("-2")) {
+				logger.error("createPackage: " + resp.get("errmsg").toString());
+				return errcode;
+			}
+		}
+		return  "0";
 	}
 }

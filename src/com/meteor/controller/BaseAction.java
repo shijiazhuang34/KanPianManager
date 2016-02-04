@@ -643,21 +643,9 @@ public class BaseAction extends Controller {
 				String url = PageKit.replace20(img);
 				String filename = img.substring(img.lastIndexOf("/") + 1, img.length());
 				String filedest = filepath + filename;
-				//FileUtils.copyURLToFile(new URL(img), new File(filedest), timeout, timeout);
-
-				File f = new File(filedest);
-				if (!f.exists()) {
-					String res = MultitHttpClient.getFileDownByPathFull(url, filedest);
-					Map resp = JsonKit.json2Map(res);
-					if (resp.get("status").equals("-1")) {
-						logger.error("createPackage: " + resp.get("errmsg").toString());
-						//renderText("3");//下载图片出错。
-						return "3";
-					} else if (resp.get("status").equals("-2")) {
-						logger.error("createPackage: " + resp.get("errmsg").toString());
-						//renderText("3");//下载图片出错。
-						return "3";
-					}
+				String returncode=PageKit.downloadWithStatus(url,filedest,"3");
+				if(!returncode.equals("0")){
+					return returncode;
 				}
 			}
 		} catch (Exception e) {
@@ -677,13 +665,21 @@ public class BaseAction extends Controller {
 					String filedest = filepath + filename;
 					FileUtils.copyFile(new File(fileorig), new File(filedest));
 				} else {
+					String url = null;
+					String filedest = null;
 					if(bts[i].contains("magnet:?xt=")){
-						logger.info("createPackage: 忽略磁力链接下载");
-						if(i==0) {
+//						logger.info("createPackage: 忽略磁力链接下载");
+//						if(i==0) {
+//							return "4";
+//						}
+						url =PageKit.magnetToXunleiLink(bts[i]) ;
+						if(StringUtils.isBlank(url)) {
 							return "4";
 						}
+						String filename = url.substring(url.lastIndexOf("/") + 1, url.length());
+						filedest = filepath + filename;
 					}else {
-						String url = PageKit.replace20(bts[i]);
+						url = PageKit.replace20(bts[i]);
 						String filename = null;
 						if (bts[i].indexOf(".torrent") > -1) {
 							filename = bts[i].substring(bts[i].lastIndexOf("/") + 1, bts[i].length());
@@ -691,23 +687,11 @@ public class BaseAction extends Controller {
 							filename = bts[i].substring(bts[i].lastIndexOf("=") + 1, bts[i].length()) + ".torrent";
 						}
 						filename = java.net.URLEncoder.encode(filename.toLowerCase(), "UTF-8");
-						String filedest = filepath + filename;
-						//FileUtils.copyURLToFile(new URL(bts[i]), new File(filedest), timeout, timeout);
-
-						File f = new File(filedest);
-						if (!f.exists()) {
-							String res = MultitHttpClient.getFileDownByPathFull(url, filedest);
-							Map resp = JsonKit.json2Map(res);
-							if (resp.get("status").equals("-1")) {
-								logger.error("createPackage: " + resp.get("errmsg").toString());
-								//renderText("2");//下载种子出错。
-								return "2";
-							} else if (resp.get("status").equals("-2")) {
-								logger.error("createPackage: " + resp.get("errmsg").toString());
-								//renderText("2");//下载种子出错。
-								return "2";
-							}
-						}
+						filedest = filepath + filename;
+					}
+					String returncode=PageKit.downloadWithStatus(url,filedest,"2");
+					if(!returncode.equals("0")){
+						return returncode;
 					}
 				}
 			}
