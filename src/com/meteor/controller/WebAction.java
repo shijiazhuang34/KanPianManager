@@ -189,20 +189,20 @@ public class WebAction extends Controller {
 
 
 	public void addedit(){
-		setpc();
 		HttpServletRequest request=getRequest();
+		PageKit.setpc(request);
 		render(PageKit.topage(request, 0, 0, "addsrc", "addedit", null)+ ".jsp");
 	}
 
 	public void setting(){
-		setpc();
 		HttpServletRequest request=getRequest();
+		PageKit.setpc(request);
 		render(PageKit.topage(request, 0, 0, "setting", "setting", null)+ ".jsp");
 	}
 
 	public void getbtlist(){
-		setpc();
 		HttpServletRequest request=getRequest();
+		PageKit.setpc(request);
 		render(PageKit.topage(request, 0, 0, "getbtlist", "getbtlist",null)+ ".jsp");
 	}
 
@@ -270,7 +270,7 @@ public class WebAction extends Controller {
 			request.setAttribute("tab", "newspage");
 		}
 
-		if(ispc()) {
+		if(PageKit.ispc(request)) {
 			int streammode = PropKit.getInt("streammode");
 			request.setAttribute("streammode", streammode);
 			request.setAttribute("ispc", "1");
@@ -279,27 +279,6 @@ public class WebAction extends Controller {
 		}
 	}
 
-	private void setpc(){
-		HttpServletRequest request=getRequest();
-		boolean flag=ispc();
-		if(flag) {
-			request.setAttribute("ispc", "1");
-		}else{
-			request.setAttribute("ispc", "0");
-		}
-	}
 
-	private boolean ispc(){
-		String userAgentInfo = getRequest().getHeader("User-Agent");
-		String[] Agents = new String[]{"Android", "iPhone","SymbianOS", "Windows Phone","iPad", "iPod"};
-		boolean flag = true;
-		for (int v = 0; v < Agents.length; v++) {
-			if (userAgentInfo.contains(Agents[v])) {
-				flag = false;
-				break;
-			}
-		}
-		return flag;
-	}
 
 }

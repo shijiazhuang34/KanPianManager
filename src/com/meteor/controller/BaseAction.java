@@ -455,6 +455,7 @@ public class BaseAction extends Controller {
 	public  void toedit()  {
 		try {
 			HttpServletRequest request = getRequest();
+			PageKit.setpc(request);
 			String id = getPara("mgid");
 			javsrc jav = (javsrc) PgsqlKit.findById(ClassKit.javClass, id);
 			request.setAttribute("javobj", jav);

@@ -1195,4 +1195,26 @@ public class PageKit {
 		PgsqlKit.excuteSql(sql);
 		logger.error("清除重复项完毕");
 	}
+
+	public static void setpc(HttpServletRequest request){
+		boolean flag=ispc(request);
+		if(flag) {
+			request.setAttribute("ispc", "1");
+		}else{
+			request.setAttribute("ispc", "0");
+		}
+	}
+
+	public static boolean ispc(HttpServletRequest request){
+		String userAgentInfo = request.getHeader("User-Agent");
+		String[] Agents = new String[]{"Android", "iPhone","SymbianOS", "Windows Phone","iPad", "iPod"};
+		boolean flag = true;
+		for (int v = 0; v < Agents.length; v++) {
+			if (userAgentInfo.contains(Agents[v])) {
+				flag = false;
+				break;
+			}
+		}
+		return flag;
+	}
 }
