@@ -1,6 +1,5 @@
 package com.meteor.task;
 
-import com.jfinal.kit.PropKit;
 import com.meteor.common.MainConfig;
 import com.meteor.kit.*;
 import org.quartz.Job;

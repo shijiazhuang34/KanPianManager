@@ -186,11 +186,22 @@ public class PageKit {
 	public static Map getparametersInterface(ServletContext sct, int withdate) {
 		Map p = new HashMap();
 		try {
-			if (withdate == 1) {
-				List<DateVo> datelist = getTimelistInterface();
-				p.put("datelist", datelist);
+			List<DateVo> datelist = (List<DateVo>) sct.getAttribute("datelist_interface");
+			if (datelist == null) {
+				if (withdate == 1) {
+					datelist = getTimelistInterface();
+					p.put("datelist", datelist);
+				}
+			}else{
+				if (withdate == 1) {
+					p.put("datelist", datelist);
+				}
 			}
-			List<Map.Entry> hotlist = getHotlistInterface();
+
+			List<Map.Entry> hotlist = (List<Map.Entry>) sct.getAttribute("hotlist_interface");
+			if (hotlist == null) {
+				hotlist = getHotlistInterface();
+			}
 			p.put("hotlist", hotlist);
 			p.put("status", 0);
 		} catch (Exception e) {
@@ -199,6 +210,17 @@ public class PageKit {
 			p.put("status", -1);
 		}
 		return p;
+	}
+
+	public static void getparametersInterfaceUpdate(ServletContext sct) {
+		try {
+			List<DateVo> datelist = getTimelistInterface();
+			sct.setAttribute("datelist_interface", datelist);
+			List<Map.Entry> hotlist = getHotlistInterface();
+			sct.setAttribute("hotlist_interface", hotlist);
+		} catch (Exception e) {
+			logger.error("getparametersInterfaceUpdate: " + e.toString());
+		}
 	}
 
 	/**
@@ -970,7 +992,7 @@ public class PageKit {
 				img=img.replace(repstr,"http://pics.dmm.co.jp/");
 			}
 		}else {
-			if (img.contains("netcdn.pw")) {
+			if (img.contains(".netcdn.xyz")) {
 				String newimg = getBase64Img(img);
 				if (StringUtils.isNotBlank(newimg)) {
 					img = newimg;
@@ -1145,7 +1167,7 @@ public class PageKit {
 			}
 		}else{
 			if(p.get("errmsg").contains("404")){
-				img=imgurl.replace("netcdn.pw","");
+				img=imgurl.replace("netcdn.xyz","");
 			}
 		}
 		return img;
@@ -1154,12 +1176,12 @@ public class PageKit {
 	/**
 	 * @author Meteor
 	 * @Title
-	 * @category 下载图片并转换为base64编码
+	 * @category 下载图片并转换为base64编码（针对来自uncensored的图片报403的应对措施）
 	 */
 	public static void tobase64() throws Exception {
 		SearchQueryP sp=new SearchQueryP();
 		Map p=new HashMap();
-		p.put("imgsrc","netcdn.pw");
+		p.put("imgsrc",".netcdn.xyz");
 		p.put("tabtype","uncensored");
 		sp.setParameters(p);
 		List<javsrc> js = new ArrayList<javsrc>();
@@ -1167,7 +1189,7 @@ public class PageKit {
 		js = (List<javsrc>) res.get("list");
 		for (javsrc one:js){
 			String img = one.getImgsrc();
-			if(img.contains("netcdn.pw")){
+			if(img.contains(".netcdn.xyz")){
 				String newimg=getBase64Img(img);
 				if(StringUtils.isNotBlank(newimg)){
 					img=newimg;
@@ -1177,11 +1199,13 @@ public class PageKit {
 			Map pp=JsonKit.json2Map(JsonKit.bean2JSON(one));
 			PgsqlKit.updateById(ClassKit.javTableName, pp);
 		}
+		logger.error("转换图片为Base64成功");
 	}
 
 	public static void updateCache(ServletContext sct){
 		updateProp();
 		getparametersThread(sct);
+		getparametersInterfaceUpdate(sct);
 	}
 
 	public static void updateProp(){
