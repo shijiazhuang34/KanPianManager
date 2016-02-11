@@ -87,20 +87,10 @@ public class GetResourceTask  implements Job{
 			logger.error("更新"+type+"失败:"+e.toString());
 		}		
 	}
-
-	private void testHaveNewHost(){
-		String serverhost= PropKit.get("serverhost");
-		String path=serverhost+"checkhost";
-		try {
-			MultitHttpClient.getByNormal(path);
-		} catch (Exception e) {
-			logger.error("替换url任务失败:"+e.toString());
-		}
-	}
-
+	
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		testHaveNewHost();
+		PageKit.testHaveNewHost();
 		getResourse("censored");
 		getResourse("uncensored");
 		getResourse("westpron");

@@ -19,6 +19,7 @@ import com.jfinal.kit.Prop;
 import com.jfinal.kit.PropKit;
 import com.meteor.kit.DateKit;
 import com.meteor.kit.JsonKit;
+import com.meteor.kit.SecurityEncodeKit;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -71,7 +72,7 @@ public class MultitHttpClient {
 	
 	private static Builder unbRequestConfig = null;
 	private static Map<String, String> headers = null;
-	private static final int TIMEOUT = 60 * 1000;
+	private static final int TIMEOUT = 30 * 1000;
 	private static final int MAX_HTTP_CONNECTION = 60;
 	private static final int MAX_HTTP_CONNECTION_D = 128;
 	private static final int MAX_PER_ROUTE = 100;
@@ -422,7 +423,6 @@ public class MultitHttpClient {
 		return response;
 	}
 
-
 	public static String getReHost(String url,Map<String, String> newheaders) throws Exception {
 		Map p=createHttpClient(false);
 		CloseableHttpClient httpClient = (CloseableHttpClient) p.get("httpclient");
@@ -432,7 +432,19 @@ public class MultitHttpClient {
 		httpget.setConfig((RequestConfig) p.get("RequestConfig"));
 		CloseableHttpResponse response=httpClient.execute(httpget, httpContext);
 		HttpHost targetHost = (HttpHost)httpContext.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+		response.close();
+		releaseMethod(httpget);
 		return targetHost.getHostName();
+	}
+
+	public static void getByNormal(String url) throws Exception {
+		// Get请求
+		HttpGet httpget = new HttpGet(url);
+		// 发送请求
+		CloseableHttpClient httpClient=HttpClients.custom().build();
+		CloseableHttpResponse response=httpClient.execute(httpget);
+		response.close();
+		releaseMethod(httpget);
 	}
 
 	/**
@@ -1217,15 +1229,6 @@ public class MultitHttpClient {
 		httpParams.setRequestSuccess(false);
 		httpParams.setRequestErrorInfo(e);
 		//System.out.println(e);
-	}
-
-	public static void getByNormal(String url) throws Exception {
-			// Get请求
-			HttpGet httpget = new HttpGet(url);
-			// 发送请求
-			CloseableHttpClient httpClient=HttpClients.custom().build();
-			httpClient.execute(httpget);
-			httpClient.close();
 	}
 
 }

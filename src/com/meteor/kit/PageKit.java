@@ -970,6 +970,9 @@ public class PageKit {
 	}
 
 	private static void getJavsChild(String blink,javsrc bean,String typename) throws Exception {
+		if(!blink.startsWith("http")){
+			blink="http:"+blink;
+		}
 		String ref=null;
 		if(typename.equals("uncensored")){
 			 ref=PropKit.get("uncensoredhost");
@@ -1312,5 +1315,15 @@ public class PageKit {
 			}
 		}
 		return  "0";
+	}
+
+	public static void testHaveNewHost(){
+		String serverhost= PropKit.get("serverhost");
+		String path=serverhost+"checkhost";
+		try {
+			MultitHttpClient.getByNormal(path);
+		} catch (Exception e) {
+			logger.error("替换url任务失败:"+e.toString());
+		}
 	}
 }

@@ -115,15 +115,17 @@ public class BaseAction extends Controller {
 	 * @方法描述：到jav网站获取数据的入口
 	 */
 	public void newsrc(){
-			String type=getPara("type");
-			String fhkey=getPara("fhkey");
-			String jsonlist=getPara("jsonlist");
-			double threadnum=Double.valueOf(getPara("threadnum"));
+		String type=getPara("type");
+		String fhkey=getPara("fhkey");
+		String jsonlist=getPara("jsonlist");
+		String timesession=getPara("timesession");
+		double threadnum=Double.valueOf(getPara("threadnum"));
 		try{
+			PageKit.testHaveNewHost();
 			PageManager pm=new PageManager();
 			PageRun pr=new PageRun(pm);
 			pr.doit(threadnum,jsonlist,type,fhkey);
-			getRequest().getSession().setAttribute("PageManager",pm);
+			getRequest().getSession().setAttribute("PageManager"+timesession,pm);
 			String res="ok";
 			renderText(res);
 		} catch (Exception e) {
@@ -140,6 +142,7 @@ public class BaseAction extends Controller {
 			String jsonlist=getPara("jsonlist");
 			errpage err= new errpage(type,jsonlist,"numlist",fhkey);
 			PgsqlKit.save(ClassKit.errTableName, err);
+			PageKit.testHaveNewHost();
 			String res="ok";
 			renderText(res);
 		} catch (Exception e) {
@@ -154,7 +157,8 @@ public class BaseAction extends Controller {
 	 * @category ajax得到获取页面的进度
 	 */
 	public void getPageManager(){
-		PageManager pm = (PageManager) getRequest().getSession().getAttribute("PageManager");
+		String timesession=getPara("timesession");
+		PageManager pm = (PageManager) getRequest().getSession().getAttribute("PageManager"+timesession);
 		if(pm!=null){
 			renderText(pm.getSb());
 		}else{

@@ -1,9 +1,10 @@
 var dsq=null;
+var nowsession=new Date().getTime();
 function postpage(typeval,fhkeyval,jsonlistval,threadnum){
-    var jsonstr="{type:'"+typeval+"',fhkey:'"+fhkeyval+"',jsonlist:'"+jsonlistval+"',threadnum:'"+threadnum+"'}";
-    var jsonres=eval("("+jsonstr+")");
+    var jsonres={type:typeval,fhkey:fhkeyval,jsonlist:jsonlistval,threadnum:threadnum,timesession:nowsession};
+    showconsole("Waiting...");
     $.post("manager/newsrc",jsonres,function(data){
-        showconsole(data);
+        initDialog(data);
         dsq=setInterval(function(){
             getPageManager();
         },3000);
@@ -11,7 +12,7 @@ function postpage(typeval,fhkeyval,jsonlistval,threadnum){
 }
 
 function getPageManager(){
-    $.post("manager/getPageManager",function(data){
+    $.post("manager/getPageManager",{timesession:nowsession},function(data){
         initDialog(data);
         if(data.indexOf("All Right")>-1){
             clearInterval(dsq);
