@@ -1,3 +1,4 @@
+serverhost=http://localhost:81/kan/manager/
 #默认数据库链接参数
 jdbcdriver = org.postgresql.Driver
 jdbcUrl = jdbc:postgresql://localhost:5432/kanpian

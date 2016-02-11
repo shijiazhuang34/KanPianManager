@@ -1,10 +1,11 @@
 package com.meteor.task;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.net.URL;
+import java.util.*;
 
+import com.jfinal.kit.PropKit;
 import com.meteor.kit.*;
+import com.meteor.kit.http.MultitHttpClient;
 import com.meteor.model.po.errpage;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -87,8 +88,19 @@ public class GetResourceTask  implements Job{
 		}		
 	}
 
+	private void testHaveNewHost(){
+		String serverhost= PropKit.get("serverhost");
+		String path=serverhost+"checkhost";
+		try {
+			MultitHttpClient.getByNormal(path);
+		} catch (Exception e) {
+			logger.error("替换url任务失败:"+e.toString());
+		}
+	}
+
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+		testHaveNewHost();
 		getResourse("censored");
 		getResourse("uncensored");
 		getResourse("westpron");

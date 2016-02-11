@@ -3,6 +3,7 @@ package com.meteor.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.jfinal.aop.Before;
+import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
 import com.jfinal.ext.plugin.monogodb.MongoKit;
 import com.jfinal.kit.PropKit;
@@ -760,6 +762,53 @@ public class BaseAction extends Controller {
 		} catch (IOException e) {
 			logger.error("修改配置文件异常: " + e.toString());
 			renderText("修改配置文件异常");
+		}
+	}
+
+	@Clear
+	public void checkhost(){
+		try {
+			HttpServletRequest request=getRequest();
+			String cofpath=PageKit.getConfigPath(request);
+			String cof= FileUtils.readFileToString(new File(cofpath), "UTF-8");
+			String newcof=null;
+
+			newcof=testHaveNewHostByType("censoredhost",cof);
+			newcof=testHaveNewHostByType("uncensoredhost",newcof);
+			newcof=testHaveNewHostByType("westporn",newcof);
+
+			if(!cof.equals(newcof)) {
+				FileUtils.write(new File(cofpath), newcof, "UTF-8");
+				PageKit.updateProp();
+			}
+			renderText("0");
+		} catch (IOException e) {
+			logger.error("替换url任务失败:"+e.toString());
+			renderText("-1");
+		}
+	}
+
+	private String testHaveNewHostByType(String type,String cof){
+		try {
+			String host= PropKit.get(type);
+			String newhost= MultitHttpClient.getReHost(host, null);
+			URL url=new URL(host);
+			String oldhost=url.getHost();
+			if(!oldhost.equals(newhost)){
+				String hostrep=host.replace(oldhost,newhost);
+				if(StringUtils.isNotBlank(host)){
+					cof=cof.replace(host,hostrep);
+					logger.error("替换" + type + "的url完成，新url为：" +hostrep);
+					return cof;
+				}else{
+					return  cof;
+				}
+			}else{
+				return  cof;
+			}
+		} catch (Exception e) {
+			logger.error("替换" + type +"失败:"+e.toString());
+			return  cof;
 		}
 	}
 

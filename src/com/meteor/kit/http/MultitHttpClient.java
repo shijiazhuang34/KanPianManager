@@ -19,7 +19,6 @@ import com.jfinal.kit.Prop;
 import com.jfinal.kit.PropKit;
 import com.meteor.kit.DateKit;
 import com.meteor.kit.JsonKit;
-import com.meteor.kit.SecurityEncodeKit;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -45,6 +44,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.pool.PoolStats;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 import org.slf4j.Logger;
@@ -418,6 +420,19 @@ public class MultitHttpClient {
 			throw new IOException("Got bad response, error code = "+ response.getStatusLine().getStatusCode());
 		}
 		return response;
+	}
+
+
+	public static String getReHost(String url,Map<String, String> newheaders) throws Exception {
+		Map p=createHttpClient(false);
+		CloseableHttpClient httpClient = (CloseableHttpClient) p.get("httpclient");
+		HttpGet httpget = new HttpGet(url);
+		HttpContext httpContext = new BasicHttpContext();
+		setHeaders(httpget,newheaders);
+		httpget.setConfig((RequestConfig) p.get("RequestConfig"));
+		CloseableHttpResponse response=httpClient.execute(httpget, httpContext);
+		HttpHost targetHost = (HttpHost)httpContext.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+		return targetHost.getHostName();
 	}
 
 	/**
@@ -1202,6 +1217,15 @@ public class MultitHttpClient {
 		httpParams.setRequestSuccess(false);
 		httpParams.setRequestErrorInfo(e);
 		//System.out.println(e);
+	}
+
+	public static void getByNormal(String url) throws Exception {
+			// Get请求
+			HttpGet httpget = new HttpGet(url);
+			// 发送请求
+			CloseableHttpClient httpClient=HttpClients.custom().build();
+			httpClient.execute(httpget);
+			httpClient.close();
 	}
 
 }
