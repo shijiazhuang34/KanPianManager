@@ -619,15 +619,20 @@ public class BaseAction extends Controller {
 		}
 	}
 
-	private String downloadSrc(String fileorigpath){
+	private String downloadSrc(String fileorigpath) {
 		String rootsavedir=PropKit.get("rootsavedir");
 		String btlist=getPara("btlist");
-		String img=getPara("img");
+		String oneid=getPara("oneid");
 		String basedir=getPara("basedir");
 		String filepath=fileorigpath;
 		filepath=filepath+"/onekeytmp/"+basedir+"/";
-
+		File f0 = new File(filepath);
+		if (!f0.exists()) {
+			f0.mkdir();
+		}
 		try {
+			javsrc js=(javsrc)PgsqlKit.findById(ClassKit.javClass,oneid);
+			String img=js.getImgsrc();
 			if (img.contains("data:image/")) {
 				img = img.replace("data:image/jpg;base64,", "");
 				String filename = DateKit.getUUID() + ".jpg";
@@ -668,16 +673,16 @@ public class BaseAction extends Controller {
 					String url = null;
 					String filedest = null;
 					if(bts[i].contains("magnet:?xt=")){
-//						logger.info("createPackage: 忽略磁力链接下载");
-//						if(i==0) {
-//							return "4";
-//						}
 						url =PageKit.magnetToTorcacheLink(bts[i]) ;
 						if(StringUtils.isBlank(url)) {
-							return "4";
+							reCode="4";
 						}
 						String filename = url.substring(url.lastIndexOf("/") + 1, url.length());
 						filedest = filepath + filename;
+						String returncode=PageKit.downloadWithStatus(url, filedest, "5");
+						if(!returncode.equals("0")){
+							reCode=returncode;
+						}
 					}else {
 						url = PageKit.replace20(bts[i]);
 						String filename = null;
@@ -688,12 +693,12 @@ public class BaseAction extends Controller {
 						}
 						filename = java.net.URLEncoder.encode(filename.toLowerCase(), "UTF-8");
 						filedest = filepath + filename;
+						String returncode=PageKit.downloadWithStatus(url, filedest, "2");
+						if(!returncode.equals("0")){
+							reCode=returncode;
+						}
 					}
-					String returncode=PageKit.downloadWithStatus(url,filedest,"2");
-					if(!returncode.equals("0")){
-						//return returncode;
-						reCode=returncode;
-					}
+
 				}
 			}
 		} catch (Exception e) {

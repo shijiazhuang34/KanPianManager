@@ -1306,10 +1306,8 @@ public class PageKit {
 			String res = MultitHttpClient.getFileDownByPathFull(url, filedest);
 			Map resp = JsonKit.json2Map(res);
 			if (resp.get("status").equals("-1")) {
-				logger.error("createPackage: " + resp.get("errmsg").toString());
 				return errcode;
 			} else if (resp.get("status").equals("-2")) {
-				logger.error("createPackage: " + resp.get("errmsg").toString());
 				return errcode;
 			}
 		}

@@ -205,8 +205,8 @@ class MainGetPage implements Runnable {
         String hs= DateKit.getTimeOff(edtime);
         String errnums=pm.getErrnums();
         if(StringUtils.isNotBlank(errnums)){
-            logger.error("失败页数:" + errnums);
-            pm.setSb("<br>" + "失败页数:" + errnums);
+            logger.error(type+" 失败页数:" + errnums);
+            pm.setSb("<br>" +type+" 失败页数:" + errnums);
         }
         pm.setSb("<br>"+type +" All Right,"+"耗时："+hs);
         logger.error(type+" 全部执行完毕,"+"耗时："+hs);

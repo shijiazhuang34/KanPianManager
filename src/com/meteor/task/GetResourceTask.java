@@ -77,7 +77,7 @@ public class GetResourceTask  implements Job{
 			}
 
 			if(errPages.size()>0){
-				logger.error("失败页数:" + JsonKit.bean2JSON(errPages));
+				logger.error(type+" 失败页数:" + JsonKit.bean2JSON(errPages));
 			}
 			long edtime=new Date().getTime()-starttime;
 			String hs= DateKit.getTimeOff(edtime);

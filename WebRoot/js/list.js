@@ -337,7 +337,7 @@ $(".onekydown").on("click",onekydownClick);
 
 function createPackage(iszip,bts,imgs,basedir,thisobj,id){
     var btlist=bts.join("--");
-    $.post('manager/createPackage',{"btlist":btlist,"img":imgs,"basedir":basedir,"iszip":iszip},function(data) {
+    $.post('manager/createPackage',{"btlist":btlist,"oneid":id,"basedir":basedir,"iszip":iszip},function(data) {
         if(data=="is_ok"){
             changeScheduleBar(id,"1");
         }else if(data=="2"){
@@ -349,6 +349,9 @@ function createPackage(iszip,bts,imgs,basedir,thisobj,id){
         }else if(data=="4"){
             changeScheduleBar(id,"-1");
             addScheduleErr(id,"忽略磁力链接");
+        }else if(data=="5"){
+            changeScheduleBar(id,"-1");
+            addScheduleErr(id,"磁力链接不存在");
         }else{
             changeScheduleBar(id,"1");
             var imgid = Math.random();
