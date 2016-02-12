@@ -20,7 +20,6 @@ public class javsrc  {
     private String tags, btfile, btname;
     private String sbm,sbmsb;
     private List<String> tagslist, btfilelist, btnamelist;
-    private String imgsrccg;
 
     public String getSbmsb() {
         sbmsb= PageKit.getSbmByTitle(title);
@@ -104,7 +103,6 @@ public class javsrc  {
 
     public void setImgsrc(String imgsrc) {
         this.imgsrc = imgsrc;
-        initImgsrccg();
     }
 
     public String getTabtype() {
@@ -164,19 +162,4 @@ public class javsrc  {
         return "JavSrc";
     }
 
-    public String getImgsrccg() {
-        return imgsrccg;
-    }
-
-    public void setImgsrccg(String imgsrccg) {
-        this.imgsrccg = imgsrccg;
-    }
-
-    private void initImgsrccg(){
-        String rootdir= PropKit.get("rootdir");
-        this.imgsrccg=this.imgsrc;
-        if(StringUtils.isNotBlank(this.imgsrc) && this.imgsrccg.contains(PageKit.getimgBase64Tip())){
-            this.imgsrccg=rootdir+"/interface/imgbase/"+id;
-        }
-    }
 }

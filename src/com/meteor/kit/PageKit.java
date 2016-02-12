@@ -1319,6 +1319,10 @@ public class PageKit {
 		if (!f.exists()) {
 			String res = MultitHttpClient.getFileDownByPathFull(url, filedest);
 			Map resp = JsonKit.json2Map(res);
+			Object errmsg=resp.get("errmsg");
+			if(errmsg!=null && errmsg.toString().contains("404")){
+				return "404";
+			}
 			if (resp.get("status").equals("-1")) {
 				return errcode;
 			} else if (resp.get("status").equals("-2")) {

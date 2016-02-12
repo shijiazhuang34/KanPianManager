@@ -679,15 +679,28 @@ public class BaseAction extends Controller {
 					String url = null;
 					String filedest = null;
 					if(bts[i].contains("magnet:?xt=")){
-						url =PageKit.magnetToTorcacheLink(bts[i]) ;
+						url =PageKit.magnetToXunleiLink(bts[i]) ;
 						if(StringUtils.isBlank(url)) {
 							reCode="4";
 						}
 						String filename = url.substring(url.lastIndexOf("/") + 1, url.length());
 						filedest = filepath + filename;
 						String returncode=PageKit.downloadWithStatus(url, filedest, "5");
-						if(!returncode.equals("0")){
-							reCode=returncode;
+						if(returncode.equals("404")){
+							url =PageKit.magnetToTorcacheLink(bts[i]) ;
+							if(StringUtils.isBlank(url)) {
+								reCode="4";
+							}
+							filename = url.substring(url.lastIndexOf("/") + 1, url.length());
+							filedest = filepath + filename;
+							returncode=PageKit.downloadWithStatus(url, filedest, "5");
+							if (!returncode.equals("0")) {
+								reCode = returncode;
+							}
+						}else {
+							if (!returncode.equals("0")) {
+								reCode = returncode;
+							}
 						}
 					}else {
 						url = PageKit.replace20(bts[i]);

@@ -352,6 +352,9 @@ function createPackage(iszip,bts,imgs,basedir,thisobj,id){
         }else if(data=="5"){
             changeScheduleBar(id,"-1");
             addScheduleErr(id,"磁力链接不存在");
+        }else if(data=="404"){
+            changeScheduleBar(id,"-1");
+            addScheduleErr(id,"链接不存在");
         }else{
             changeScheduleBar(id,"1");
             var imgid = Math.random();
