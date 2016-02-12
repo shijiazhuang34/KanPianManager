@@ -724,15 +724,15 @@ public class PageKit {
 				Collections.sort(elelist);
 
 				if(StringUtils.isNotBlank(id)){
-					if(news.size()>=3){
-						int bg=news.size()-1;
-						int ed=news.size()-3;
+					if(elelist.size()>=3){
+						int bg=elelist.size()-1;
+						int ed=elelist.size()-3;
 						for (int i =bg ; i >=ed; i--) {
 							BtList bl=getbtlist(elelist.get(i).getEle());
 							btlist.add(bl);
 						}
 					}else{
-						for (int i =0 ; i<news.size(); i++) {
+						for (int i =0 ; i<elelist.size(); i++) {
 							BtList bl=getbtlist(elelist.get(i).getEle());
 							btlist.add(bl);
 						}
