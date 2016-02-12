@@ -3,6 +3,7 @@ package com.meteor.model.vo;
 import com.jfinal.kit.PropKit;
 import com.meteor.kit.JsonKit;
 import com.meteor.kit.PageKit;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 
@@ -174,7 +175,7 @@ public class javsrc {
     private void initImgsrccg(){
         String rootdir= PropKit.get("rootdir");
         this.imgsrccg=this.imgsrc;
-        if(this.imgsrccg.contains(PageKit.getimgBase64Tip())){
+        if(StringUtils.isNotBlank(this.imgsrc) && this.imgsrccg.contains(PageKit.getimgBase64Tip())){
             this.imgsrccg=rootdir+"/interface/imgbase/"+id;
             this.imgsrc=null;
         }
