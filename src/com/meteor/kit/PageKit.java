@@ -989,10 +989,16 @@ public class PageKit {
 		/**得到图片地址**/
 		Elements imgs=doc.getElementsByClass("bigImage");
 		String img=imgs.get(0).attr("href");
+		if(!img.startsWith("http")){
+			img="http:"+img;
+		}
 		if(typename.equals("censored")){
 			if (img.contains(".netcdn.xyz")) {
 				String repstr=img.substring(0,30);
 				img=img.replace(repstr,"http://pics.dmm.co.jp/");
+				if(img.contains("/al/")){
+					img=img.replace("/al/","/digital/");
+				}
 			}
 		}else {
 			if (img.contains(".netcdn.xyz")) {
