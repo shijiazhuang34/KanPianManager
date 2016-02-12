@@ -15,6 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 
 /**
@@ -80,7 +85,7 @@ public class HttpInterfaceAction extends Controller {
 			p=istoday(p);
 
 			if(p.getNowpage()!=0) {
-				res = PgsqlKit.findByCondition(ClassKit.javClass, p);
+				res = PgsqlKit.findByCondition(ClassKit.javClientClass, p);
 				res.put("status", 0);
 				res.put("pagecount",count);
 			}else{
@@ -177,6 +182,33 @@ public class HttpInterfaceAction extends Controller {
 			renderText("jsonp(" + JsonKit.bean2JSON(res)+")");
 		}else {
 			renderText(JsonKit.bean2JSON(res));
+		}
+	}
+
+	public void imgbase(){
+		try {
+			String oneid=getPara();
+			javsrc js = (javsrc) PgsqlKit.findById(ClassKit.javClass, oneid);
+			String img=js.getImgsrc();
+			img=img.replace(PageKit.getimgBase64Tip(),"");
+			byte[] imgbytes=SecurityEncodeKit.GenerateImage(img);
+			if(imgbytes!=null) {
+				HttpServletResponse response=getResponse();
+				response.setContentType("image/jpeg");
+				response.setContentLength(imgbytes.length);
+				response.setHeader("Accept-Ranges", "bytes");
+				OutputStream out = response.getOutputStream();
+				out.write(imgbytes);
+				out.flush();
+				out.close();
+				renderNull();
+			}else{
+				logger.error("imgbase: " +"不是base64编码的图片");
+				renderText("请求图片出错");
+			}
+		} catch (Exception e) {
+			logger.error("imgbase: " + e.toString());
+			renderText("请求图片出错");
 		}
 	}
 }

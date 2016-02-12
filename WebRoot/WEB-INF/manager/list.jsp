@@ -26,8 +26,8 @@
 					<span>发布于:${item.times}</span>
 				</div>
 				<div class="mdl-card__title">
-					<a href="${item.imgsrc}" target="_blank">
-						<img data-lazysrc="${item.imgsrc}" src="img/loading.png" alt="请求图片链接失败"/>
+					<a href="${item.imgsrccg}" target="_blank">
+						<img data-lazysrc="${item.imgsrccg}" src="img/loading.png" alt="请求图片链接失败"/>
 					</a>
 				</div>
 				<c:if test="${item.tabtype ne 'westpron'}">
@@ -44,8 +44,8 @@
 					<div class="mdl-menu-list mdl-menu__container is-upgraded " style="right: 0px; top: 32px; width: 100px;">
 						<ul class="mdl-menu-ul mdl-menu--bottom-right" for="demo-menu-lower-right" data-upgraded=",MaterialMenu,MaterialRipple" >
 
-						<li id="${item.id}" img="${item.imgsrc}" sbm="${item.tabtype eq 'westpron' ? item.sbmsb : item.sbm}" class="onekydownmb onekydown  mdl-menu__item " tabindex="-1" data-upgraded=",MaterialRipple" style="transition-delay: 0.00s;">一键下载<span class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
-						<li id="${item.id}" img="${item.imgsrc}" sbm="${item.tabtype eq 'westpron' ? item.sbmsb : item.sbm}" iszip="1" class="onekydown mdl-menu__item " tabindex="-1" data-upgraded=",MaterialRipple" style="transition-delay: 0.00923076923076923s;">打包下载<span class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
+						<li id="${item.id}"  sbm="${item.tabtype eq 'westpron' ? item.sbmsb : item.sbm}" class="onekydownmb onekydown  mdl-menu__item " tabindex="-1" data-upgraded=",MaterialRipple" style="transition-delay: 0.00s;">一键下载<span class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
+						<li id="${item.id}"  sbm="${item.tabtype eq 'westpron' ? item.sbmsb : item.sbm}" iszip="1" class="onekydown mdl-menu__item " tabindex="-1" data-upgraded=",MaterialRipple" style="transition-delay: 0.00923076923076923s;">打包下载<span class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
 
 						<c:if test="${item.tabtype ne 'westpron' && item.tabtype ne 'classical' }">
 						<li class="regetbtbtn mdl-menu__item " tabindex="-1" data-upgraded=",MaterialRipple" style="transition-delay: 0.06923076923076923s;">重获BT<span class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>

@@ -279,6 +279,23 @@ public class SecurityEncodeKit {
 		}
 	}
 
+	//base64字符转为图片字节
+	public static byte[] GenerateImage(String imgStr) {// 对字节数组字符串进行Base64解码并生成图片
+		BASE64Decoder decoder = new BASE64Decoder();
+		try {
+			// Base64解码
+			byte[] bytes = decoder.decodeBuffer(imgStr);
+			for (int i = 0; i < bytes.length; ++i) {
+				if (bytes[i] < 0) {// 调整异常数据
+					bytes[i] += 256;
+				}
+			}
+			return bytes;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public static void compressZip(String srcPathName,String zipname) {
 		File zipf=new File(srcPathName+"/"+zipname+".zip");
 		if(!zipf.exists()) {

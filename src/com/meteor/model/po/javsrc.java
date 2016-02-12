@@ -1,5 +1,6 @@
 package com.meteor.model.po;
 
+import com.jfinal.kit.PropKit;
 import com.meteor.kit.JsonKit;
 import com.meteor.kit.PageKit;
 
@@ -18,6 +19,7 @@ public class javsrc  {
     private String tags, btfile, btname;
     private String sbm,sbmsb;
     private List<String> tagslist, btfilelist, btnamelist;
+    private String imgsrccg;
 
     public String getSbmsb() {
         sbmsb= PageKit.getSbmByTitle(title);
@@ -101,6 +103,7 @@ public class javsrc  {
 
     public void setImgsrc(String imgsrc) {
         this.imgsrc = imgsrc;
+        initImgsrccg();
     }
 
     public String getTabtype() {
@@ -158,5 +161,21 @@ public class javsrc  {
 
     public String getClassName() {
         return "JavSrc";
+    }
+
+    public String getImgsrccg() {
+        return imgsrccg;
+    }
+
+    public void setImgsrccg(String imgsrccg) {
+        this.imgsrccg = imgsrccg;
+    }
+
+    private void initImgsrccg(){
+        String rootdir= PropKit.get("rootdir");
+        this.imgsrccg=this.imgsrc;
+        if(this.imgsrccg.contains(PageKit.getimgBase64Tip())){
+            this.imgsrccg=rootdir+"/interface/imgbase/"+id;
+        }
     }
 }

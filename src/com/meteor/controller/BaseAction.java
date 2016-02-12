@@ -640,7 +640,7 @@ public class BaseAction extends Controller {
 			javsrc js=(javsrc)PgsqlKit.findById(ClassKit.javClass,oneid);
 			String img=js.getImgsrc();
 			if (img.contains("data:image/")) {
-				img = img.replace("data:image/jpg;base64,", "");
+				img = img.replace(PageKit.getimgBase64Tip(), "");
 				String filename = DateKit.getUUID() + ".jpg";
 				String filedest = filepath + filename;
 				SecurityEncodeKit.GenerateImage(img, filedest);

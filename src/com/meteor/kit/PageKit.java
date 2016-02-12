@@ -28,6 +28,7 @@ import com.meteor.model.po.javsrc;
 public class PageKit {
 
 	private final static Logger logger = LoggerFactory.getLogger(PageKit.class);
+	private static String imgBase64Tip="data:image/jpg;base64,";
 	private static Map<String,String> tabtype=new HashMap<String, String>();
 	static {
 		tabtype.put("0","newspage");
@@ -39,6 +40,10 @@ public class PageKit {
 
 	public static String getTabType(String type){
 		return tabtype.get(type);
+	}
+
+	public static String getimgBase64Tip(){
+		return imgBase64Tip;
 	}
 
 	public static boolean hasTabType(String value){
@@ -287,7 +292,7 @@ public class PageKit {
 				}
 				p.setParameters(mp);
 				p=istodayRoot(p);
-				Map res = PgsqlKit.findByCondition(ClassKit.javClass, p);
+				Map res = PgsqlKit.findByCondition(ClassKit.javClientClass, p);
 				List<javsrc> srcs = (List<javsrc>) res.get("list");
 				long pagecount = Long.valueOf(res.get("count").toString());
 				request.setAttribute("srcs", srcs);
@@ -1172,7 +1177,7 @@ public class PageKit {
 		if (p.get("status").equals("0")) {
 			img = SecurityEncodeKit.GetImageStr(p.get("filepath"));
 			if (StringUtils.isNotBlank(img)) {
-				img = "data:image/jpg;base64," + img;
+				img = PageKit.getimgBase64Tip() + img;
 			}
 		}else{
 			if(p.get("errmsg").contains("404")){
