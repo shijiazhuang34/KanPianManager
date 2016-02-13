@@ -985,7 +985,9 @@ public class MultitHttpClient {
 			resp.put("errmsg", e.toString());
 			res=JsonKit.map2JSON(resp);
 		}  catch(Throwable t) {
-			logger.error("下载文件"+t.toString());
+			if(!t.toString().contains("404")) {
+				logger.error("下载文件" + t.toString());
+			}
 			resp.put("status", -1);
 			resp.put("errmsg", t.toString());
 			res=JsonKit.map2JSON(resp);
