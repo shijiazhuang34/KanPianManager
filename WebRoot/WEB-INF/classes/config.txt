@@ -7,7 +7,7 @@ password = 65604225
 
 #管理后台参数begin
 #基本参数
-dataintoday=0
+dataintoday=1
 #是否只显示今天之内的数据（仅作用于服务端，1：true，0：false）
 streammode=1
 pagesize=20

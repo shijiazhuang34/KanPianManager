@@ -258,7 +258,7 @@ public class PageKit {
 	private static SearchQueryP istodayRoot(SearchQueryP p){
 		int istoday=PropKit.getInt("dataintoday");
 		if(istoday==1){
-			String overtime=DateKit.getStringDateShort();
+			String overtime=DateKit.getStringDate();
 			Map rp=p.getParameters();
 			if(rp==null){
 				rp=new HashMap();
