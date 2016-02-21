@@ -31,6 +31,7 @@ public class MainConfig extends JFinalConfig {
 	public void configConstant(Constants me) {
 		PropKit.use("config.txt");
 		PropKit.use("accessuuid.txt");
+		PropKit.use("blockkey.txt");
 		PropKit.use("contenttype.properties");
 		me.setDevMode(PropKit.getBoolean("devMode", false));
 		me.setViewType(ViewType.JSP);// 设置视图类型为Jsp，否则默认为FreeMarker

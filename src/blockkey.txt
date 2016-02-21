@@ -1,0 +1,3 @@
+#屏蔽关键字
+key1 = shemale
+key2 = gay

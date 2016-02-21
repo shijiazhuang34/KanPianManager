@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import com.jfinal.kit.Prop;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
@@ -1075,7 +1076,8 @@ public class PageKit {
 			//如果在标题列表中能检索到，标记为已存在的元素
 			title=title.replaceAll("'","''");
 			boolean flag=getSrcTitle(searchval,title);
-			if (flag) {
+			boolean flag2=checkBlockKey(title,typename);
+			if (flag || flag2) {
 				continue;
 			}
 			bean.setTitle(title);
@@ -1163,6 +1165,27 @@ public class PageKit {
 		}else{
 			return false;
 		}
+	}
+
+	/**
+	 * @author Meteor
+	 * @Title
+	 * @category 校验屏蔽关键字
+	 */
+	public static boolean checkBlockKey(String title,String tabtype) throws Exception{
+		Prop pp=PropKit.getProp("blockkey.txt");
+		Iterator it= pp.getProperties().entrySet().iterator();
+		boolean flag=false;
+		while (it.hasNext()) {
+			Map.Entry entry = (Map.Entry) it.next();
+			String value = (String) entry.getValue();
+			String lowtitle = title.toLowerCase();
+			if(lowtitle.contains(value)){
+				flag=true;
+				break;
+			}
+		}
+		return flag;
 	}
 
 	private static String getBase64Img(String imgurl){
