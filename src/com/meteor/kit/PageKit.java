@@ -880,7 +880,8 @@ public class PageKit {
 			//如果在标题列表中能检索到，
 			title=title.replaceAll("'","''");
 			boolean flag=getSrcTitle(searchval,title);
-			if (flag) {
+			boolean flag2=checkBlockKey(title,typename);
+			if (flag || flag2) {
 				continue;
 			}
 			bean.setTitle(title);
@@ -1046,51 +1047,51 @@ public class PageKit {
 	 * @category 得到欧美资源，并转换一部分到无码
 	 */
 	public static int getPornleech(String oldtitles,String searchval,int num) throws Exception {
-		String westporn=PropKit.get("westporn");
-		String typename="westporn";
-		String url="";
-		//根据搜索条件选择页面地址
-		if(StringUtils.isBlank(searchval)){
-			url=westporn+"index.php?page=torrents&&category=64;65;66;77&main=68&active=1&search=&&options=0&order=3&by=2&pages="+(num-1);
-		}else{
-			searchval = java.net.URLEncoder.encode(searchval.toLowerCase(), "UTF-8");
-			url = westporn + "index.php?page=torrents&&main=68&active=1&search="+searchval+"&&options=0&order=3&by=2&pages=1" + (num - 1);
-		}
-		//拉取页面得到doc对象
-		String html=MultitHttpClient.get(url);
-		Document doc = Jsoup.parse(html);
-		Elements tabs = doc.select("table[class=lista]");
-		Elements trs=tabs.get(3).getElementsByTag("tr");
-		String host="http://pornleech.com/";
-		for(int i=1;i<trs.size();i++){
-			javsrc bean = new javsrc();
-			Element one = trs.get(i);
-			Elements as=one.select("a[onmouseover]");
-			Element a=as.get(0);
+			String westporn = PropKit.get("westporn");
+			String typename = "westporn";
+			String url = "";
+			//根据搜索条件选择页面地址
+			if (StringUtils.isBlank(searchval)) {
+				url = westporn + "index.php?page=torrents&&category=64;65;66;77&main=68&active=1&search=&&options=0&order=3&by=2&pages=" + (num - 1);
+			} else {
+				searchval = java.net.URLEncoder.encode(searchval.toLowerCase(), "UTF-8");
+				url = westporn + "index.php?page=torrents&&main=68&active=1&search=" + searchval + "&&options=0&order=3&by=2&pages=1" + (num - 1);
+			}
+			//拉取页面得到doc对象
+			String html = MultitHttpClient.get(url);
+			Document doc = Jsoup.parse(html);
+			Elements tabs = doc.select("table[class=lista]");
+			Elements trs = tabs.get(3).getElementsByTag("tr");
+			String host = "http://pornleech.com/";
+			for (int i = 1; i < trs.size(); i++) {
+				javsrc bean = new javsrc();
+				Element one = trs.get(i);
+				Elements as = one.select("a[onmouseover]");
+				Element a = as.get(0);
 
-			String title = a.text();
-			if (title.toUpperCase().contains("CENSORED")||title.toUpperCase().contains("UNCENSORED")) {
-				continue;
-			}
-			/**得到标题**/
-			//如果在标题列表中能检索到，标记为已存在的元素
-			title=title.replaceAll("'","''");
-			boolean flag=getSrcTitle(searchval,title);
-			boolean flag2=checkBlockKey(title,typename);
-			if (flag || flag2) {
-				continue;
-			}
-			bean.setTitle(title);
+				String title = a.text();
+				if (title.toUpperCase().contains("CENSORED") || title.toUpperCase().contains("UNCENSORED")) {
+					continue;
+				}
+				/**得到标题**/
+				//如果在标题列表中能检索到，标记为已存在的元素
+				title = title.replaceAll("'", "''");
+				boolean flag = getSrcTitle(searchval, title);
+				boolean flag2 = checkBlockKey(title, typename);
+				if (flag || flag2) {
+					continue;
+				}
+				bean.setTitle(title);
 
-			String blink=host+a.attr("href");
-			flag=getPornleechChild(blink,bean,typename,host,title);
-			if(!flag){
-				continue;
+				String blink = host + a.attr("href");
+				flag = getPornleechChild(blink, bean, typename, host, title);
+				if (!flag) {
+					continue;
+				}
+				bean.setIsdown("0");
+				bean.setId(StringKit.getMongoId());
+				PgsqlKit.save(ClassKit.javTableName, bean);
 			}
-			bean.setIsdown("0");
-			bean.setId(StringKit.getMongoId());
-			PgsqlKit.save(ClassKit.javTableName, bean);
-		}
 		return 0;
 	}
 
