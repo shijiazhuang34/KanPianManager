@@ -1250,6 +1250,7 @@ public class PageKit {
 		PropKit.clear();
 		PropKit.use("config.txt");
 		PropKit.use("accessuuid.txt");
+		PropKit.use("blockkey.txt");
 		PropKit.use("contenttype.properties");
 	}
 
