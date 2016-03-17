@@ -1058,7 +1058,7 @@ public class PageKit {
 				url = westporn + "index.php?page=torrents&&main=68&active=1&search=" + searchval + "&&options=0&order=3&by=2&pages=1" + (num - 1);
 			}
 			//拉取页面得到doc对象
-			String html = MultitHttpClient.get(url);
+			String html = MultitHttpClient.post(url);
 			Document doc = Jsoup.parse(html);
 			Elements tabs = doc.select("table[class=lista]");
 			Elements trs = tabs.get(3).getElementsByTag("tr");
@@ -1096,7 +1096,7 @@ public class PageKit {
 	}
 
 	private static boolean getPornleechChild(String blink,javsrc bean,String typename,String host,String title) throws Exception {
-		String html=MultitHttpClient.get(blink);
+		String html=MultitHttpClient.post(blink);
 		Document doc = Jsoup.parse(html);
 		Elements tabs = doc.select("table[class=lista]");
 		Elements trs=tabs.get(0).getElementsByTag("tr");
