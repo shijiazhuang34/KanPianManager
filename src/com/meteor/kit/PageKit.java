@@ -14,6 +14,9 @@ import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.meteor.common.MainConfig;
+import com.meteor.kit.getpage.PageManager;
+import com.meteor.kit.getpage.PageRun;
+import com.meteor.kit.http.HttpUtilKit;
 import com.meteor.kit.http.MultitHttpClient;
 import com.meteor.model.vo.*;
 import org.apache.commons.collections.ListUtils;
@@ -838,7 +841,7 @@ public class PageKit {
 	 * @Title
 	 * @category 获取有码资源
 	 */
-	public static int getJavmoo(String oldtitles,String searchval,int num) throws Exception {
+	public static int getJavmoo(String oldtitles,String searchval,String num) throws Exception {
 		String censoredhost=PropKit.get("censoredhost");
 		String typename="censored";
 		String url="";
@@ -911,7 +914,7 @@ public class PageKit {
 	 * @Title
 	 * @category 获取无码资源
 	 */
-	public static int getJavlog(String oldtitles,String searchval,int num) throws Exception {
+	public static int getJavlog(String oldtitles,String searchval,String num) throws Exception {
 		String uncensoredhost=PropKit.get("uncensoredhost");
 		String typename="uncensored";
 		String url="";
@@ -1046,19 +1049,22 @@ public class PageKit {
 	 * @Title
 	 * @category 得到欧美资源，并转换一部分到无码
 	 */
-	public static int getPornleech(String oldtitles,String searchval,int num) throws Exception {
+	public static int getPornleech(String oldtitles,String searchval,String num) throws Exception {
 			String westporn = PropKit.get("westporn");
 			String typename = "westporn";
 			String url = "";
 			//根据搜索条件选择页面地址
+			int newnum = Integer.valueOf(num);
+			newnum=newnum-1;
 			if (StringUtils.isBlank(searchval)) {
-				url = westporn + "index.php?page=torrents&&category=64;65;66;77&main=68&active=1&search=&&options=0&order=3&by=2&pages=" + (num - 1);
+				url = westporn + "index.php?page=torrents&&category=64;65;66;77&main=68&active=1&search=&&options=0&order=3&by=2&pages=" + newnum;
 			} else {
 				searchval = java.net.URLEncoder.encode(searchval.toLowerCase(), "UTF-8");
-				url = westporn + "index.php?page=torrents&&main=68&active=1&search=" + searchval + "&&options=0&order=3&by=2&pages=1" + (num - 1);
+				url = westporn + "index.php?page=torrents&&main=68&active=1&search=" + searchval + "&&options=0&order=3&by=2&pages=1" + newnum;
 			}
 			//拉取页面得到doc对象
-			String html = MultitHttpClient.post(url);
+//			String html = MultitHttpClient.post(url);
+			String html = HttpUtilKit.get503Page(url);
 			Document doc = Jsoup.parse(html);
 			Elements tabs = doc.select("table[class=lista]");
 			Elements trs = tabs.get(3).getElementsByTag("tr");
@@ -1096,7 +1102,8 @@ public class PageKit {
 	}
 
 	private static boolean getPornleechChild(String blink,javsrc bean,String typename,String host,String title) throws Exception {
-		String html=MultitHttpClient.post(blink);
+//		String html=MultitHttpClient.post(blink);
+		String html = HttpUtilKit.get503Page(blink);
 		Document doc = Jsoup.parse(html);
 		Elements tabs = doc.select("table[class=lista]");
 		Elements trs=tabs.get(0).getElementsByTag("tr");
@@ -1120,6 +1127,10 @@ public class PageKit {
 				}
 				if (head.equals("image")) {
 					String img = host + thistd.getElementsByTag("img").attr("src");
+					String newimg = get503Base64Img(img);
+					if (StringUtils.isNotBlank(newimg)) {
+						img = newimg;
+					}
 					bean.setImgsrc(img);
 				}
 				if (head.equals("description")) {
@@ -1189,6 +1200,20 @@ public class PageKit {
 		return flag;
 	}
 
+	private static String get503Base64Img(String imgurl){
+		String img = "";
+		imgurl = PageKit.replace20All(imgurl);
+		String res =HttpUtilKit.get503Resource(imgurl);
+		Map<String, String> p = JsonKit.json2Map(res);
+		if (p.get("status").equals("0")) {
+			img = SecurityEncodeKit.GetImageStr(p.get("filepath"));
+			if (StringUtils.isNotBlank(img)) {
+				img = PageKit.getimgBase64Tip() + img;
+			}
+		}
+		return img;
+	}
+
 	private static String getBase64Img(String imgurl){
 		String tmpdir= MainConfig.tmpsavedir;//PropKit.get("tmpsavedir");
 		String img = "";
@@ -1209,6 +1234,46 @@ public class PageKit {
 			}
 		}
 		return img;
+	}
+
+	public static void getAndUpdate503(javsrc one,String img) throws Exception {
+		String newimg = get503Base64Img(img);
+		if (StringUtils.isNotBlank(newimg)) {
+			logger.error("503图片转换成功：" + img);
+			img = newimg;
+			one.setIsstar("1");
+		}
+		one.setImgsrc(img);
+		Map pp = JsonKit.json2Map(JsonKit.bean2JSON(one));
+		PgsqlKit.updateById(ClassKit.javTableName, pp);
+	}
+
+	/**
+	 * @author Meteor
+	 * @Title
+	 * @category 下载图片并转换为base64编码(转换欧美的503图片）
+	 */
+	public static void tobase64By503() throws Exception {
+		SearchQueryP sp=new SearchQueryP();
+		Map p=new LinkedHashMap();
+		p.put("tabtype","westporn");
+		p.put("ISNULL_isstar","000");
+		p.put("LIKE_imgsrc","/torrentimg/");
+		sp.setParameters(p);
+		sp.setNowpage(1);
+		sp.setCount(1000);
+		List<javsrc> js = PgsqlKit.findByConditionAll(ClassKit.javClass, sp);
+		if(js!=null && js.size()>20) {
+			PageManager pm=new PageManager();
+			PageRun pr=new PageRun(pm);
+			pr.doitImg(20,js,"westpronImg",null);
+		}else{
+			for (javsrc one : js) {
+				String img = one.getImgsrc();
+				getAndUpdate503(one,img);
+			}
+			logger.error("转换图片为Base64成功");
+		}
 	}
 
 	/**

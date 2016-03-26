@@ -22,8 +22,8 @@ public class PgsqlKit {
         opmap.put("GTE"," >= ");
         opmap.put("LTE"," <= ");
         opmap.put("NOT"," != ");
-        opmap.put("NOTNULL"," != null ");
-        opmap.put("ISNULL"," == null ");
+        opmap.put("NOTNULL"," NOTNULL ");
+        opmap.put("ISNULL"," ISNULL ");
         opmap.put("LIKE"," LIKE ");
     }
 
@@ -46,7 +46,7 @@ public class PgsqlKit {
                     String opkey=pairs.getKey().toString().split("_")[0];
                     if(operator.contains(opkey)){
                         if(opkey.contains("NULL")){
-                            sb.append(" and " + pairs.getKey().toString().split("_")[1] + opmap.get(opkey));
+                            sb.append(" and " + pairs.getKey().toString().split("_")[1] +" "+ opmap.get(opkey));
                         }else if(opkey.contains("LIKE")){
                             sb.append(" and " + pairs.getKey().toString().split("_")[1] + opmap.get(opkey) + "'%" + pairs.getValue().toString() + "%'");
                         }else{
@@ -118,6 +118,28 @@ public class PgsqlKit {
     private static List findByConditionAll(Class<?> clazz,String sql) throws Exception {
         List<Record> list= Db.find("select * "+sql);
         return BeanKit.copyRec(list,clazz);
+    }
+
+    public static List findByConditionAll(Class<?> clazz,SearchQueryP p) throws Exception {
+        String objName=getClazzName(clazz);
+        String queryParams=addQueryParams(p.getParameters());
+        String sortstr="";
+        if(objName.equals("companys")){
+            sortstr=" order by id desc";
+        }else {
+            if (p.getSorttype() == null || p.getSortname() == null) {
+                sortstr = " order by times desc , id asc ";
+            } else {
+                sortstr = " order by " + p.getSortname() + " " + p.getSorttype()+", id asc ";
+            }
+        }
+        String sql="from " + objName + " " + queryParams + sortstr;
+        if(p.getNowpage()!=0) {
+            int offset=(p.getNowpage()-1)*p.getCount();
+            String limit="LIMIT "+p.getCount()+" OFFSET "+offset;
+            sql=sql+limit;
+        }
+        return findByConditionAll(clazz,sql);
     }
 
     public static int updateById(String collectionName,Map p) throws Exception {

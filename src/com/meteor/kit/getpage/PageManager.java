@@ -15,7 +15,7 @@ public class PageManager {
     private final Logger logger = LoggerFactory.getLogger(PageManager.class);
     private StringBuffer sb=new StringBuffer();
     private long bgtime;
-    private List<Integer> errnums=new ArrayList<Integer>();
+    private List<String> errnums=new ArrayList<String>();
 
     public String getErrnums() {
         if(errnums!=null&&errnums.size()>0) {
@@ -25,7 +25,7 @@ public class PageManager {
         }
     }
 
-    public void setErrnums(int errnum) {
+    public void setErrnums(String errnum) {
         this.errnums.add(errnum);
     }
 

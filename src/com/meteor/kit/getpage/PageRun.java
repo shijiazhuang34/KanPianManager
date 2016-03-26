@@ -2,6 +2,7 @@ package com.meteor.kit.getpage;
 
 import com.meteor.kit.*;
 import com.meteor.model.po.errpage;
+import com.meteor.model.po.javsrc;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,17 +27,67 @@ public class PageRun {
     }
 
     public void doit(double threadnum,String nums,String type,String fhkey) {
-        logger.error("正在获取"+type+"的资源,page:"+nums+"---"+fhkey);
-        pm.setBgtime(new Date().getTime());
-        List parentArray=filterNums( threadnum, nums);
-        int threadnumint=(int)threadnum;
-        CyclicBarrier barrier = new CyclicBarrier(threadnumint,new MainGetPage(pm,type));
-        ExecutorService exec = Executors.newFixedThreadPool(threadnumint);
-        for (int i = 0; i < threadnum; i++) {
-            List<String> numlist= (List<String>) parentArray.get(i);
-            exec.submit(new SubGetPage(pm,barrier,numlist,type,fhkey));
+        if(type.equals("westpronImg")){
+            doitImg(threadnum, nums, type, fhkey);
+        }else {
+            logger.error("正在获取" + type + "的资源,page:" + nums + "---" + fhkey);
+            pm.setBgtime(new Date().getTime());
+            List parentArray = filterNums(threadnum, nums);
+            int threadnumint = (int) threadnum;
+            CyclicBarrier barrier = new CyclicBarrier(threadnumint, new MainGetPage(pm, type));
+            ExecutorService exec = Executors.newFixedThreadPool(threadnumint);
+            for (int i = 0; i < threadnumint; i++) {
+                List<String> numlist = (List<String>) parentArray.get(i);
+                exec.submit(new SubGetPage(pm, barrier, numlist, type, fhkey));
+            }
+            exec.shutdown();
         }
-        exec.shutdown();
+    }
+
+    public void doitImg(double threadnum,Object js,String type,String fhkey) {
+        pm.setBgtime(new Date().getTime());
+        if(js instanceof  String){
+            int threadnumint = 1;
+            CyclicBarrier barrier = new CyclicBarrier(threadnumint, new MainGetPage(pm, type));
+            ExecutorService exec = Executors.newFixedThreadPool(threadnumint);
+            logger.error("正在获取" + type + "的资源,img:" + js + "---" + fhkey);
+            List<String> listimg = new ArrayList<String>();
+            listimg.add((String)js);
+            exec.submit(new SubGetPage(pm, barrier, listimg, type, fhkey));
+            exec.shutdown();
+        }else {
+            List<javsrc> newjs =(List<javsrc>)js;
+            List parentArray = filterImgUrl(threadnum, newjs);
+            int threadnumint = (int) threadnum;
+            CyclicBarrier barrier = new CyclicBarrier(threadnumint, new MainGetPage(pm, type));
+            ExecutorService exec = Executors.newFixedThreadPool(threadnumint);
+            for (int i = 0; i < threadnumint; i++) {
+                List<String> numlist = (List<String>) parentArray.get(i);
+                logger.error("正在获取" + type + "的资源,img:" + JsonKit.bean2JSON(numlist) + "---" + fhkey);
+                exec.submit(new SubGetPage(pm, barrier, numlist, type, fhkey));
+            }
+            exec.shutdown();
+        }
+    }
+
+    private List filterImgUrl(double threadnum, List<javsrc> js){
+        int intlength= (int) Math.ceil(js.size()/threadnum);
+        List parentArray=new ArrayList();
+        for(int i = 0; i <threadnum; i++) {
+            List<String> childArray = new ArrayList<String>();
+            int ed = (i + 1) * intlength;
+            int bg = i * intlength;
+            for (int j = bg; j < ed; j++) {
+                if(j+1<=js.size()){
+                    String nm=js.get(j).getId()+";p;"+js.get(j).getImgsrc();
+                    childArray.add(nm);
+                }else {
+                    break;
+                }
+            }
+            parentArray.add(childArray);
+        }
+        return parentArray;
     }
 
     private List filterNums(double threadnum,String nums){
@@ -140,11 +191,11 @@ class SubGetPage implements Runnable {
         //循环拉取数据
         if(nums!=null&&nums.size()>0){
             //List errnums=new ArrayList();
-            int nownum=0;
+            String nownum="";
             for (int i = 0; i <nums.size();i++) {
                 try{
                     String sstj = StringUtils.isNotBlank(searchval) ? searchval : "";//搜索条件
-                    nownum = Integer.valueOf(nums.get(i));
+                    nownum = nums.get(i);
                     if(type.equals("censored")) {
                           PageKit.getJavmoo( javtitles, sstj, nownum);
                     }
@@ -153,6 +204,11 @@ class SubGetPage implements Runnable {
                     }
                     if(type.equals("westpron")) {
                           PageKit.getPornleech(javtitles, sstj, nownum);
+                    }
+                    if(type.equals("westpronImg")){
+                          String[] p = nownum.split(";p;");
+                          javsrc js=(javsrc)PgsqlKit.findById(ClassKit.javClass,p[0]);
+                          PageKit.getAndUpdate503(js,p[1]);
                     }
                 } catch (Exception e) {
                     if(!e.toString().contains("404")) {

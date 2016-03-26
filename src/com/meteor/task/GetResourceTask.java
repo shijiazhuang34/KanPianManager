@@ -41,14 +41,15 @@ public class GetResourceTask  implements Job{
 			logger.error("正在获取"+type+"的资源,page:1--"+loopnum);
 			for(int i=1;i<=loopnum;i++){
 				try{
+					String newi = String.valueOf(i);
 					if(type.equals("censored")) {
-						 PageKit.getJavmoo(javtitles, "", i);
+						 PageKit.getJavmoo(javtitles, "", newi);
 					}
 					if(type.equals("uncensored")) {
-						 PageKit.getJavlog(javtitles, "", i);
+						 PageKit.getJavlog(javtitles, "", newi);
 					}
 					if(type.equals("westpron")) {
-						 PageKit.getPornleech(javtitles, "", i);
+						 PageKit.getPornleech(javtitles, "", newi);
 					}
 				} catch (Exception e) {
 					if(!e.toString().contains("404")) {
