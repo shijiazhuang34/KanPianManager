@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -35,15 +36,30 @@ public class HttpUtilKit {
 
 
     public static String get503Page(String url) throws Exception{
-        HtmlPage htmlPage = (HtmlPage) get503(url);
-        return htmlPage.asXml();
+        HtmlPage htmlPage = null;
+        try {
+            htmlPage = (HtmlPage) get503(url);
+            return htmlPage.asXml();
+        }catch (Exception e){
+            throw e;
+        }finally{
+            if(htmlPage!=null){
+                htmlPage.cleanUp();
+                WebClient wc = htmlPage.getEnclosingWindow().getWebClient();
+                if(wc!=null){
+                    wc.close();
+                }
+            }
+        }
     }
 
     public static String get503Resource(String url){
         Map resp = new HashMap();
+        Page htmlPage = null;
+        WebResponse wr = null;
         try {
-            Page htmlPage = get503(url);
-            WebResponse wr = htmlPage.getWebResponse();
+            htmlPage = get503(url);
+            wr = htmlPage.getWebResponse();
             String filename = getFileName(wr);
             String tmpsavedir= MainConfig.tmpsavedir;
             String filpath=tmpsavedir+"/"+filename;
@@ -56,6 +72,7 @@ public class HttpUtilKit {
                 InputStream is = wr.getContentAsStream();
                 FileUtils.copyInputStreamToFile(is, f);
             }
+            checkFileAllDownload(wr,f);
 
             resp.put("status", 0);
             resp.put("filepath", f.toString());
@@ -73,6 +90,18 @@ public class HttpUtilKit {
             }
             resp.put("status", -1);
             resp.put("errmsg", t.toString());
+        }finally {
+            if(wr!=null) {
+                wr.cleanUp();
+            }
+            if(htmlPage!=null) {
+                htmlPage.cleanUp();
+                WebClient wc = htmlPage.getEnclosingWindow().getWebClient();
+                if(wc!=null){
+                    wc.close();
+                }
+            }
+
         }
         return JsonKit.map2JSON(resp);
     }
@@ -95,17 +124,20 @@ public class HttpUtilKit {
         Page htmlPage = webClient.getPage(url);
         if (htmlPage.getWebResponse().getStatusCode() == 503) {
             // 等待JS驱动dom完成获得还原后的网页
-            webClient.waitForBackgroundJavaScript(8000);
+            webClient.waitForBackgroundJavaScript(10000);
             // 禁用js驱动
             webClient.getOptions().setJavaScriptEnabled(false);
             htmlPage = webClient.getPage(url);
             if (htmlPage.getWebResponse().getStatusCode() == 503){
                 logger.error("503递归：" + url);
                 webClient.close();
+                webClient=null;
                 return get503(url);
             }
         }
-        webClient.close();
+        if (htmlPage.getWebResponse().getStatusCode() == 404){
+            throw  new Exception("404文件找不到");
+        }
         return htmlPage;
     }
 
@@ -113,7 +145,6 @@ public class HttpUtilKit {
         String filename=null;
         String ctype=response.getContentType();
         if(!ctype.contains("text/html")){
-            List l=response.getResponseHeaders();
             String hd= response.getResponseHeaderValue("Content-Disposition");
             if(hd!=null){
                 filename=hd.split(";")[1];
@@ -132,5 +163,13 @@ public class HttpUtilKit {
             }
         }
         return filename;
+    }
+
+    private static void checkFileAllDownload(WebResponse response,File f) throws Exception {
+        int length= Integer.valueOf(response.getResponseHeaderValue("Content-Length"));
+        int filelength= FileUtils.readFileToByteArray(f).length;
+        if(length!=filelength){
+            throw new Exception("图片下载不完整，需重新下载");
+        }
     }
 }

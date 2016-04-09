@@ -56,4 +56,7 @@
         <appender-ref ref="dailyRollingFile" />
     </root>
 
+    <logger name="com.gargoylesoftware.htmlunit">
+        <level value="off" />
+    </logger>
 </log4j:configuration>  

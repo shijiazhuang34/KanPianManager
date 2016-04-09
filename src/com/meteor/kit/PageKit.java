@@ -33,6 +33,7 @@ public class PageKit {
 
 	private final static Logger logger = LoggerFactory.getLogger(PageKit.class);
 	private static String imgBase64Tip="data:image/jpg;base64,";
+	private static String imgReplcKey="netcdn.space";
 	private static Map<String,String> tabtype=new HashMap<String, String>();
 	static {
 		tabtype.put("0","newspage");
@@ -1002,20 +1003,11 @@ public class PageKit {
 		if(!img.startsWith("http")){
 			img="http:"+img;
 		}
-		if(typename.equals("censored")){
-			if (img.contains(".netcdn.xyz")) {
-				String repstr=img.substring(0,30);
-				img=img.replace(repstr,"http://pics.dmm.co.jp/");
-				if(img.contains("/al/")){
-					img=img.replace("/al/","/digital/");
-				}
-			}
-		}else {
-			if (img.contains(".netcdn.xyz")) {
-				String newimg = getBase64Img(img);
-				if (StringUtils.isNotBlank(newimg)) {
-					img = newimg;
-				}
+		if (img.contains(imgReplcKey)) {
+			String newimg = getBase64Img(img);
+			if (StringUtils.isNotBlank(newimg)) {
+				img = newimg;
+				bean.setIsstar("1");
 			}
 		}
 		bean.setImgsrc(img);
@@ -1130,6 +1122,7 @@ public class PageKit {
 					String newimg = get503Base64Img(img);
 					if (StringUtils.isNotBlank(newimg)) {
 						img = newimg;
+						bean.setIsstar("1");
 					}
 					bean.setImgsrc(img);
 				}
@@ -1230,7 +1223,7 @@ public class PageKit {
 			}
 		}else{
 			if(p.get("errmsg").contains("404")){
-				img=imgurl.replace("netcdn.xyz","");
+				img=imgurl.replace(imgReplcKey,"");
 			}
 		}
 		return img;
@@ -1282,27 +1275,32 @@ public class PageKit {
 	 * @category 下载图片并转换为base64编码（针对来自uncensored的图片报403的应对措施）
 	 */
 	public static void tobase64() throws Exception {
+		tobase64Https("censored");
+		tobase64Https("uncensored");
+		logger.error("转换图片为Base64成功");
+	}
+
+	private static void tobase64Https(String tabtype) throws Exception {
 		SearchQueryP sp=new SearchQueryP();
-		Map p=new HashMap();
-		p.put("imgsrc",".netcdn.xyz");
-		p.put("tabtype","uncensored");
+		Map p=new LinkedHashMap();
+		p.put("tabtype",tabtype);
+		p.put("ISNULL_isstar","000");
+		p.put("LIKE_imgsrc",imgReplcKey);
 		sp.setParameters(p);
 		List<javsrc> js = new ArrayList<javsrc>();
 		Map res=PgsqlKit.findByCondition(ClassKit.javClass, sp);
 		js = (List<javsrc>) res.get("list");
 		for (javsrc one:js){
 			String img = one.getImgsrc();
-			if(img.contains(".netcdn.xyz")){
-				String newimg=getBase64Img(img);
-				if(StringUtils.isNotBlank(newimg)){
-					img=newimg;
-				}
+			String newimg=getBase64Img(img);
+			if(StringUtils.isNotBlank(newimg)){
+				img=newimg;
+				one.setIsstar("1");
 			}
 			one.setImgsrc(img);
 			Map pp=JsonKit.json2Map(JsonKit.bean2JSON(one));
 			PgsqlKit.updateById(ClassKit.javTableName, pp);
 		}
-		logger.error("转换图片为Base64成功");
 	}
 
 	public static void updateCache(ServletContext sct){
