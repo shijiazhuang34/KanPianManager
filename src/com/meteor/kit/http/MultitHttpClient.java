@@ -463,7 +463,7 @@ public class MultitHttpClient {
 		if(!ctype.contains("text/html")){
 			Header hd= response.getFirstHeader("Content-Disposition");
 			if(hd!=null){
-				filename=hd.toString().split(";")[1];
+				filename=hd.getValue(); //hd.toString().split(";")[1];
 				filename=filename.substring(filename.indexOf("\"")+1, filename.lastIndexOf("\""));
 				filename=DateKit.getStringTodayB()+"_"+filename;
 			}else{
@@ -1075,7 +1075,8 @@ public class MultitHttpClient {
 				}else{
 					is=entity.getContent();
 				}
-				FileUtils.copyInputStreamToFile(is, f);				
+				FileUtils.copyInputStreamToFile(is, f);
+				checkFileAllDownload(response,f);
 			}			
 			res.put("status", 0);
 			res.put("filepath", f.toString());
@@ -1088,6 +1089,14 @@ public class MultitHttpClient {
 		return JsonKit.map2JSON(res);
 	}
 
+	private static void checkFileAllDownload(CloseableHttpResponse response,File f) throws Exception {
+		Header hd= response.getFirstHeader("Content-Length");
+		int length= Integer.valueOf(hd.getValue());
+		int filelength= FileUtils.readFileToByteArray(f).length;
+		if(length!=filelength){
+			throw new Exception("资源下载不完整，需重新下载");
+		}
+	}
 	
 	/**
 	 * 

@@ -71,9 +71,8 @@ public class HttpUtilKit {
             if (!f.exists()) {
                 InputStream is = wr.getContentAsStream();
                 FileUtils.copyInputStreamToFile(is, f);
+                checkFileAllDownload(wr,f);
             }
-            checkFileAllDownload(wr,f);
-
             resp.put("status", 0);
             resp.put("filepath", f.toString());
 
@@ -169,7 +168,7 @@ public class HttpUtilKit {
         int length= Integer.valueOf(response.getResponseHeaderValue("Content-Length"));
         int filelength= FileUtils.readFileToByteArray(f).length;
         if(length!=filelength){
-            throw new Exception("图片下载不完整，需重新下载");
+            throw new Exception("资源下载不完整，需重新下载");
         }
     }
 }
