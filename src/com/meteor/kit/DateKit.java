@@ -876,6 +876,7 @@ public class DateKit {
 	 * @category 补齐开始日期到秒.使其格式为YYYY-MM-DD HH24:MI:SS
 	 */
 	public static String KsrqString(String ksrq) {
+		ksrq=ksrq.trim();
 		String newKsrq = "";
 		// 形参字符串长度
 		Integer Stringlength = ksrq.trim().length();
@@ -906,6 +907,7 @@ public class DateKit {
 	 * @category 补齐结束日期到秒.使其格式为YYYY-MM-DD HH24:MI:SS
 	 */
 	public static String JsrqString(String jsrq) {
+		jsrq=jsrq.trim();
 		String newJsrq = "";
 		// 形参字符串长度
 		Integer Stringlength = jsrq.trim().length();

@@ -34,6 +34,9 @@ footer{
     font-weight: bold;
     padding-top: 10px;
 }
+.cursor{
+    cursor: pointer;
+}
 .tabbar li{cursor: pointer}
 
 @media screen and (max-device-width: 1365px) {

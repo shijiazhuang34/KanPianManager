@@ -21,7 +21,7 @@
 		<c:forEach var="item" items="${srcs}">
 			<div delid="${item.id}" class="tmpdiv singlediv contextdiv mdl-card mdl-shadow--2dp">
 				<span id="${item.id}"></span><!-- 锚连接跳转位置 -->
-				<div class="mdl-card__supporting-text">
+				<div class="mdl-card__supporting-text cursor" title="${item.title}">
 					<h2 class="actitle mdl-card__title-text">${item.title}</h2>
 					<span>发布于:${item.times}</span>
 				</div>
@@ -58,9 +58,13 @@
 					<c:if test="${item.isdown eq '0'}"><i class="material-icons" title="未存档">&#xE835;</i></c:if>
 					<c:if test="${item.isdown eq '1'}"><i class="material-icons" title="硬盘存档">save</i></c:if>
 					<c:if test="${item.isdown eq '2'}"><i class="material-icons" title="网络存档">web</i></c:if>
+					<c:if test="${searchname eq 'sp'}">
+					<i class="material-icons findthis" id="${item.id}" count="${countsize}" type="${item.tabtype}" >&#xE8B4;</i>
+					</c:if>
 					<a sbm="${item.sbm}" mgid="${item.id}" class="isdownload mdl-button mdl-button--colored" data-upgraded=",MaterialButton,MaterialRipple">
 						download
-						<span class="mdl-button__ripple-container"><span class="mdl-ripple " style="width: 241.336713648366px; height: 241.336713648366px; transform: translate(-50%, -50%) translate(57px, 19px);"></span></span></a>
+						<span class="mdl-button__ripple-container"><span class="mdl-ripple " style="width: 241.336713648366px; height: 241.336713648366px; transform: translate(-50%, -50%) translate(57px, 19px);"></span></span>
+					</a>
 				</div>
 				<div id="isbtlist" class="mdl-card__actions mdl-card--border">
 					<ol><c:if test="${fn:length(item.btfilelist) >0}">

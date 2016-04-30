@@ -7,6 +7,7 @@
     <title>404</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="error/style.css" type="text/css" media="all" />
+    <link rel="icon" sizes="69x69" href="img/logo.png">
 </head>
 <body>
 

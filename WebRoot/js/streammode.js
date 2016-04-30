@@ -43,6 +43,7 @@ function changelist(){
     $(".regetbtbtn").on("click",regetbt);
     $(".editbtn").on("click",editbtnClick);
     $(".delbtn").on("click",delbtnClick);
+    $(".findthis").on("click",findthis);
 
     $(".isdownload").on("click",isdownloadclick);
 

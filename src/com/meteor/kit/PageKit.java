@@ -260,7 +260,7 @@ public class PageKit {
 		return "ok";
 	}
 
-	private static SearchQueryP istodayRoot(SearchQueryP p){
+	public static SearchQueryP istodayRoot(SearchQueryP p){
 		int istoday=PropKit.getInt("dataintoday");
 		if(istoday==1){
 			String overtime=DateKit.getStringDate();

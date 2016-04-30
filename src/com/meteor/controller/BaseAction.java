@@ -178,13 +178,55 @@ public class BaseAction extends Controller {
 	 */
 	public void deleteData() {
 		try {
-			HttpServletResponse response = getResponse();
 			String id = getPara("id");
 			int res = PgsqlKit.deleteById(ClassKit.javTableName, id);
 			renderText(res + "");
 		}catch (Exception e){
 			logger.error("deleteData: "+e.toString());
 			renderText("0");
+		}
+	}
+
+	public void findthis() {
+		try {
+			String id = getPara("id");
+			String type = getPara("type");
+			Long count = getParaToLong("count");
+			//获得当前对象插入时间
+			javsrc jav= (javsrc) PgsqlKit.findById(ClassKit.javClass,id);
+			String javtime=jav.getTimes();
+			javtime=DateKit.KsrqString(javtime);
+			//获得对象时间之前的元素
+			SearchQueryP p = new SearchQueryP();
+			Map mp = new HashMap();
+			p.setParameters(mp);
+			p=PageKit.istodayRoot(p);
+			mp=p.getParameters();
+			mp.put("tabtype",type);
+			mp.put("GT_times",javtime);
+			long precount=PgsqlKit.getCollectionCount(ClassKit.javTableName,mp);
+			//获得当前时间内元素的位置
+			mp.remove("GT_times");
+			mp.remove("LTE_times");
+			mp.put("IS_times",javtime);
+			Map res = PgsqlKit.findByCondition(ClassKit.javClientClass, p);
+			List<com.meteor.model.vo.javsrc> srcs = (List<com.meteor.model.vo.javsrc>) res.get("list");
+			int index=0;
+			for(;index<srcs.size();index++){
+				com.meteor.model.vo.javsrc j=srcs.get(index);
+				if(j.getId().equals(id)){
+					break;
+				}
+			}
+			long totalIndex=precount+index;
+			long page=totalIndex/count+1;
+			long yu=totalIndex%count+1;
+
+			String resp=type+"中第"+page+"页,第"+yu+"个元素";
+			renderText(resp);
+		}catch (Exception e){
+			logger.error("findthis: "+e.toString());
+			renderText("err");
 		}
 	}
 	

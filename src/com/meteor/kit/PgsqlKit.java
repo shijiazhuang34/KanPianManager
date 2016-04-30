@@ -22,6 +22,7 @@ public class PgsqlKit {
         opmap.put("GTE"," >= ");
         opmap.put("LTE"," <= ");
         opmap.put("NOT"," != ");
+        opmap.put("IS"," = ");
         opmap.put("NOTNULL"," NOTNULL ");
         opmap.put("ISNULL"," ISNULL ");
         opmap.put("LIKE"," LIKE ");

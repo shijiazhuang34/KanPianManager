@@ -46,6 +46,27 @@ function delbtnClick(){
 }
 $(".delbtn").on("click",delbtnClick);
 
+function findthis(){
+    var findobj=$(this);
+    var id=findobj.attr("id");
+    var count=findobj.attr("count");
+    var type=findobj.attr("type");
+    $.post('manager/findthis',{"id":id,"type":type,"count":count},function(data) {
+        if(data.indexOf("err")<0){
+            $(findobj).css("font-family","\"Helvetica\",\"Arial\",sans-serif");
+            $(findobj).css("font-size","10px");
+            $(findobj).css("line-height","16px");
+            $(findobj).css("width","100px");
+            $(findobj).css("text-align","left")
+            $(findobj).text(data);
+            $(findobj).off("click");
+        }else{
+            alert("定位失败");
+        }
+    });
+}
+$(".findthis").on("click",findthis);
+
 $("#delallinpage").on("click",function(){
     var alogdata='<div class="deldiv"> <ul class="selectdellist">';
     var lilist="";

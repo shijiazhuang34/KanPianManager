@@ -13,6 +13,7 @@
     <link rel="stylesheet"  type="text/css" href="css/mdl_ext.css">
     <link rel="stylesheet" href="error/style.css" type="text/css" media="all" />
     <script type="text/javascript" src="js/jq1.11.1_min.js"></script>
+    <link rel="icon" sizes="69x69" href="img/logo.png">
 </head>
 <body>
 
