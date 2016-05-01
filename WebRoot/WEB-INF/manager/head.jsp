@@ -16,6 +16,7 @@
 		<li id="classical" class="mdl-layout__tab ${tab eq 'classical' ? 'is-active' : ''}">经典<span class="mdl-layout__tab-ripple-container mdl-js-ripple-effect" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></li>
 		<li id="getbtlist" class="mdl-layout__tab ${tab eq 'getbtlist' ? 'is-active' : ''}">找种<span class="mdl-layout__tab-ripple-container mdl-js-ripple-effect" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></li>
 		<li id="setting" class="mdl-layout__tab ${tab eq 'setting' ? 'is-active' : ''}">设置<span class="mdl-layout__tab-ripple-container mdl-js-ripple-effect" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></li>
+		<li id="clweb" class="mdl-layout__tab">草榴一下<span class="mdl-layout__tab-ripple-container mdl-js-ripple-effect" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></li>
 		<button id="add" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent" >
 			<i class="material-icons" role="presentation">add</i>
 			<span class="visuallyhidden">Add</span>

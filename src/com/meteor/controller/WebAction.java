@@ -12,6 +12,7 @@ import com.meteor.kit.ClassKit;
 import com.meteor.kit.JsonKit;
 import com.meteor.kit.PageKit;
 import com.meteor.kit.PgsqlKit;
+import com.meteor.kit.http.MultitHttpClient;
 import com.meteor.model.po.errpage;
 import com.meteor.model.po.javsrc;
 import com.meteor.model.vo.SearchQueryP;
@@ -113,6 +114,22 @@ public class WebAction extends Controller {
 			getRequest().setAttribute("errmsg","账号密码错误");
 			tologin();
 		}
+	}
+
+	@Clear
+	public void clweb(){
+		Map head=new HashMap();
+		head.put("Content-Type","application/x-www-form-urlencoded");
+		String strStream="a=g&v=0";
+		String url=PropKit.get("clweb");
+		String res= null;
+		try {
+			res = MultitHttpClient.postInStreamAndHeaders(url, strStream, head);
+		} catch (Exception e) {
+			res = "获取草榴网址异常";
+		}
+		getRequest().setAttribute("clres", res);
+		render("clweb.jsp");
 	}
 
 	public void index(){

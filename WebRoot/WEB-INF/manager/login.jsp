@@ -32,6 +32,7 @@
             <button id="login" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
                 登录
             </button>
+            <br><br><a href="clweb">草榴一下，你就知道</a>
         </form>
         <br><span>${errmsg}</span>
     </div>
