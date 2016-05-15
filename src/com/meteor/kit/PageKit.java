@@ -1058,37 +1058,39 @@ public class PageKit {
 //			String html = MultitHttpClient.post(url);
 			String html = HttpUtilKit.get503Page(url);
 			Document doc = Jsoup.parse(html);
-			Elements tabs = doc.select("table[class=lista]");
-			Elements trs = tabs.get(3).getElementsByTag("tr");
-			String host = "http://pornleech.com/";
-			for (int i = 1; i < trs.size(); i++) {
-				javsrc bean = new javsrc();
-				Element one = trs.get(i);
-				Elements as = one.select("a[onmouseover]");
-				Element a = as.get(0);
+			Elements tabs = doc.select("table[class=lista][width=100%]");
+			if(!tabs.isEmpty() && tabs.size()>0) {
+				Elements trs = tabs.get(0).getElementsByTag("tr");
+				String host = "http://pornleech.com/";
+				for (int i = 1; i < trs.size(); i++) {
+					javsrc bean = new javsrc();
+					Element one = trs.get(i);
+					Elements as = one.select("a[onmouseover]");
+					Element a = as.get(0);
 
-				String title = a.text();
-				if (title.toUpperCase().contains("CENSORED") || title.toUpperCase().contains("UNCENSORED")) {
-					continue;
-				}
-				/**得到标题**/
-				//如果在标题列表中能检索到，标记为已存在的元素
-				title = title.replaceAll("'", "''");
-				boolean flag = getSrcTitle(searchval, title);
-				boolean flag2 = checkBlockKey(title, typename);
-				if (flag || flag2) {
-					continue;
-				}
-				bean.setTitle(title);
+					String title = a.text();
+					if (title.toUpperCase().contains("CENSORED") || title.toUpperCase().contains("UNCENSORED")) {
+						continue;
+					}
+					/**得到标题**/
+					//如果在标题列表中能检索到，标记为已存在的元素
+					title = title.replaceAll("'", "''");
+					boolean flag = getSrcTitle(searchval, title);
+					boolean flag2 = checkBlockKey(title, typename);
+					if (flag || flag2) {
+						continue;
+					}
+					bean.setTitle(title);
 
-				String blink = host + a.attr("href");
-				flag = getPornleechChild(blink, bean, typename, host, title);
-				if (!flag) {
-					continue;
+					String blink = host + a.attr("href");
+					flag = getPornleechChild(blink, bean, typename, host, title);
+					if (!flag) {
+						continue;
+					}
+					bean.setIsdown("0");
+					bean.setId(StringKit.getMongoId());
+					PgsqlKit.save(ClassKit.javTableName, bean);
 				}
-				bean.setIsdown("0");
-				bean.setId(StringKit.getMongoId());
-				PgsqlKit.save(ClassKit.javTableName, bean);
 			}
 		return 0;
 	}

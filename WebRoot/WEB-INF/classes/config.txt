@@ -17,8 +17,8 @@ rootdir=/kan
 rootsavedir=javsrc/
 
 #资讯来源站点
-censoredhost=https://www.avmoo.net/cn/
-uncensoredhost=https://www.avless.net/cn/
+censoredhost=https://avmo.pw/cn/
+uncensoredhost=https://avso.pw/cn/
 westporn=http://pornleech.com/
 
 #代理配置

@@ -278,24 +278,22 @@ public class WebAction extends Controller {
 	}
 
 	private void editForm() {
-		HttpServletRequest request=getRequest();
-		ServletContext sct=getSession().getServletContext();
+		HttpServletRequest request = getRequest();
+		ServletContext sct = getSession().getServletContext();
 		//如果页面右侧参数为空，默认跳转到首页
-		String res= PageKit.getparameters(sct);
-		if(res==null){
+		String res = PageKit.getparameters(sct);
+		if (res == null) {
 			request.setAttribute("pagetype", "list");
 			request.setAttribute("tab", "newspage");
 		}
 
-		if(PageKit.ispc(request)) {
+		if (PageKit.ispc(request)) {
 			int streammode = PropKit.getInt("streammode");
 			request.setAttribute("streammode", streammode);
 			request.setAttribute("ispc", "1");
-		}else{
+		} else {
 			request.setAttribute("ispc", "0");
 		}
 	}
-
-
 
 }

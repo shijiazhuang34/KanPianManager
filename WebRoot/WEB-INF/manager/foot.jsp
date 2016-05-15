@@ -16,8 +16,8 @@
 			<input class="mdl-mega-footer--heading-checkbox" type="checkbox" checked>
 			<h1 class="mdl-mega-footer--heading">SOURCE</h1>
 			<ul class="mdl-mega-footer--link-list">
-				<li><a target="_blank" href="http://www.javmoo.xyz/cn">avmoo</a></li>
-				<li><a target="_blank" href="http://www.avless.com/cn">avsox</a></li>
+				<li><a target="_blank" href="https://avmo.pw/cn">avmoo</a></li>
+				<li><a target="_blank" href="https://avso.pw/cn">avsox</a></li>
 				<li><a target="_blank" href="http://pornleech.com">pornleech</a></li>
 				<li><a target="_blank" href="http://sukebei.nyaa.se">nyaa</a></li>
 				<li><a target="_blank" href="http://www.torrentkitty.net/search">torrentkitty</a></li>
