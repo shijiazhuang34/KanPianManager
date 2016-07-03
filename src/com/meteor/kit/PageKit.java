@@ -785,14 +785,16 @@ public class PageKit {
 	 * @category 获取bt列表
 	 */
 	private static BtList getbtlist(Element one) throws Exception{
+		String protocol="http:";
 		Elements tlistname=one.getElementsByClass("tlistname");
 		String baseurl=tlistname.get(0).getElementsByTag("a").attr("href");
-		baseurl="http:"+baseurl;
+		baseurl=protocol+baseurl;
 		String btname=tlistname.get(0).getElementsByTag("a").text();
 		String basehtml= MultitHttpClient.get(baseurl);
 		Document basedoc = Jsoup.parse(basehtml);
 		Elements basenews = basedoc.select(".viewdownloadbutton");
 		String btlink=basenews.get(0).getElementsByTag("a").attr("href");
+		btlink=protocol+btlink;
 		BtList bl=new BtList();
 		bl.setBtlink(btlink);
 		bl.setBtname(btname+".torrent");

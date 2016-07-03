@@ -20,8 +20,8 @@
 				<li><a target="_blank" href="https://avso.pw/cn">avsox</a></li>
 				<li><a target="_blank" href="http://pornleech.com">pornleech</a></li>
 				<li><a target="_blank" href="http://sukebei.nyaa.se">nyaa</a></li>
-				<li><a target="_blank" href="http://www.torrentkitty.net/search">torrentkitty</a></li>
-				<li><a target="_blank" href="http://www.bt2mag.com/search">btsow</a></li>
+				<li><a target="_blank" href="https://www.torrentkitty.tv/search">torrentkitty</a></li>
+				<li><a target="_blank" href="https://btso.pw/search">btsow</a></li>
 			</ul>
 		</div>
 		<div class="mdl-mega-footer--drop-down-section">

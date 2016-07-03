@@ -32,8 +32,8 @@ pass=rootoor
 
 #bt来源站点
 bthost=http://sukebei.nyaa.se/
-bthost2=http://www.torrentkitty.net/search/
-bthost3=http://www.bt2mag.com/search/
+bthost2=https://www.torrentkitty.tv/search/
+bthost3=https://btso.pw/search/
 
 #bt获取逻辑参数控制
 # 全部站点依次获取:all，nyaa:t1，kitty:t2，BtSow:t3
