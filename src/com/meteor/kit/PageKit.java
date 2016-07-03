@@ -787,6 +787,7 @@ public class PageKit {
 	private static BtList getbtlist(Element one) throws Exception{
 		Elements tlistname=one.getElementsByClass("tlistname");
 		String baseurl=tlistname.get(0).getElementsByTag("a").attr("href");
+		baseurl="http:"+baseurl;
 		String btname=tlistname.get(0).getElementsByTag("a").text();
 		String basehtml= MultitHttpClient.get(baseurl);
 		Document basedoc = Jsoup.parse(basehtml);
@@ -1061,7 +1062,7 @@ public class PageKit {
 			Elements tabs = doc.select("table[class=lista][width=100%]");
 			if(!tabs.isEmpty() && tabs.size()>0) {
 				Elements trs = tabs.get(0).getElementsByTag("tr");
-				String host = "http://pornleech.com/";
+				String host = westporn;
 				for (int i = 1; i < trs.size(); i++) {
 					javsrc bean = new javsrc();
 					Element one = trs.get(i);
