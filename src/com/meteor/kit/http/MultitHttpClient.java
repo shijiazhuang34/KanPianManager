@@ -1091,10 +1091,12 @@ public class MultitHttpClient {
 
 	private static void checkFileAllDownload(CloseableHttpResponse response,File f) throws Exception {
 		Header hd= response.getFirstHeader("Content-Length");
-		int length= Integer.valueOf(hd.getValue());
-		int filelength= FileUtils.readFileToByteArray(f).length;
-		if(length!=filelength){
-			throw new Exception("资源下载不完整，需重新下载");
+		if(hd!=null) {
+			int length = Integer.valueOf(hd.getValue());
+			int filelength = FileUtils.readFileToByteArray(f).length;
+			if (length != filelength) {
+				throw new Exception("资源下载不完整，需重新下载");
+			}
 		}
 	}
 	

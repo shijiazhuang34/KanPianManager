@@ -649,7 +649,7 @@ public class BaseAction extends Controller {
 			File zipf=new File(filepath+"/"+basedir+".zip");
 			if(!zipf.exists()){
 				String code=downloadSrc(fileorigpath);
-				if(!code.equals("0")){
+				if(!code.equals("0") && !code.contains("isdown")){
 					renderText(code);
 					return;
 				}
@@ -659,7 +659,7 @@ public class BaseAction extends Controller {
 			renderText(downpath);
 		}else{
 			String code=downloadSrc(fileorigpath);
-			if(!code.equals("0")){
+			if(!code.equals("0") && !code.contains("isdown")){
 				renderText(code);
 				return;
 			}
@@ -673,7 +673,7 @@ public class BaseAction extends Controller {
 		String oneid=getPara("oneid");
 		String basedir=getPara("basedir");
 		String filepath=fileorigpath;
-		filepath=filepath+"/onekeytmp/"+basedir+"/";
+		filepath=filepath+"\\onekeytmp\\"+basedir+"\\";
 		File f0 = new File(filepath);
 		if (!f0.exists()) {
 			f0.mkdir();
@@ -707,6 +707,7 @@ public class BaseAction extends Controller {
 			return "3";
 		}
 
+		boolean isDownloadOne=false;
 		String reCode="0";
 		try {
 			String[] bts = btlist.split("--");
@@ -717,6 +718,7 @@ public class BaseAction extends Controller {
 					String filename = bts[i].substring(bts[i].lastIndexOf("/") + 1, bts[i].length());
 					String filedest = filepath + filename;
 					FileUtils.copyFile(new File(fileorig), new File(filedest));
+					isDownloadOne=true;
 				} else {
 					String url = null;
 					String filedest = null;
@@ -738,10 +740,14 @@ public class BaseAction extends Controller {
 							returncode=PageKit.downloadWithStatus(url, filedest, "5");
 							if (!returncode.equals("0")) {
 								reCode = returncode;
+							}else{
+								isDownloadOne=true;
 							}
 						}else {
 							if (!returncode.equals("0")) {
 								reCode = returncode;
+							}else{
+								isDownloadOne=true;
 							}
 						}
 					}else {
@@ -757,6 +763,8 @@ public class BaseAction extends Controller {
 						String returncode=PageKit.downloadWithStatus(url, filedest, "2");
 						if(!returncode.equals("0")){
 							reCode=returncode;
+						}else{
+							isDownloadOne=true;
 						}
 					}
 
@@ -768,7 +776,9 @@ public class BaseAction extends Controller {
 			//return "2";
 			reCode="2";
 		}
-
+		if(!reCode.equals("0") && isDownloadOne==true){
+			reCode=reCode+"_isdown";
+		}
 		return reCode;
 	}
 

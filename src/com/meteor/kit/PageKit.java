@@ -1063,7 +1063,7 @@ public class PageKit {
 			Document doc = Jsoup.parse(html);
 			Elements tabs = doc.select("table[class=lista][width=100%]");
 			if(!tabs.isEmpty() && tabs.size()>0) {
-				Elements trs = tabs.get(0).getElementsByTag("tr");
+				Elements trs = tabs.get(tabs.size()-1).getElementsByTag("tr");
 				String host = westporn;
 				for (int i = 1; i < trs.size(); i++) {
 					javsrc bean = new javsrc();
