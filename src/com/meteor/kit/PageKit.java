@@ -851,14 +851,14 @@ public class PageKit {
 		String url="";
 		//根据搜索条件选择页面地址
 		if(StringUtils.isBlank(searchval)){
-			url=censoredhost+"currentPage/"+num;
+			url=censoredhost+"released/page/"+num;
 		}else{
 			if(searchval.contains("#")){
 				searchval=searchval.split("#")[1];
 				url = censoredhost + searchval +"/"+ num;
 			}else {
 				searchval = java.net.URLEncoder.encode(searchval.toLowerCase(), "UTF-8");
-				url = censoredhost + "search/" + searchval + "/currentPage/" + num;
+				url = censoredhost + "search/" + searchval + "/page/" + num;
 			}
 		}
 		//拉取页面得到doc对象
@@ -924,14 +924,14 @@ public class PageKit {
 		String url="";
 		//根据搜索条件选择页面地址
 		if(StringUtils.isBlank(searchval)){
-			url=uncensoredhost+"currentPage/"+num;
+			url=uncensoredhost+"page/"+num;
 		}else{
 			if(searchval.contains("#")){
 				searchval=searchval.split("#")[1];
 				url = uncensoredhost + searchval +"/"+ num;
 			}else {
 				searchval = java.net.URLEncoder.encode(searchval.toLowerCase(), "UTF-8");
-				url = uncensoredhost + "search/" + searchval + "/currentPage/" + num;
+				url = uncensoredhost + "search/" + searchval + "/page/" + num;
 			}
 		}
 		//拉取页面得到doc对象
