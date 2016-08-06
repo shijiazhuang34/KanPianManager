@@ -30,13 +30,13 @@ public class GetResourceTask  implements Job{
 			List<Integer> errPages=new ArrayList<Integer>();
 			int loopnum=0;
 			if(type.equals("censored")) {
-				loopnum=5;
+				loopnum=10;
 			}
 			if(type.equals("uncensored")) {
-				loopnum=3;
+				loopnum=5;
 			}
 			if(type.equals("westpron")) {
-				loopnum=5;
+				loopnum=15;
 			}
 			logger.error("正在获取"+type+"的资源,page:1--"+loopnum);
 			for(int i=1;i<=loopnum;i++){
