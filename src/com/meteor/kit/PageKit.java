@@ -1052,10 +1052,10 @@ public class PageKit {
 			int newnum = Integer.valueOf(num);
 			newnum=newnum-1;
 			if (StringUtils.isBlank(searchval)) {
-				url = westporn + "index.php?page=torrents&&category=64;65;66;77&main=68&active=1&search=&&options=0&order=3&by=2&pages=" + newnum;
+				url = westporn + "index.php?page=torrents&search=&options=0&active=0&category=64;65;66;77&pages=" + newnum;
 			} else {
 				searchval = java.net.URLEncoder.encode(searchval.toLowerCase(), "UTF-8");
-				url = westporn + "index.php?page=torrents&&main=68&active=1&search=" + searchval + "&&options=0&order=3&by=2&pages=1" + newnum;
+				url = westporn + "index.php?page=torrents&search="+searchval+"&options=0&active=0&category=64;65;66;77&pages=" + newnum;
 			}
 			//拉取页面得到doc对象
 //			String html = MultitHttpClient.post(url);

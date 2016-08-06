@@ -116,7 +116,7 @@ public class HttpUtilKit {
         // 4 js运行错误时，是否抛出异常
         webClient.getOptions().setThrowExceptionOnScriptError(false);
         // 5 设置超时
-        webClient.getOptions().setTimeout(30000);
+        webClient.getOptions().setTimeout(90000);
         // 6 设置忽略http异常
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
