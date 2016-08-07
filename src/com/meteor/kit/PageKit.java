@@ -1054,12 +1054,19 @@ public class PageKit {
 			if (StringUtils.isBlank(searchval)) {
 				url = westporn + "index.php?page=torrents&search=&options=0&active=0&category=64;65;66;77&pages=" + newnum;
 			} else {
-				searchval = java.net.URLEncoder.encode(searchval.toLowerCase(), "UTF-8");
-				url = westporn + "index.php?page=torrents&search="+searchval+"&options=0&active=0&category=64;65;66;77&pages=" + newnum;
+				if(searchval.contains("#")){
+					String category=searchval.split("#")[2];
+					String genre=searchval.split("#")[3];
+					searchval=searchval.split("#")[1];
+					url = westporn + "index.php?page=torrents&search=" + searchval + "&options=0&active=0&category="+category+"&genre="+genre+"&pages=" + newnum;
+				}else {
+					searchval = java.net.URLEncoder.encode(searchval.toLowerCase(), "UTF-8");
+					url = westporn + "index.php?page=torrents&search=" + searchval + "&options=0&active=0&category=64;65;66;77&pages=" + newnum;
+				}
 			}
 			//拉取页面得到doc对象
-//			String html = MultitHttpClient.post(url);
-			String html = HttpUtilKit.get503Page(url);
+			String html = MultitHttpClient.post(url);
+//			String html = HttpUtilKit.get503Page(url);
 			Document doc = Jsoup.parse(html);
 			Elements tabs = doc.select("table[class=lista][width=100%]");
 			if(!tabs.isEmpty() && tabs.size()>0) {
@@ -1070,7 +1077,6 @@ public class PageKit {
 					Element one = trs.get(i);
 					Elements as = one.select("a[onmouseover]");
 					Element a = as.get(0);
-
 					String title = a.text();
 					if (title.toUpperCase().contains("CENSORED") || title.toUpperCase().contains("UNCENSORED")) {
 						continue;
@@ -1084,9 +1090,13 @@ public class PageKit {
 						continue;
 					}
 					bean.setTitle(title);
+					/**得到影片类型**/
+					Elements img = one.select("img");
+					String movieType = img.get(0).attr("title");
+					movieType="W_"+movieType;
 
 					String blink = host + a.attr("href");
-					flag = getPornleechChild(blink, bean, typename, host, title);
+					flag = getPornleechChild(blink, bean, typename, host, title,movieType);
 					if (!flag) {
 						continue;
 					}
@@ -1098,12 +1108,14 @@ public class PageKit {
 		return 0;
 	}
 
-	private static boolean getPornleechChild(String blink,javsrc bean,String typename,String host,String title) throws Exception {
-//		String html=MultitHttpClient.post(blink);
-		String html = HttpUtilKit.get503Page(blink);
+	private static boolean getPornleechChild(String blink,javsrc bean,String typename,String host,String title,String mvType) throws Exception {
+		String html=MultitHttpClient.post(blink);
+//		String html = HttpUtilKit.get503Page(blink);
 		Document doc = Jsoup.parse(html);
 		Elements tabs = doc.select("table[class=lista]");
 		Elements trs=tabs.get(0).getElementsByTag("tr");
+		List tags = new ArrayList();
+		tags.add(mvType);
 		for (int i=0;i<trs.size();i++){
 			Element tr=trs.get(i);
 			Elements tds=tr.getElementsByTag("td");
@@ -1124,24 +1136,28 @@ public class PageKit {
 				}
 				if (head.equals("image")) {
 					String img = host + thistd.getElementsByTag("img").attr("src");
-					String newimg = get503Base64Img(img);
+//					String newimg = get503Base64Img(img);
+					String newimg = getBase64Img(img);
 					if (StringUtils.isNotBlank(newimg)) {
 						img = newimg;
 						bean.setIsstar("1");
 					}
 					bean.setImgsrc(img);
 				}
+				if (head.equals("genre")) {
+					Elements as=thistd.getElementsByTag("a");
+					for (Element a:as){
+						tags.add(a.text());
+					}
+				}
 				if (head.equals("description")) {
 					String description = thistd.text();
-					if(StringUtils.isBlank(description)){
+					if (StringUtils.isBlank(description)) {
 						return false;
-					}else {
+					} else {
 						bean.setSbm(description.toUpperCase());
 					}
-
-					List tags = new ArrayList();
 					tags.add(typename.toUpperCase());
-					bean.setTags(JsonKit.bean2JSON(tags));
 					bean.setTabtype(typename);
 				}
 				if (head.equals("adddate")) {
@@ -1150,6 +1166,9 @@ public class PageKit {
 					bean.setTimes(datetime);
 				}
 			}
+		}
+		if(tags.size()>0) {
+			bean.setTags(JsonKit.bean2JSON(tags));
 		}
 		return true;
 	}

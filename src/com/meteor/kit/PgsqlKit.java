@@ -59,8 +59,8 @@ public class PgsqlKit {
                         } else if (pairs.getKey().equals("tags")) {
                             String sekey=pairs.getValue().toString();
                             sekey=sekey.toUpperCase();
-                            sb.append(" and ( " + pairs.getKey().toString() + " like '%\"" + sekey + "%'");
-                            sb.append(" or sbm like '%" + sekey + "%'");
+                            sb.append(" and ( UPPER(" + pairs.getKey().toString() + ") like '%\"" + sekey + "%'");
+                            sb.append(" or UPPER(sbm) like '%" + sekey + "%'");
                             sb.append(" or UPPER(title) like '%" + sekey + "%' ) ");
                         } else {
                             sb.append(" and " + pairs.getKey().toString() + " like '%" + pairs.getValue().toString() + "%'");
