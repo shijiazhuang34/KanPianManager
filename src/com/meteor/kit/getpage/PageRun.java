@@ -213,7 +213,7 @@ class SubGetPage implements Runnable {
                 } catch (Exception e) {
                     if(!e.toString().contains("404")) {
                         pm.setErrnums(nownum);
-                        logger.error(type+" 当前请求：" + nownum +"---"+searchval+ "---" + e.toString());
+                        logger.error(type+" 当前请求：" + nownum +"---"+searchval+ "---" + e.toString(),e);
                         errpage err= new errpage(type,nownum+"",e.toString(),searchval);
                         PgsqlKit.save(ClassKit.errTableName,err);
                     }
@@ -225,7 +225,7 @@ class SubGetPage implements Runnable {
                 } catch(Throwable t) {
                     if(!t.toString().contains("404")) {
                         pm.setErrnums(nownum);
-                        logger.error(type+" 当前请求：" + nownum +"---"+searchval+ "---" + t.toString());
+                        logger.error(type+" 当前请求：" + nownum +"---"+searchval+ "---" + t.toString(),t);
                         errpage err= new errpage(type,nownum+"",t.toString(),searchval);
                         PgsqlKit.save(ClassKit.errTableName,err);
                     }

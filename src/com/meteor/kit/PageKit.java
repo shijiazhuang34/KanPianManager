@@ -1055,10 +1055,20 @@ public class PageKit {
 				url = westporn + "index.php?page=torrents&search=&options=0&active=0&category=64;65;66;77&pages=" + newnum;
 			} else {
 				if(searchval.contains("#")){
-					String category=searchval.split("#")[2];
-					String genre=searchval.split("#")[3];
-					searchval=searchval.split("#")[1];
-					url = westporn + "index.php?page=torrents&search=" + searchval + "&options=0&active=0&category="+category+"&genre="+genre+"&pages=" + newnum;
+//					String[] sps=searchval.split("#");
+					/** 形如 0#0#0#0 ,不要的用0来填充**/
+					String[] sps=StringUtils.split(searchval,"#");
+					String chooseParam=sps[0];//0就是用category,1就是用genre,这是两个互斥参数
+					String category=sps[2].equals("0")?"":sps[2];
+					String genre=sps[3].equals("0")?"":sps[3];
+					searchval=sps[1].equals("0")?"":sps[1];
+					if(chooseParam.equals("0")){
+						url = westporn + "index.php?page=torrents&search=" + searchval + "&options=0&active=0&category="+category+"&pages=" + newnum;
+					}else if(chooseParam.equals("1")){
+						url = westporn + "index.php?page=torrents&search=" + searchval + "&options=0&active=0&genre="+genre+"&pages=" + newnum;
+					}else{
+						url = westporn + "index.php?page=torrents&search=" + searchval + "&options=0&active=0&pages=" + newnum;
+					}
 				}else {
 					searchval = java.net.URLEncoder.encode(searchval.toLowerCase(), "UTF-8");
 					url = westporn + "index.php?page=torrents&search=" + searchval + "&options=0&active=0&category=64;65;66;77&pages=" + newnum;
