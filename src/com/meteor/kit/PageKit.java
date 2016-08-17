@@ -1123,6 +1123,9 @@ public class PageKit {
 //		String html = HttpUtilKit.get503Page(blink);
 		Document doc = Jsoup.parse(html);
 		Elements tabs = doc.select("table[class=lista]");
+		if(tabs.isEmpty()){
+			return false;
+		}
 		Elements trs=tabs.get(0).getElementsByTag("tr");
 		List tags = new ArrayList();
 		tags.add(mvType);
@@ -1157,6 +1160,10 @@ public class PageKit {
 				if (head.equals("genre")) {
 					Elements as=thistd.getElementsByTag("a");
 					for (Element a:as){
+						boolean flag = checkBlockKey(a.text(), typename);
+						if(flag){
+							return false;
+						}
 						tags.add(a.text());
 					}
 				}

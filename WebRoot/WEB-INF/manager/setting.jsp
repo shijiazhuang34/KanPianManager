@@ -53,7 +53,7 @@
 			读取并刷新设备号
 		</button>
 		<button id="tobase64" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-			netcdn.pw获取
+			CDN图片转BASE64
 		</button>
 		<hr>
 		<div class="settingtwo">

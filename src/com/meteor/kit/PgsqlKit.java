@@ -77,7 +77,7 @@ public class PgsqlKit {
     public static List findall(Class<?> clazz,Map p) throws Exception {
         String objName=getClazzName(clazz);
         String queryParams=addQueryParams(p);
-        List<Record> list=Db.find("select * from " + objName+queryParams +" order by id asc");
+        List<Record> list=Db.find("select * from " + objName+queryParams +" order by id desc");
         return BeanKit.copyRec(list,clazz);
     }
 
@@ -97,9 +97,9 @@ public class PgsqlKit {
             sortstr=" order by id desc";
         }else {
             if (p.getSorttype() == null || p.getSortname() == null) {
-                sortstr = " order by times desc , id asc ";
+                sortstr = " order by times desc , id desc ";
             } else {
-                sortstr = " order by " + p.getSortname() + " " + p.getSorttype()+", id asc ";
+                sortstr = " order by " + p.getSortname() + " " + p.getSorttype()+", id desc ";
             }
         }
         String sql="from " + objName + " " + queryParams + sortstr;
@@ -129,9 +129,9 @@ public class PgsqlKit {
             sortstr=" order by id desc";
         }else {
             if (p.getSorttype() == null || p.getSortname() == null) {
-                sortstr = " order by times desc , id asc ";
+                sortstr = " order by times desc , id desc ";
             } else {
-                sortstr = " order by " + p.getSortname() + " " + p.getSorttype()+", id asc ";
+                sortstr = " order by " + p.getSortname() + " " + p.getSorttype()+", id desc ";
             }
         }
         String sql="from " + objName + " " + queryParams + sortstr;

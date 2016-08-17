@@ -792,11 +792,11 @@ public class FileOperateKit {
 	
 	public static void main(String[] args) {
 		//fastCopyFile("D:\\Development\\WorkSpace\\eclipse\\babyplan_java",1,"D:\\11","D:\\Development\\WorkSpace\\eclipse\\babyplan_java","");
-		//String p1="D:\\Development\\Servers\\Tomcats\\Tomcat7-JAV\\webapps\\javsrc";
-		//String p2="G:\\DATA\\!!SSDBK\\Development\\Servers\\Tomcats\\Tomcat7-JAV\\webapps\\javsrc";
+		String p1="D:\\Development\\Servers\\Tomcats\\Tomcat7-JAV\\webapps\\javsrc";
+		String p2="F:\\DATA\\!!SSDBK\\Development\\Servers\\Tomcats\\Tomcat7-JAV\\webapps\\javsrc";
 		//String p3="D:\\Development\\文档+架构包";
 		//String p4="G:\\DATA\\!!SSDBK\\Development\\文档+架构包";
-		//fastCopyFile(p3,1,p4,p3,"");
+		fastCopyFile(p1,1,p2,p1,"");
 	}
- 
+
 }
