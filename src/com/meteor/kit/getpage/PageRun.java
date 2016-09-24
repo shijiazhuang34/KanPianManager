@@ -1,6 +1,8 @@
 package com.meteor.kit.getpage;
 
+import com.jfinal.kit.*;
 import com.meteor.kit.*;
+import com.meteor.kit.JsonKit;
 import com.meteor.model.po.errpage;
 import com.meteor.model.po.javsrc;
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +31,9 @@ public class PageRun {
     public void doit(double threadnum,String nums,String type,String fhkey) {
         if(type.equals("westpronImg")){
             doitImg(threadnum, nums, type, fhkey);
+        }else if(type.equals("westpronImgList")){
+            String[] pageArray = nums.split("p2p");
+            doitImg(threadnum, pageArray, type, fhkey);
         }else {
             logger.error("正在获取" + type + "的资源,page:" + nums + "---" + fhkey);
             pm.setBgtime(new Date().getTime());
@@ -53,6 +58,17 @@ public class PageRun {
             logger.error("正在获取" + type + "的资源,img:" + js + "---" + fhkey);
             List<String> listimg = new ArrayList<String>();
             listimg.add((String)js);
+            exec.submit(new SubGetPage(pm, barrier, listimg, type, fhkey));
+            exec.shutdown();
+        }else if(js instanceof String[]){
+            int threadnumint = 1;
+            CyclicBarrier barrier = new CyclicBarrier(threadnumint, new MainGetPage(pm, type));
+            ExecutorService exec = Executors.newFixedThreadPool(threadnumint);
+            List<String> listimg = new ArrayList<String>();
+            for (String img:(String[])js) {
+                logger.error("正在获取" + type + "的资源,img:" + img + "---" + fhkey);
+                listimg.add(img);
+            }
             exec.submit(new SubGetPage(pm, barrier, listimg, type, fhkey));
             exec.shutdown();
         }else {
@@ -192,10 +208,17 @@ class SubGetPage implements Runnable {
         if(nums!=null&&nums.size()>0){
             //List errnums=new ArrayList();
             String nownum="";
+            String errid=null;
             for (int i = 0; i <nums.size();i++) {
                 try{
                     String sstj = StringUtils.isNotBlank(searchval) ? searchval : "";//搜索条件
-                    nownum = nums.get(i);
+                    String tmpnownum = nums.get(i);
+                    if(tmpnownum.contains("errid")) {
+                        nownum = tmpnownum.split("errid")[0];
+                        errid = tmpnownum.split("errid")[1];
+                    }else{
+                        nownum = tmpnownum;
+                    }
                     if(type.equals("censored")) {
                           PageKit.getJavmoo( javtitles, sstj, nownum);
                     }
@@ -217,10 +240,12 @@ class SubGetPage implements Runnable {
                         errpage err= new errpage(type,nownum+"",e.toString(),searchval);
                         PgsqlKit.save(ClassKit.errTableName,err);
                     }
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException g) {
-                        //g.printStackTrace();
+                    if(e.toString().contains("503") || e.toString().contains("403")) {
+                        try {
+                            Thread.sleep(10000);
+                        } catch (InterruptedException g) {
+                            //g.printStackTrace();
+                        }
                     }
                 } catch(Throwable t) {
                     if(!t.toString().contains("404")) {
@@ -229,10 +254,16 @@ class SubGetPage implements Runnable {
                         errpage err= new errpage(type,nownum+"",t.toString(),searchval);
                         PgsqlKit.save(ClassKit.errTableName,err);
                     }
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException g) {
-                        //g.printStackTrace();
+                    if(t.toString().contains("503") || t.toString().contains("403")) {
+                        try {
+                            Thread.sleep(10000);
+                        } catch (InterruptedException g) {
+                            //g.printStackTrace();
+                        }
+                    }
+                } finally {
+                    if(errid!=null) {
+                        PgsqlKit.deleteById(ClassKit.errTableName, errid);
                     }
                 }
             }

@@ -14,6 +14,7 @@ import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.meteor.common.MainConfig;
+import com.meteor.kit.email.SendEmail;
 import com.meteor.kit.getpage.PageManager;
 import com.meteor.kit.getpage.PageRun;
 import com.meteor.kit.http.HttpUtilKit;
@@ -556,6 +557,9 @@ public class PageKit {
 
 			Document doc = Jsoup.parse(html);
 			Elements news = doc.select(".data-list .row");
+			if(news == null || news.isEmpty() || news.size()==0){
+				SendEmail.sendWebChangeWarn(url);
+			}
 			if(news.size()>0){
 				List<CompDate> elelist=new ArrayList();
 				for (int i = 1; i < news.size(); i++) {
@@ -632,6 +636,9 @@ public class PageKit {
 
 			Document doc = Jsoup.parse(html);
 			Elements news = doc.select("#archiveResult tr");
+			if(news == null || news.isEmpty() || news.size()==0){
+				SendEmail.sendWebChangeWarn(url);
+			}
 			if(news.size()>0){
 				if(StringUtils.isNotBlank(news.get(1).child(1).text())){
 					List<CompDate> elelist=new ArrayList();
@@ -708,6 +715,9 @@ public class PageKit {
 
 			Document doc = Jsoup.parse(html);
 			Elements news = doc.select(".tlistrow");
+			if(news == null || news.isEmpty() || news.size()==0){
+				SendEmail.sendWebChangeWarn(url);
+			}
 			if(news.size()>0){
 				List<CompDls> elelist=new ArrayList();
 				for (int i = 0; i < news.size(); i++) {
@@ -868,6 +878,9 @@ public class PageKit {
 		String html=MultitHttpClient.getInHeaders(url, head);
 		Document doc = Jsoup.parse(html);
 		Elements news = doc.select(".item");
+		if(news == null || news.isEmpty() || news.size()==0){
+			SendEmail.sendWebChangeWarn(url);
+		}
 		for (int i = 0; i <news.size(); i++) {
 			javsrc bean = new javsrc();
 			Element one = news.get(i);
@@ -941,6 +954,9 @@ public class PageKit {
 		String html=MultitHttpClient.getInHeaders(url, head);
 		Document doc = Jsoup.parse(html);
 		Elements news = doc.select(".item");
+		if(news == null || news.isEmpty() || news.size()==0){
+			SendEmail.sendWebChangeWarn(url);
+		}
 		for (int i = 0; i <news.size(); i++) {
 			javsrc bean = new javsrc();
 			Element one = news.get(i);
@@ -1075,10 +1091,13 @@ public class PageKit {
 				}
 			}
 			//拉取页面得到doc对象
-			String html = MultitHttpClient.post(url);
-//			String html = HttpUtilKit.get503Page(url);
+//			String html = MultitHttpClient.post(url);
+			String html = HttpUtilKit.get503Page(url);
 			Document doc = Jsoup.parse(html);
 			Elements tabs = doc.select("table[class=lista][width=100%]");
+			if(tabs == null || tabs.isEmpty() || tabs.size()==0){
+				SendEmail.sendWebChangeWarn(url);
+			}
 			if(!tabs.isEmpty() && tabs.size()>0) {
 				Elements trs = tabs.get(tabs.size()-1).getElementsByTag("tr");
 				String host = westporn;
@@ -1119,8 +1138,8 @@ public class PageKit {
 	}
 
 	private static boolean getPornleechChild(String blink,javsrc bean,String typename,String host,String title,String mvType) throws Exception {
-		String html=MultitHttpClient.post(blink);
-//		String html = HttpUtilKit.get503Page(blink);
+//		String html=MultitHttpClient.post(blink);
+		String html = HttpUtilKit.get503Page(blink);
 		Document doc = Jsoup.parse(html);
 		Elements tabs = doc.select("table[class=lista]");
 		if(tabs.isEmpty()){
@@ -1149,8 +1168,8 @@ public class PageKit {
 				}
 				if (head.equals("image")) {
 					String img = host + thistd.getElementsByTag("img").attr("src");
-//					String newimg = get503Base64Img(img);
-					String newimg = getBase64Img(img);
+					String newimg = get503Base64Img(img);
+//					String newimg = getBase64Img(img);
 					if (StringUtils.isNotBlank(newimg)) {
 						img = newimg;
 						bean.setIsstar("1");
@@ -1235,6 +1254,9 @@ public class PageKit {
 	}
 
 	private static String get503Base64Img(String imgurl){
+//		if(true){
+//			return getBase64Img(imgurl);
+//		}
 		String img = "";
 		imgurl = PageKit.replace20All(imgurl);
 		String res =HttpUtilKit.get503Resource(imgurl);
@@ -1291,7 +1313,7 @@ public class PageKit {
 		SearchQueryP sp=new SearchQueryP();
 		Map p=new LinkedHashMap();
 		p.put("tabtype","westporn");
-		p.put("ISNULL_isstar","000");
+		p.put("ISNULL_isstar","000");//有去空值得判断，所以要填充000
 		p.put("LIKE_imgsrc","/torrentimg/");
 		sp.setParameters(p);
 		sp.setNowpage(1);

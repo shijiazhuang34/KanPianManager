@@ -49,3 +49,10 @@ mbpagesize=20
 clweb=http://get.xunfs.com/app/listapp.php
 #是否只显示今天之内的数据（仅作用于客户端，1：true，0：false）
 showintoday=1
+
+#email配置
+mail.smtp.serverhost=smtp.aliyun.com
+mail.smtp.serverport=25
+mail.username=justlikemaki@aliyun.com
+mail.password=LEppjustmaki
+mail.fromAddress=justlikemaki@aliyun.com

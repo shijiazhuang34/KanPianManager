@@ -10,12 +10,15 @@ import com.meteor.common.MainConfig;
 import com.meteor.kit.DateKit;
 import com.meteor.kit.JsonKit;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.ssl.TrustStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,6 +109,13 @@ public class HttpUtilKit {
     }
 
     private static Page get503(String url) throws Exception{
+        return get503(url,1);
+    }
+
+    private static Page get503(String url,int count) throws Exception{
+        if(count == 6){
+            throw  new Exception("重试5次失败，加入定时任务："+url);
+        }
         WebClient webClient = new WebClient();
         // 1 启动JS
         webClient.getOptions().setJavaScriptEnabled(true);
@@ -119,11 +129,17 @@ public class HttpUtilKit {
         webClient.getOptions().setTimeout(90000);
         // 6 设置忽略http异常
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        // 7 使用不安全的ssl链接
+        webClient.getOptions().setUseInsecureSSL(true);
 
         Page htmlPage = webClient.getPage(url);
         if (htmlPage.getWebResponse().getStatusCode() == 503) {
-            // 等待JS驱动dom完成获得还原后的网页
-            webClient.waitForBackgroundJavaScript(10000);
+            if(url.contains(".jpg")){
+                webClient.waitForBackgroundJavaScript(30000);
+            }else {
+                // 等待JS驱动dom完成获得还原后的网页
+                webClient.waitForBackgroundJavaScript(20000);
+            }
             // 禁用js驱动
             webClient.getOptions().setJavaScriptEnabled(false);
             htmlPage = webClient.getPage(url);
@@ -131,7 +147,8 @@ public class HttpUtilKit {
                 logger.error("503递归：" + url);
                 webClient.close();
                 webClient=null;
-                return get503(url);
+                count+=1;
+                return get503(url,count);
             }
         }
         if (htmlPage.getWebResponse().getStatusCode() == 404){
@@ -170,5 +187,13 @@ public class HttpUtilKit {
         if(length!=filelength){
             throw new Exception("资源下载不完整，需重新下载");
         }
+    }
+}
+class HtmlAnyTrustStrategy implements TrustStrategy {
+    @Override
+    public boolean isTrusted(X509Certificate[] paramArrayOfX509Certificate,
+                             String paramString) throws CertificateException {
+        // TODO Auto-generated method stub
+        return true;
     }
 }
