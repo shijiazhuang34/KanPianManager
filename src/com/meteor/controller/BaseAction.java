@@ -432,6 +432,7 @@ public class BaseAction extends Controller {
 			for(int i=0;i<inelist.size();i++){
 				InExl ine=inelist.get(i);
 				javsrc js=new javsrc();
+				js.setIsstar("1");
 				js.setId(StringKit.getMongoId());
 				js.setTimes(DateKit.getStringDate());
 				js.setTitle(ine.getParentDirMc());

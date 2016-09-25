@@ -42,7 +42,6 @@ public class PgsqlKit {
             while (it.hasNext())
             {
                 Map.Entry pairs = (Map.Entry)it.next();
-                //System.out.println(pairs.getKey() + " = " + pairs.getValue());
                 if(pairs.getValue()!=null&& StringUtils.isNotBlank(pairs.getValue() + "")){
                     String opkey=pairs.getKey().toString().split("_")[0];
                     if(operator.contains(opkey)){

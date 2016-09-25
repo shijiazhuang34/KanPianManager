@@ -56,3 +56,5 @@ mail.smtp.serverport=25
 mail.username=justlikemaki@aliyun.com
 mail.password=LEppjustmaki
 mail.fromAddress=justlikemaki@aliyun.com
+
+img503Sql=select * from javsrc where tabtype = 'westporn' and isstar is null and imgsrc like '%/torrentimg/%'
