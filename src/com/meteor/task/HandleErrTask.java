@@ -1,6 +1,7 @@
 package com.meteor.task;
 
 import com.meteor.kit.ClassKit;
+import com.meteor.kit.PageKit;
 import com.meteor.kit.PgsqlKit;
 import com.meteor.kit.getpage.PageManager;
 import com.meteor.kit.getpage.PageRun;
@@ -52,6 +53,7 @@ public class HandleErrTask implements Job{
 	 */
 	private void reFechPage(){
 		try {
+			PageKit.delrepeatedErrpage();//清除重复项
 			Map<String,String> pageMap = new HashMap<String,String>();
 			List<errpage> errpages = PgsqlKit.findall(ClassKit.errClass, null);
 			for (errpage page:errpages){

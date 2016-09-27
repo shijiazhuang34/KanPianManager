@@ -916,7 +916,10 @@ public class PageKit {
 			String blink=a.get(0).attr("href");
 
 			Thread.sleep(3000);
-			getJavsChild(blink, bean, typename);
+			flag = getJavsChild(blink, bean, typename);
+			if (!flag) {
+				continue;
+			}
 
 			bean.setTabtype(typename);
 			bean.setIsdown("0");
@@ -976,7 +979,8 @@ public class PageKit {
 			//如果在标题列表中能检索到，
 			title=title.replaceAll("'","''");
 			boolean flag=getSrcTitle(searchval,title);
-			if (flag) {
+			boolean flag2=checkBlockKey(title,typename);
+			if (flag || flag2) {
 				continue;
 			}
 			bean.setTitle(title);
@@ -989,7 +993,10 @@ public class PageKit {
 			/**得到子链接**/
 			Elements a = one.getElementsByTag("a");
 			String blink=a.get(0).attr("href");
-			getJavsChild(blink, bean, typename);
+			flag = getJavsChild(blink, bean, typename);
+			if (!flag) {
+				continue;
+			}
 
 			bean.setTabtype(typename);
 			bean.setIsdown("0");
@@ -999,7 +1006,7 @@ public class PageKit {
 		return 0;
 	}
 
-	private static void getJavsChild(String blink,javsrc bean,String typename) throws Exception {
+	private static boolean getJavsChild(String blink,javsrc bean,String typename) throws Exception {
 		if(!blink.startsWith("http")){
 			blink="http:"+blink;
 		}
@@ -1040,9 +1047,17 @@ public class PageKit {
 				if(infop.indexOf(p)==(infop.size()-1)){
 					Elements plist=p.getElementsByTag("a");
 					for(Element pl:plist){
+						boolean flag = checkBlockKey(pl.text(), typename);
+						if(flag){
+							return false;
+						}
 						tags.add(pl.text().toUpperCase());
 					}
 				}else {
+					boolean flag = checkBlockKey(p.text(), typename);
+					if(flag){
+						return false;
+					}
 					tags.add(p.text().toUpperCase());
 				}
 			}
@@ -1052,6 +1067,7 @@ public class PageKit {
 			tags.add(p.text());
 		}
 		bean.setTags(JsonKit.bean2JSON(tags));
+		return true;
 	}
 
 
@@ -1245,7 +1261,7 @@ public class PageKit {
 			Map.Entry entry = (Map.Entry) it.next();
 			String value = (String) entry.getValue();
 			String lowtitle = title.toLowerCase();
-			if(lowtitle.contains(value)){
+			if(lowtitle.contains(value.toLowerCase())){
 				flag=true;
 				break;
 			}
@@ -1381,10 +1397,17 @@ public class PageKit {
 	}
 
 	public static void delrepeated(){
-		String sql="delete from javsrc j1 where j1.id in (select a.id from javsrc a where a.title in  (select title from javsrc group by title having count(*) > 1)) \n" +
+		String sql="delete from javsrc j1 where j1.id in (select a.id from javsrc a where a.title in  (select title from javsrc group by title having count(*) > 1)) " +
 				"and j1.id not in (select max(id) from javsrc group by title having count(*) > 1)";
 		PgsqlKit.excuteSql(sql);
-		logger.error("清除重复项完毕");
+		logger.error("清除javsrc重复项完毕");
+	}
+
+	public static void delrepeatedErrpage(){
+		String sql="delete from errpage where id not in " +
+				"(select max(id) from errpage GROUP BY TYPE,num,searchkey)";
+		PgsqlKit.excuteSql(sql);
+		logger.error("清除errpage重复项完毕");
 	}
 
 	public static void setpc(HttpServletRequest request){
