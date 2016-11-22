@@ -1,27 +1,36 @@
 package com.meteor.kit.http;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.security.KeyStore;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -39,12 +48,19 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpCoreContext;
 import org.apache.http.ssl.SSLContexts;
+import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jfinal.kit.Prop;
 import com.jfinal.kit.PropKit;
+import com.meteor.kit.DateKit;
+import com.meteor.kit.JsonKit;
 
 /**
  * httpclient 帮助类
@@ -83,14 +99,15 @@ public class HttpClientHelp {
 	public static String HTTP_ENCODING = "UTF-8";
 
 	private static PoolingHttpClientConnectionManager connectionManager;
+	private static CloseableHttpClient httpClient = null;
 
 	static {
 	
 		try {
-			// 需要通过以下代码声明对https连接支持
+			// 需要通过以下代码声明对https连接支持//忽略ssl证书
 			KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-			SSLContext sslcontext = SSLContexts.custom().loadTrustMaterial(trustStore, new AnyTrustStrategy()).build();
-			HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+			SSLContext sslcontext = SSLContexts.custom().loadTrustMaterial(trustStore, new HttpClientHelpTrustStrategy()).build();
+			HostnameVerifier hostnameVerifier = new TrustAnyHostnameVerifier();
 			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, hostnameVerifier);
 			Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
 					.register("http", PlainConnectionSocketFactory.getSocketFactory())
@@ -171,12 +188,16 @@ public class HttpClientHelp {
 		logger.info(String.format("发送请求:%s:%s | %s ", requestBase.getURI().getHost(), requestBase.getURI().getPort(), requestBase.getURI().toURL()));
 	}
 
-	private static void validateResponse(HttpResponse response, HttpRequestBase requestBase, Long timeSpan) throws MalformedURLException {
+	private static void validateResponse(CloseableHttpResponse response, HttpRequestBase requestBase, Long timeSpan) throws Exception {
 		StatusLine status = response.getStatusLine();
 		logger.info(String.format(" %s:%s | %s | %s | %s", requestBase.getURI().getHost(), requestBase.getURI().getPort(), status.getStatusCode(), timeSpan, requestBase.getURI().toURL()));
+		if (response.getStatusLine().getStatusCode() >= 400) {
+			response.close();
+			throw new IOException("Got bad response, error code = "+ response.getStatusLine().getStatusCode());
+		}
 	}
 	
-	private static String getResult(String url, String encoding, HttpResponse response) throws Exception {
+	private static String getResult(String url, String encoding, CloseableHttpResponse response) throws Exception {
 		String responseContent = "";
 		HttpEntity entity = response.getEntity();
 		if (entity == null) {
@@ -194,15 +215,16 @@ public class HttpClientHelp {
 		// 可选的, 关闭自定义秒内不活动的连接
 		connectionManager.closeIdleConnections(CLOSE_INACTIVE_CONNECTIONS_SECONDS, TimeUnit.SECONDS);
 		
-		CloseableHttpClient httpclient=null;
-		if(PropKit.get("isproxy").equals("1")){
-			String host= PropKit.get("host");
-			int port=PropKit.getInt("port");
-			httpclient = HttpClients.custom().setProxy(new HttpHost(host, port)).setConnectionManager(connectionManager).build();
-		}else{
-			httpclient = HttpClients.custom().setConnectionManager(connectionManager).build();
+		if(httpClient == null){
+			if(PropKit.get("isproxy").equals("1")){
+				String host= PropKit.get("host");
+				int port=PropKit.getInt("port");
+				httpClient = HttpClients.custom().setProxy(new HttpHost(host, port)).setConnectionManager(connectionManager).build();
+			}else{
+				httpClient = HttpClients.custom().setConnectionManager(connectionManager).build();
+			}
 		}
-		return httpclient;
+		return httpClient;
 	}
 	
 	private static RequestConfig getRequestConfig(boolean needCookie){
@@ -213,6 +235,8 @@ public class HttpClientHelp {
 				.setConnectionRequestTimeout(DEFAULT_CONN_TIMEOUT_MILLISECONDS);
 		if(needCookie){
 			unbRequestConfig.setCookieSpec(CookieSpecs.STANDARD_STRICT);
+		}else{
+			unbRequestConfig.setCookieSpec(CookieSpecs.IGNORE_COOKIES);
 		}
 		return unbRequestConfig.build();
 	}
@@ -225,8 +249,8 @@ public class HttpClientHelp {
 			}
 			StopWatch watch = new StopWatch();
 			watch.start();
-			CloseableHttpClient httpClient = getHttpClient();
-			HttpResponse response = httpClient.execute(request);
+			httpClient = getHttpClient();
+			CloseableHttpResponse response = httpClient.execute(request);
 			watch.stop();
 			validateResponse(response, request, watch.getTime());
 			return getResult(url, resultEncoding, response);
@@ -277,6 +301,10 @@ public class HttpClientHelp {
 				httpPost.setHeader(entry.getKey(), entry.getValue());
 			}
 		}
+		//保持长连接必须设置发送内容长度
+		if(keepAlive){
+			httpPost.setHeader("Content-Length",String.valueOf(httpPost.getEntity().getContentLength()));
+		}
 		httpPost.setConfig(getRequestConfig(needCookie));
 		return doRequest(url, httpPost, resultEncoding, keepAlive);
 	}
@@ -314,5 +342,248 @@ public class HttpClientHelp {
 		}
 		httpget.setConfig(getRequestConfig(needCookie));
 		return doRequest(url, httpget, resultEncoding, keepAlive);
+	}
+	
+	//手动释放请求链接
+	public static void releaseMethod(HttpRequestBase hr) {
+		if(hr!=null){
+			hr.releaseConnection();
+		}
+	}
+	
+	//手动关闭http客户端
+	public static boolean closeHttpClient(){
+		try {
+			if(httpClient != null){
+				httpClient.close();
+				httpClient = null;
+			}
+			return true;
+		} catch (Exception e) {
+			logger.error("关闭httpclient异常",e);
+			return false;
+		}
+	}
+	
+	public static String getCookie(String url,Map<String, String> params,Map<String, String> headers) throws Exception {
+		HttpGet httpget = new HttpGet();
+		try{
+			//增加参数
+			URIBuilder builder = new URIBuilder(url);
+			if (params != null && !params.isEmpty()) {
+				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+				for (Map.Entry<String, String> entry : params.entrySet()) {
+					nameValuePairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+				}
+				builder.setCustomQuery(URLEncodedUtils.format(nameValuePairs, HTTP_ENCODING));
+			}
+			httpget = new HttpGet(builder.build());
+			//重设或新增header
+			if (headers != null && !headers.isEmpty()) {
+				for (Map.Entry<String, String> entry : headers.entrySet()) {
+					httpget.setHeader(entry.getKey(), entry.getValue());
+				}
+			}
+			httpget.setConfig(getRequestConfig(Boolean.FALSE));
+			httpClient = getHttpClient();
+			CloseableHttpResponse response=httpClient.execute(httpget);
+			response.close();
+			StringBuffer sb=new StringBuffer();
+		    Header[] setCookie = response.getHeaders("Set-Cookie");
+		    for(Header ck:setCookie){		    
+		    	String cook=ck.getValue();
+		    	String keyval=cook.split(";")[0];
+		    	String key=keyval.split("=")[0];
+		    	String val=keyval.split("=")[1];
+		    	sb.append(key+"="+val+";");
+		    }
+			return sb.toString();
+		} finally {
+			httpget.abort();
+			httpget.releaseConnection();
+		}
+	}
+	
+	public static String getReHost(String url,Map<String, String> headers) throws Exception {
+		HttpGet httpget = new HttpGet(url);
+		try{
+			//重设或新增header
+			if (headers != null && !headers.isEmpty()) {
+				for (Map.Entry<String, String> entry : headers.entrySet()) {
+					httpget.setHeader(entry.getKey(), entry.getValue());
+				}
+			}
+			httpget.setConfig(getRequestConfig(Boolean.FALSE));
+			HttpContext httpContext = new BasicHttpContext();
+			httpClient = getHttpClient();
+			CloseableHttpResponse response=httpClient.execute(httpget, httpContext);
+			HttpHost targetHost = (HttpHost)httpContext.getAttribute(HttpCoreContext.HTTP_TARGET_HOST);
+			response.close();
+			return targetHost.getHostName();
+		} finally {
+			httpget.abort();
+			httpget.releaseConnection();
+		}
+	}
+	
+	public static Map<String,Object> getLengthAngName(String url) throws Exception {
+		HttpGet httpget = new HttpGet(url);
+		try{
+			httpget.setConfig(getRequestConfig(Boolean.FALSE));
+			HttpContext httpContext = new BasicHttpContext();
+			httpClient = getHttpClient();
+			CloseableHttpResponse response=httpClient.execute(httpget, httpContext);
+			HttpEntity entity=response.getEntity();
+			String ctype=entity.getContentType().getValue();
+			String filename= getFileName(response, entity);
+			
+			//Content-Length   		
+			long contentLength=entity.getContentLength();
+			Map<String,Object> mp=new HashMap<String,Object>();
+			mp.put("contentLength", contentLength);
+			mp.put("filename", filename);
+			mp.put("ctype", ctype);
+			return mp;
+		} finally {
+			httpget.abort();
+			httpget.releaseConnection();
+		}
+	}
+
+	protected static String getFileName(CloseableHttpResponse response,HttpEntity entity){
+		String filename=null;
+		String ctype=entity.getContentType().getValue();
+		if(!ctype.contains("text/html")){
+			Header hd= response.getFirstHeader("Content-Disposition");
+			if(hd!=null){
+				filename=hd.getValue(); //hd.toString().split(";")[1];
+				filename=filename.substring(filename.indexOf("\"")+1, filename.lastIndexOf("\""));
+				filename=DateKit.getStringTodayB()+"_"+filename;
+			}else{
+				filename=DateKit.getStringTodayB()+"_"+DateKit.buildRandom(5);
+				String filetype=".*";
+				try {
+					Prop p=PropKit.getProp("contenttype.properties");
+					filetype= p.get(ctype);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				filename=filename+filetype;
+			}
+		}
+		return filename;
+	}
+	
+	private static void checkFileAllDownload(CloseableHttpResponse response,File f) throws Exception {
+		Header hd= response.getFirstHeader("Content-Length");
+		if(hd!=null) {
+			int length = Integer.valueOf(hd.getValue());
+			int filelength = FileUtils.readFileToByteArray(f).length;
+			if (length != filelength) {
+				throw new Exception("资源下载不完整，需重新下载");
+			}
+		}
+	}
+	
+	private static String FileDownload(CloseableHttpResponse response,String filedest,String filename,int isdir) {
+		HttpEntity entity=response.getEntity();		
+		Map res=new HashMap();
+		String fullpath=null;
+		if(isdir==1){
+			fullpath=filedest+"/"+filename;
+		}else{
+			fullpath=filedest;
+		}
+		try {
+			File f=new File(fullpath);
+			if(!f.exists()){
+				InputStream is=null;
+				Header header =  entity.getContentEncoding();
+				is=entity.getContent();
+				FileUtils.copyInputStreamToFile(is, f);
+				checkFileAllDownload(response,f);
+			}			
+			res.put("status", 0);
+			res.put("filepath", f.toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error(e.toString());
+			res.put("status", -1);
+			res.put("errmsg", e.toString());
+		}
+		return JsonKit.map2JSON(res);
+	}
+	
+	public static String getFileDownByPath(String url,String filedest,int isdir,Map<String, String> headers) {
+		Map resp=new HashMap();
+		String res="";
+		HttpGet httpget = new HttpGet(url);
+		try{
+			//重设或新增header
+			if (headers != null && !headers.isEmpty()) {
+				for (Map.Entry<String, String> entry : headers.entrySet()) {
+					httpget.setHeader(entry.getKey(), entry.getValue());
+				}
+			}
+			httpget.setConfig(getRequestConfig(Boolean.FALSE));
+			httpClient = getHttpClient();
+			CloseableHttpResponse response=httpClient.execute(httpget);
+			HttpEntity entity = response.getEntity();
+			String filename=getFileName(response, entity);
+			if(StringUtils.isNotBlank(filename)){
+				res=FileDownload( response, filedest, filename, isdir);
+			}else{
+				String ctype=entity.getContentType().getValue();
+				resp.put("status", -2);
+				resp.put("errmsg", ctype+"_"+"不是可下载文件类型");
+				res=JsonKit.map2JSON(resp);
+			}	
+			response.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+			if(!e.toString().contains("404")) {
+				logger.error("下载文件" + e.toString());
+			}
+			resp.put("status", -1);
+			resp.put("errmsg", e.toString());
+			res=JsonKit.map2JSON(resp);
+		}  catch(Throwable t) {
+			if(!t.toString().contains("404")) {
+				logger.error("下载文件" + t.toString());
+			}
+			resp.put("status", -1);
+			resp.put("errmsg", t.toString());
+			res=JsonKit.map2JSON(resp);
+		} finally {
+			httpget.abort();
+			httpget.releaseConnection();
+		}
+		return res;
+	}
+
+	public static String getFileDownByPath(String url,String filedest,int isdir) {
+		 return getFileDownByPath( url, filedest, isdir, null);
+	}
+	
+	public static String getFileDownByPathDir(String url,String filedest) {
+		 return getFileDownByPath( url, filedest, 1, null);
+	}
+
+	public static String getFileDownByPathFull(String url,String filedest) {
+		 return getFileDownByPath( url, filedest, 0, null);
+	}
+}
+
+class HttpClientHelpTrustStrategy implements TrustStrategy {
+	@Override
+	public boolean isTrusted(X509Certificate[] paramArrayOfX509Certificate,
+			String paramString) throws CertificateException {
+		return true;
+	}
+}
+
+class TrustAnyHostnameVerifier implements HostnameVerifier {
+	public boolean verify(String hostname, SSLSession session) {
+		return true;
 	}
 }
