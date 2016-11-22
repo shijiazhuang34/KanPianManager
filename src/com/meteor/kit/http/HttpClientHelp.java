@@ -93,14 +93,17 @@ public class HttpClientHelp {
 	
 	private static final int CLOSE_INACTIVE_CONNECTIONS_SECONDS = 30;
 
-	private static final int DEFAULT_MAX_TOTAL_CONNECTIONS = 500;
-	private static final int DEFAULT_MAX_CONNECTIONS_PER_ROUTE = 75;
+	private static final int DEFAULT_MAX_TOTAL_CONNECTIONS = 100;
+	private static final int DEFAULT_MAX_CONNECTIONS_PER_ROUTE = 25;
 
 	public static String HTTP_ENCODING = "UTF-8";
 
 	private static PoolingHttpClientConnectionManager connectionManager;
 	private static CloseableHttpClient httpClient = null;
 
+	private static PoolingHttpClientConnectionManager other_connectionManager;
+	private static CloseableHttpClient other_httpClient = null;
+	
 	static {
 	
 		try {
@@ -209,6 +212,16 @@ public class HttpClientHelp {
 		return responseContent;
 	}
 
+	private static CloseableHttpClient getOtherHttpClient() {
+		other_connectionManager.closeExpiredConnections();
+		// 可选的, 关闭自定义秒内不活动的连接
+		other_connectionManager.closeIdleConnections(CLOSE_INACTIVE_CONNECTIONS_SECONDS, TimeUnit.SECONDS);
+		
+		if(other_httpClient == null){
+			other_httpClient = HttpClients.custom().setConnectionManager(other_connectionManager).build();
+		}
+		return other_httpClient;
+	}
 
 	private static CloseableHttpClient getHttpClient() {
 		connectionManager.closeExpiredConnections();
@@ -365,6 +378,20 @@ public class HttpClientHelp {
 		}
 	}
 	
+	//手动关闭http客户端
+	public static boolean closeOtherHttpClient(){
+		try {
+			if(other_httpClient != null){
+				other_httpClient.close();
+				other_httpClient = null;
+			}
+			return true;
+		} catch (Exception e) {
+			logger.error("关闭httpclient异常",e);
+			return false;
+		}
+	}
+	
 	public static String getCookie(String url,Map<String, String> params,Map<String, String> headers) throws Exception {
 		HttpGet httpget = new HttpGet();
 		try{
@@ -385,8 +412,8 @@ public class HttpClientHelp {
 				}
 			}
 			httpget.setConfig(getRequestConfig(Boolean.FALSE));
-			httpClient = getHttpClient();
-			CloseableHttpResponse response=httpClient.execute(httpget);
+			other_httpClient = getOtherHttpClient();
+			CloseableHttpResponse response=other_httpClient.execute(httpget);
 			response.close();
 			StringBuffer sb=new StringBuffer();
 		    Header[] setCookie = response.getHeaders("Set-Cookie");
@@ -431,8 +458,8 @@ public class HttpClientHelp {
 		try{
 			httpget.setConfig(getRequestConfig(Boolean.FALSE));
 			HttpContext httpContext = new BasicHttpContext();
-			httpClient = getHttpClient();
-			CloseableHttpResponse response=httpClient.execute(httpget, httpContext);
+			other_httpClient = getOtherHttpClient();
+			CloseableHttpResponse response=other_httpClient.execute(httpget, httpContext);
 			HttpEntity entity=response.getEntity();
 			String ctype=entity.getContentType().getValue();
 			String filename= getFileName(response, entity);
@@ -526,8 +553,8 @@ public class HttpClientHelp {
 				}
 			}
 			httpget.setConfig(getRequestConfig(Boolean.FALSE));
-			httpClient = getHttpClient();
-			CloseableHttpResponse response=httpClient.execute(httpget);
+			other_httpClient = getOtherHttpClient();
+			CloseableHttpResponse response=other_httpClient.execute(httpget);
 			HttpEntity entity = response.getEntity();
 			String filename=getFileName(response, entity);
 			if(StringUtils.isNotBlank(filename)){
