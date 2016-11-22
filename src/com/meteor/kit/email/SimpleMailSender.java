@@ -8,11 +8,9 @@ import javax.mail.Message;
 import javax.mail.MessagingException;    
 import javax.mail.Multipart;    
 import javax.mail.Session;    
-import javax.mail.Transport;    
-import javax.mail.internet.InternetAddress;    
-import javax.mail.internet.MimeBodyPart;    
-import javax.mail.internet.MimeMessage;    
-import javax.mail.internet.MimeMultipart;    
+import javax.mail.Transport;
+import javax.mail.internet.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
   
@@ -41,14 +39,14 @@ public class SimpleMailSender  {
 	      // 根据session创建一个邮件消息    
 	      Message mailMessage = new MimeMessage(sendMailSession);    
 	      // 创建邮件发送者地址    
-	      Address from = new InternetAddress(mailInfo.getFromAddress());    
+	      Address from = new InternetAddress(mailInfo.getFromAddress());
 	      // 设置邮件消息的发送者    
-	      mailMessage.setFrom(from);    
+	      mailMessage.setFrom(from);
 	      // 创建邮件的接收者地址，并设置到邮件消息中    
 	      Address to = new InternetAddress(mailInfo.getToAddress());    
 	      mailMessage.setRecipient(Message.RecipientType.TO,to);    
 	      // 设置邮件消息的主题    
-	      mailMessage.setSubject(mailInfo.getSubject());    
+	      mailMessage.setSubject(MimeUtility.encodeText(mailInfo.getSubject(), "UTF-8", null));
 	      // 设置邮件消息发送的时间    
 	      mailMessage.setSentDate(new Date());    
 	      // 设置邮件消息的主要内容    
@@ -57,7 +55,7 @@ public class SimpleMailSender  {
 	      // 发送邮件    
 	      Transport.send(mailMessage);   
 	      return true;    
-      } catch (MessagingException ex) {    
+      } catch (Exception ex) {
     	  logger.error("",ex);   
       }    
       return false;    
