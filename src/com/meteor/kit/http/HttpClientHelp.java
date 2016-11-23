@@ -97,7 +97,9 @@ public class HttpClientHelp {
 	private static final int DEFAULT_MAX_CONNECTIONS_PER_ROUTE = 25;
 
 	public static String HTTP_ENCODING = "UTF-8";
-
+	//文件下载根目录
+	private static final String fileroot=System.getProperty("catalina.home") + "/temp/download/";
+	
 	private static PoolingHttpClientConnectionManager connectionManager;
 	private static CloseableHttpClient httpClient = null;
 
@@ -126,6 +128,10 @@ public class HttpClientHelp {
 	   
 	}
 	
+	public static String getFileroot() {
+		return fileroot;
+	}
+
 	public static String doPost(String url) throws Exception {
 		return doPost(url, Boolean.FALSE);
 	}
@@ -166,6 +172,14 @@ public class HttpClientHelp {
 		return doPost(url, null, null, params, headers, encoding,encoding, needCookie, keepAlive);
 	}
 	
+	public static String doPost(String url, Map<String, String> headers) throws Exception {
+		return doPost(url, null, headers);
+	}
+	
+	public static String doPost(String url, Map<String, String> params, Map<String, String> headers) throws Exception {
+		return doPost(url, null, null, params, headers, HTTP_ENCODING,HTTP_ENCODING, Boolean.FALSE, Boolean.FALSE);
+	}
+	
 	public static String doGet(String url) throws Exception {
 		return doGet(url, Boolean.FALSE);
 	}
@@ -186,6 +200,13 @@ public class HttpClientHelp {
 		return doGet(url, params, null,encoding,encoding, needCookie, keepAlive);
 	}
 	
+	public static String doGet(String url, Map<String, String> headers) throws Exception {
+		return doGet(url, null, headers);
+	}
+	
+	public static String doGet(String url, Map<String, String> params, Map<String, String> headers) throws Exception {
+		return doGet(url, params, headers,HTTP_ENCODING,HTTP_ENCODING, Boolean.FALSE, Boolean.FALSE);
+	}
 	
 	private static void logUrl(HttpRequestBase requestBase) throws MalformedURLException {
 		logger.info(String.format("发送请求:%s:%s | %s ", requestBase.getURI().getHost(), requestBase.getURI().getPort(), requestBase.getURI().toURL()));
@@ -212,7 +233,7 @@ public class HttpClientHelp {
 		return responseContent;
 	}
 
-	private static CloseableHttpClient getOtherHttpClient() {
+	public static CloseableHttpClient getOtherHttpClient() {
 		other_connectionManager.closeExpiredConnections();
 		// 可选的, 关闭自定义秒内不活动的连接
 		other_connectionManager.closeIdleConnections(CLOSE_INACTIVE_CONNECTIONS_SECONDS, TimeUnit.SECONDS);
@@ -240,7 +261,7 @@ public class HttpClientHelp {
 		return httpClient;
 	}
 	
-	private static RequestConfig getRequestConfig(boolean needCookie){
+	public static RequestConfig getRequestConfig(boolean needCookie){
 		Builder unbRequestConfig = RequestConfig.custom()
 				.setMaxRedirects(3)//设置最大跳转数
 				.setSocketTimeout(DEFAULT_READ_TIMEOUT_MILLISECONDS)

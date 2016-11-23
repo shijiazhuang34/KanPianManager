@@ -2,12 +2,28 @@ package com.meteor.kit;
 
 import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.lang.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jfinal.kit.Prop;
 import com.jfinal.kit.PropKit;
@@ -17,18 +33,14 @@ import com.meteor.common.MainConfig;
 import com.meteor.kit.email.SendEmail;
 import com.meteor.kit.getpage.PageManager;
 import com.meteor.kit.getpage.PageRun;
+import com.meteor.kit.http.HttpClientHelp;
 import com.meteor.kit.http.HttpUtilKit;
-import com.meteor.kit.http.MultitHttpClient;
-import com.meteor.model.vo.*;
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.meteor.model.po.javsrc;
+import com.meteor.model.vo.BtList;
+import com.meteor.model.vo.CompDate;
+import com.meteor.model.vo.CompDls;
+import com.meteor.model.vo.DateVo;
+import com.meteor.model.vo.SearchQueryP;
 
 public class PageKit {
 
@@ -553,7 +565,7 @@ public class PageKit {
 		try {
 			String bthost=PropKit.get("bthost3");
 			String url=bthost+java.net.URLEncoder.encode(sv,"UTF-8");
-			String html=MultitHttpClient.get(url);
+			String html=HttpClientHelp.doGet(url);
 
 			Document doc = Jsoup.parse(html);
 			Elements news = doc.select(".data-list .row");
@@ -612,7 +624,7 @@ public class PageKit {
 	private static BtList getbtlist3(Element one) throws Exception{
 		String btname=one.child(0).attr("title");
 		String baseurl=one.child(0).attr("href");
-		String basehtml= MultitHttpClient.get(baseurl);
+		String basehtml= HttpClientHelp.doGet(baseurl);
 		Document basedoc = Jsoup.parse(basehtml);
 		Elements basenews = basedoc.select(".magnet-link");
 		String btlink=basenews.get(0).text();
@@ -632,7 +644,7 @@ public class PageKit {
 		try {
 			String bthost=PropKit.get("bthost2");
 			String url=bthost+java.net.URLEncoder.encode(sv,"UTF-8")+"/";
-			String html=MultitHttpClient.get(url);
+			String html=HttpClientHelp.doGet(url);
 
 			Document doc = Jsoup.parse(html);
 			Elements news = doc.select("#archiveResult tr");
@@ -711,7 +723,7 @@ public class PageKit {
 		try {
 			String bthost=PropKit.get("bthost");
 			String url=bthost+"?page=search&cats=0_0&filter=0&term="+java.net.URLEncoder.encode(sv,"UTF-8");
-			String html=MultitHttpClient.get(url);
+			String html=HttpClientHelp.doGet(url);
 
 			Document doc = Jsoup.parse(html);
 			Elements news = doc.select(".tlistrow");
@@ -800,7 +812,7 @@ public class PageKit {
 		String baseurl=tlistname.get(0).getElementsByTag("a").attr("href");
 		baseurl=protocol+baseurl;
 		String btname=tlistname.get(0).getElementsByTag("a").text();
-		String basehtml= MultitHttpClient.get(baseurl);
+		String basehtml= HttpClientHelp.doGet(baseurl);
 		Document basedoc = Jsoup.parse(basehtml);
 		Elements basenews = basedoc.select(".viewdownloadbutton");
 		String btlink=basenews.get(0).getElementsByTag("a").attr("href");
@@ -875,7 +887,7 @@ public class PageKit {
 		Map head = new HashMap();
 		String ref=censoredhost.replace("/cn/","");
 		head.put("Referer", censoredhost);
-		String html=MultitHttpClient.getInHeaders(url, head);
+		String html=HttpClientHelp.doGet(url, head);
 		Document doc = Jsoup.parse(html);
 		Elements news = doc.select(".item");
 		if(news == null || news.isEmpty() || news.size()==0){
@@ -954,7 +966,7 @@ public class PageKit {
 		Map head = new HashMap();
 		String ref=uncensoredhost.replace("/cn/","");
 		head.put("Referer", ref);
-		String html=MultitHttpClient.getInHeaders(url, head);
+		String html=HttpClientHelp.doGet(url, head);
 		Document doc = Jsoup.parse(html);
 		Elements news = doc.select(".item");
 		if(news == null || news.isEmpty() || news.size()==0){
@@ -1019,7 +1031,7 @@ public class PageKit {
 		Map head = new HashMap();
 		ref=ref.replace("/cn/","");
 		head.put("Referer", ref);
-		String html=MultitHttpClient.getInHeaders(blink, head);
+		String html=HttpClientHelp.doGet(blink, head);
 
 //		String html=MultitHttpClient.get(blink);
 		Document doc = Jsoup.parse(html);
@@ -1293,7 +1305,7 @@ public class PageKit {
 		String ref=PropKit.get("uncensoredhost");
 		head.put("Referer", ref);
 		imgurl = PageKit.replace20All(imgurl);
-		String res = MultitHttpClient.getFileDownByPath(imgurl, tmpdir, 1, head);
+		String res = HttpClientHelp.getFileDownByPath(imgurl, tmpdir, 1, head);
 		Map<String, String> p = JsonKit.json2Map(res);
 		if (p.get("status").equals("0")) {
 			img = SecurityEncodeKit.GetImageStr(p.get("filepath"));
@@ -1491,7 +1503,7 @@ public class PageKit {
 	public static String  downloadWithStatus(String url,String filedest,String errcode){
 		File f = new File(filedest);
 		if (!f.exists()) {
-			String res = MultitHttpClient.getFileDownByPathFull(url, filedest);
+			String res = HttpClientHelp.getFileDownByPathFull(url, filedest);
 			Map resp = JsonKit.json2Map(res);
 			Object errmsg=resp.get("errmsg");
 			if(errmsg!=null && errmsg.toString().contains("404")){
@@ -1510,9 +1522,25 @@ public class PageKit {
 		String serverhost= PropKit.get("serverhost");
 		String path=serverhost+"checkhost";
 		try {
-			MultitHttpClient.getByNormal(path);
+			HttpClientHelp.doGet(path);
 		} catch (Exception e) {
 			logger.error("替换url任务失败:"+e.toString());
 		}
+	}
+	
+	public static String getCaoLiu(){
+		Map head=new HashMap();
+		head.put("Content-Type","application/x-www-form-urlencoded");
+		Map params=new HashMap();
+		params.put("a", "g");
+		params.put("v", "0");
+		String url=PropKit.get("clweb");
+		String res= null;
+		try {
+			res = HttpClientHelp.doPost(url, params, head);
+		} catch (Exception e) {
+			res = "获取草榴网址异常";
+		}
+		return res;
 	}
 }

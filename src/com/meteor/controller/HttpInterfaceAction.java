@@ -3,24 +3,30 @@
  */
 package com.meteor.controller;
 
-import com.jfinal.core.Controller;
-import com.jfinal.kit.Prop;
-import com.jfinal.kit.PropKit;
-import com.meteor.kit.*;
-import com.meteor.kit.http.MultitHttpClient;
-import com.meteor.model.po.javsrc;
-import com.meteor.model.vo.SearchQueryP;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.*;
+import com.jfinal.core.Controller;
+import com.jfinal.kit.Prop;
+import com.jfinal.kit.PropKit;
+import com.meteor.kit.ClassKit;
+import com.meteor.kit.DateKit;
+import com.meteor.kit.JsonKit;
+import com.meteor.kit.PageKit;
+import com.meteor.kit.PgsqlKit;
+import com.meteor.kit.SecurityEncodeKit;
+import com.meteor.kit.http.HttpClientHelp;
+import com.meteor.model.po.javsrc;
+import com.meteor.model.vo.SearchQueryP;
 
 /**
  * @author justlikemaki
@@ -165,16 +171,7 @@ public class HttpInterfaceAction extends Controller {
 
 	public void getclweb(){
 		Map resp=new HashMap();
-		Map head=new HashMap();
-		head.put("Content-Type","application/x-www-form-urlencoded");
-		String strStream="a=g&v=0";
-		String url=PropKit.get("clweb");
-		String res= null;
-		try {
-			res = MultitHttpClient.postInStreamAndHeaders(url,strStream,head);
-		} catch (Exception e) {
-			res = "获取草榴网址异常";
-		}
+		String res = PageKit.getCaoLiu();
 		resp.put("status","0");
 		resp.put("res",res);
 		String callback=getPara("callback");

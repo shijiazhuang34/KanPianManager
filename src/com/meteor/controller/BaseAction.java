@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.regex.Matcher;
@@ -13,6 +17,11 @@ import java.util.regex.Pattern;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
@@ -24,21 +33,26 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 import com.meteor.common.MainConfig;
 import com.meteor.interceptor.LoginCheck;
-import com.meteor.kit.*;
+import com.meteor.kit.ClassKit;
+import com.meteor.kit.CzExlKit;
+import com.meteor.kit.DateKit;
+import com.meteor.kit.FileOperateKit;
+import com.meteor.kit.JsonKit;
+import com.meteor.kit.PageKit;
+import com.meteor.kit.PgsqlKit;
+import com.meteor.kit.SecurityEncodeKit;
+import com.meteor.kit.StringKit;
+import com.meteor.kit.WorkPool;
 import com.meteor.kit.getpage.PageManager;
 import com.meteor.kit.getpage.PageRun;
+import com.meteor.kit.http.HttpClientHelp;
 import com.meteor.kit.http.MultitDownload;
-import com.meteor.kit.http.MultitHttpClient;
 import com.meteor.kit.http.TaskThreadManagers;
 import com.meteor.model.po.errpage;
 import com.meteor.model.po.javsrc;
-import com.meteor.model.vo.SearchQueryP;
 import com.meteor.model.vo.InExl;
+import com.meteor.model.vo.SearchQueryP;
 import com.mongodb.BasicDBList;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Before(LoginCheck.class)
 public class BaseAction extends Controller {
@@ -861,7 +875,7 @@ public class BaseAction extends Controller {
 	private String testHaveNewHostByType(String type,String cof){
 		try {
 			String host= PropKit.get(type);
-			String newhost= MultitHttpClient.getReHost(host, null);
+			String newhost= HttpClientHelp.getReHost(host, null);
 			URL url=new URL(host);
 			String oldhost=url.getHost();
 			if(!oldhost.equals(newhost)){
@@ -977,7 +991,7 @@ public class BaseAction extends Controller {
 		String url=getPara("url");
 		int threadnum=getParaToInt("threadnum");
 		int trynum=getParaToInt("trynum");
-		String fileroot=MultitHttpClient.getFileroot();
+		String fileroot=HttpClientHelp.getFileroot();
 		File f0 = new File(fileroot);
 		if (!f0.exists()) {
 			f0.mkdir();
@@ -990,7 +1004,7 @@ public class BaseAction extends Controller {
 	private String dosomthing(String url,int threadnum,int trynum,String filename,HttpServletRequest request){
 		try {
 			String name=filename.substring(filename.lastIndexOf("/")+1);
-			Map mp=MultitHttpClient.getLengthAngName(url);	
+			Map mp=HttpClientHelp.getLengthAngName(url);	
 			String ctype=(String) mp.get("ctype");
 			if(!ctype.contains("text/html")){
 				String filenamebf=(String) mp.get("filename");

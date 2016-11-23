@@ -3,29 +3,22 @@
  */
 package com.meteor.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
 import com.jfinal.kit.PropKit;
 import com.meteor.interceptor.LoginCheck;
-import com.meteor.kit.ClassKit;
-import com.meteor.kit.JsonKit;
 import com.meteor.kit.PageKit;
-import com.meteor.kit.PgsqlKit;
-import com.meteor.kit.http.MultitHttpClient;
-import com.meteor.model.po.errpage;
-import com.meteor.model.po.javsrc;
-import com.meteor.model.vo.SearchQueryP;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author justlikemaki
@@ -118,16 +111,7 @@ public class WebAction extends Controller {
 
 	@Clear
 	public void clweb(){
-		Map head=new HashMap();
-		head.put("Content-Type","application/x-www-form-urlencoded");
-		String strStream="a=g&v=0";
-		String url=PropKit.get("clweb");
-		String res= null;
-		try {
-			res = MultitHttpClient.postInStreamAndHeaders(url, strStream, head);
-		} catch (Exception e) {
-			res = "获取草榴网址异常";
-		}
+		String res = PageKit.getCaoLiu();
 		getRequest().setAttribute("clres", res);
 		render("clweb.jsp");
 	}

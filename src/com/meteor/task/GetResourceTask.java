@@ -1,17 +1,21 @@
 package com.meteor.task;
 
-import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-import com.jfinal.kit.PropKit;
-import com.meteor.kit.*;
-import com.meteor.kit.http.MultitHttpClient;
-import com.meteor.model.po.errpage;
+import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.quartz.Job;
+
+import com.meteor.kit.ClassKit;
+import com.meteor.kit.DateKit;
+import com.meteor.kit.JsonKit;
+import com.meteor.kit.PageKit;
+import com.meteor.kit.PgsqlKit;
+import com.meteor.model.po.errpage;
 
 public class GetResourceTask  implements Job{
 	private final Logger logger = LoggerFactory.getLogger(GetResourceTask.class);

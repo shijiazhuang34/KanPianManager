@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimerTask;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,6 +54,7 @@ public class CyclicBarrierMultitDownload {
 	    	MultitHttpClient.setHeaders(httpHead, header);
 	    	httpHead.setConfig((RequestConfig) p.get("RequestConfig"));
 	    	CloseableHttpResponse response2 = MultitHttpClient.getResponse(httpClient, httpHead);
+	    	
 	    	if(response2.getStatusLine().getStatusCode() == 206){
 	    		ttm.setAcceptRanges(true);
 	    	}
@@ -118,7 +123,7 @@ public class CyclicBarrierMultitDownload {
 			doit(url,threadnum, pos, f);
 			res="多线程下载已启动！";
 		}else{
-			res= MultitHttpClient.getFileDownByPathFull(url, filepath);
+			res= HttpClientHelp.getFileDownByPathFull(url, filepath);
 			ttm.setIsend(true);
 			ttm.getAllOut();
 		}

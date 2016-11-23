@@ -62,8 +62,8 @@ import org.slf4j.LoggerFactory;
  * @date 2015年8月11日 下午12:37:38
  * @category 基于httpclient4_5 多线程get post 下载文件 
  */
-public class MultitHttpClient {
-	private static final Logger logger = LoggerFactory.getLogger(MultitHttpClient.class);
+public class MultitHttpClientRM {
+	private static final Logger logger = LoggerFactory.getLogger(MultitHttpClientRM.class);
 	
 	private static PoolingHttpClientConnectionManager cm = null;
 	private static CloseableHttpClient httpclient=null;
@@ -586,7 +586,7 @@ public class MultitHttpClient {
 	}
 	
 	public static Map getLengthAngName(String url) throws Exception{
-		Map p= MultitHttpClient.createHttpClientDownload(false);
+		Map p= createHttpClientDownload(false);
 		CloseableHttpClient httpClient = (CloseableHttpClient) p.get("httpclient");
 		HttpGet httpHead  = new HttpGet(url);
 		setHeaders(httpHead, null);
