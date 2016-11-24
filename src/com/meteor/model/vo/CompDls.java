@@ -48,7 +48,6 @@ public class CompDls implements Comparable{
 	 */
 	@Override
 	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
 		CompDls cp=(CompDls) o;
 		return cp.getDls()-this.dls;
 	}

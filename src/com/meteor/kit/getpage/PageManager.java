@@ -1,10 +1,12 @@
 package com.meteor.kit.getpage;
 
-import com.meteor.kit.JsonKit;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import com.meteor.kit.JsonKit;
 
 /**
  * Created by Meteor on 2015/8/30.

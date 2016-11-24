@@ -1,8 +1,8 @@
 package com.meteor.kit;
 
 
-import com.meteor.model.po.javsrc;
 import com.meteor.model.po.errpage;
+import com.meteor.model.po.javsrc;
 
 public class ClassKit {
 		public static final Class javClass=javsrc.class;

@@ -1,11 +1,12 @@
 package com.meteor.kit;
 
-import com.jfinal.plugin.activerecord.Record;
-import org.apache.commons.beanutils.BeanUtils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.beanutils.BeanUtils;
+
+import com.jfinal.plugin.activerecord.Record;
 /**
  * 
  * @ClassName BeanUtil

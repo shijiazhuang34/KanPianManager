@@ -3,12 +3,12 @@
  */
 package com.meteor.model.vo;
 
-import org.jsoup.nodes.Element;
-
-import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
+
+import org.jsoup.nodes.Element;
 
 /**
  * @author justlikemaki
@@ -57,7 +57,6 @@ public class CompDate implements Comparable{
 	 */
 	@Override
 	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
 		try {
 			CompDate cp=(CompDate) o;
 			SimpleDateFormat sdf=null;
@@ -77,7 +76,6 @@ public class CompDate implements Comparable{
 			}
 			return res;
 		} catch (ParseException e) {
-//			e.printStackTrace();
 			return 0;
 		}
 	}

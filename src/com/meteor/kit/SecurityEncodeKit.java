@@ -1,6 +1,13 @@
 package com.meteor.kit;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -14,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Zip;
 import org.apache.tools.ant.types.FileSet;
+
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -193,7 +201,6 @@ public class SecurityEncodeKit {
 	        }
 	        return out.toString("ISO-8859-1");			
 		} catch (Exception e) {
-			// TODO: handle exception
 			return null;
 		}
     }
@@ -228,7 +235,6 @@ public class SecurityEncodeKit {
             }
             return out.toString(encoding);	
 		} catch (Exception e) {
-			// TODO: handle exception
 			return null;
 		}       
     }

@@ -1,9 +1,9 @@
 package com.meteor.task;
 
-import com.meteor.model.po.errpage;
-
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import com.meteor.model.po.errpage;
 
 /**
  * Created by Meteor on 2015/9/4.

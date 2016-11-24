@@ -1,10 +1,7 @@
 package com.meteor.common;
 
-import com.jfinal.ext.handler.ContextPathHandler;
-import com.jfinal.ext.plugin.quartz.QuartzPlugin;
-import com.meteor.controller.BaseAction;
-import com.meteor.controller.HttpInterfaceAction;
-import com.meteor.controller.WebAction;
+import org.apache.commons.lang.StringUtils;
+
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
@@ -12,13 +9,16 @@ import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.core.JFinal;
-import com.jfinal.ext.plugin.monogodb.MongodbPlugin;
+import com.jfinal.ext.handler.ContextPathHandler;
+import com.jfinal.ext.plugin.quartz.QuartzPlugin;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.dialect.PostgreSqlDialect;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.render.ViewType;
-import org.apache.commons.lang.StringUtils;
+import com.meteor.controller.BaseAction;
+import com.meteor.controller.HttpInterfaceAction;
+import com.meteor.controller.WebAction;
 
 /**
  * API引导式配置

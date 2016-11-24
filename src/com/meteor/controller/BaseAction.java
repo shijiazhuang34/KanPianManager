@@ -143,7 +143,6 @@ public class BaseAction extends Controller {
 			String res="ok";
 			renderText(res);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			logger.error("newsrc: "+e.toString());
 			renderText("<br>"+e.toString());
 		}
@@ -434,7 +433,6 @@ public class BaseAction extends Controller {
 			pool.shutdown();
 			renderText(sb.toString());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			logger.error("uploadExl: " + e.toString());
 			renderText("导入失败");
 		}
@@ -562,7 +560,6 @@ public class BaseAction extends Controller {
 				renderText("0");
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			logger.error("updatefrom: " + e.toString());
 			renderText("0");
 		} 

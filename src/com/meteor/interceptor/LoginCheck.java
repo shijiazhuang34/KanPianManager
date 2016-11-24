@@ -1,12 +1,13 @@
 package com.meteor.interceptor;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
 import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;
 import com.jfinal.kit.PropKit;
-
-import javax.servlet.http.HttpSession;
-import java.util.Map;
 
 /**
  * Created by Meteor on 2015/9/13.

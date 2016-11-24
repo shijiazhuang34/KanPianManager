@@ -5,15 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TimerTask;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -46,19 +43,22 @@ public class CyclicBarrierMultitDownload {
 	 */
 	private void getDownloadFileInfo(long contentLength,String url) throws Exception{	    
 	    if(contentLength>0){
-	    	Map p= MultitHttpClient.createHttpClientDownload(false);
-			CloseableHttpClient httpClient = (CloseableHttpClient) p.get("httpclient");
 	    	HttpGet httpHead = new HttpGet(url);
-	    	Map header=new HashMap();
-	    	header.put("Range", "bytes=0-"+(contentLength-1));
-	    	MultitHttpClient.setHeaders(httpHead, header);
-	    	httpHead.setConfig((RequestConfig) p.get("RequestConfig"));
-	    	CloseableHttpResponse response2 = MultitHttpClient.getResponse(httpClient, httpHead);
-	    	
-	    	if(response2.getStatusLine().getStatusCode() == 206){
-	    		ttm.setAcceptRanges(true);
-	    	}
-	    	httpHead.abort();
+	    	CloseableHttpResponse response = null;
+	    	try {
+	    		CloseableHttpClient other_httpClient = HttpClientHelp.getOtherHttpClient();
+		    	httpHead.setHeader("Range", "bytes=0-"+(contentLength-1));
+		    	httpHead.setConfig(HttpClientHelp.getRequestConfig(false));
+		    	response = other_httpClient.execute(httpHead);
+		    	if(response.getStatusLine().getStatusCode() == 206){
+		    		ttm.setAcceptRanges(true);
+		    	}
+			} finally {
+				if (response != null)
+					response.close();
+				httpHead.abort();
+				httpHead.releaseConnection();
+			}
 	    }
 	}
 
@@ -214,7 +214,6 @@ class Subtasks implements Runnable {
 		try {
 			barrier.await();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
@@ -241,8 +240,6 @@ class Subtasks implements Runnable {
 				ttm.setEndcount();
 				barrier.await();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
 				logger.error("barrier+1",e);
 			}
 	}
@@ -261,8 +258,9 @@ class Subtasks implements Runnable {
 	 */
 	private void reget(long startPosition,long endPosition,String threadName,int isbegin){
 		//创建随机读写类   
+		HttpGet httpGet = new HttpGet(url);
         RandomAccessFile outputStream = null;
-        HttpGet httpget=null;
+    	CloseableHttpResponse response = null;
 		try {
 			if(isend==true){
 				return ;
@@ -274,16 +272,11 @@ class Subtasks implements Runnable {
 			if(isbegin==1){
 				ttm.setThreadStartPosition(threadName,startPosition);
 			}
-			if(startPosition<endPosition){
-				Map p= com.meteor.kit.http.MultitHttpClient.createHttpClientDownload(false);
-				CloseableHttpClient httpClient = (CloseableHttpClient) p.get("httpclient");
-				httpget = new HttpGet(url);
-
-				Map header=new HashMap();
-		    	header.put("Range", "bytes="+startPosition+"-"+endPosition);
-				com.meteor.kit.http.MultitHttpClient.setHeaders(httpget, header);
-				httpget.setConfig((RequestConfig) p.get("RequestConfig"));
-				CloseableHttpResponse response = com.meteor.kit.http.MultitHttpClient.getResponse(httpClient, httpget);
+			if(startPosition<endPosition){		    	
+	    		CloseableHttpClient other_httpClient = HttpClientHelp.getOtherHttpClient();
+	    		httpGet.setHeader("Range", "bytes="+startPosition+"-"+endPosition);
+	    		httpGet.setConfig(HttpClientHelp.getRequestConfig(false));
+		    	response = other_httpClient.execute(httpGet);
 
 		        InputStream inputStream = response.getEntity().getContent();
 
@@ -306,36 +299,27 @@ class Subtasks implements Runnable {
 		        }
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
-			//e.printStackTrace();
-			com.meteor.kit.http.MultitHttpClient.releaseMethod(httpget);
 			logger.error("多线程下载:"+e.toString());
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
 				logger.error("下载异常后的休眠线程",e1.toString());
 			}
 			isretrytrue(threadName);
 		} catch(Throwable t){
-			com.meteor.kit.http.MultitHttpClient.releaseMethod(httpget);
 			logger.error("多线程下载:"+t.toString());
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
 				logger.error("下载异常后的休眠线程",e1.toString());
 			}
 			isretrytrue(threadName);
 		} finally{
 			try {
-				if(outputStream!=null){
-					outputStream.close();
-				}
-				com.meteor.kit.http.MultitHttpClient.releaseMethod(httpget);
+				if(outputStream!=null) outputStream.close();
+				if(response!=null) response.close();
+				HttpClientHelp.releaseMethod(httpGet);
 			} catch (IOException e2) {
-				// TODO Auto-generated catch block
-				//e2.printStackTrace();
 				logger.error("关闭文件流，释放get方法",e2);
 			} catch(Throwable t){
 				logger.error("关闭文件流，释放get方法",t);
@@ -364,7 +348,6 @@ class Subtasks implements Runnable {
 			try {
 				Thread.sleep(6000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				logger.error("关闭计时器休眠",e.toString());
 			}
 			ttm.closeTimer();
@@ -378,7 +361,6 @@ class Subtasks implements Runnable {
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				logger.error("下载线程休眠",e.toString());
 			}
 			if(ttm.getTimer()!=null){
@@ -406,7 +388,7 @@ class Tasks implements Runnable {
 	}
 	
 	public void run() {		
-			MultitHttpClient.closeClientDownload();
+			HttpClientHelp.closeHttpClient(HttpClientHelp.getOtherHttpClient());
 			ttm.closeTimer();
 			if(ttm.isdel==false){
 				ttm.setIsend(true);

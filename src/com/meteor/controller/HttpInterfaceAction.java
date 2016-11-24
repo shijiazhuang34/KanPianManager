@@ -24,7 +24,6 @@ import com.meteor.kit.JsonKit;
 import com.meteor.kit.PageKit;
 import com.meteor.kit.PgsqlKit;
 import com.meteor.kit.SecurityEncodeKit;
-import com.meteor.kit.http.HttpClientHelp;
 import com.meteor.model.po.javsrc;
 import com.meteor.model.vo.SearchQueryP;
 

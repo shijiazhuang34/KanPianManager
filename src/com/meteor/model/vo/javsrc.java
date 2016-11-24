@@ -1,11 +1,12 @@
 package com.meteor.model.vo;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.jfinal.kit.PropKit;
 import com.meteor.kit.JsonKit;
 import com.meteor.kit.PageKit;
-import org.apache.commons.lang.StringUtils;
-
-import java.util.List;
 
 public class javsrc {
 

@@ -1,11 +1,9 @@
 package com.meteor.task;
 
-import com.meteor.kit.ClassKit;
-import com.meteor.kit.PageKit;
-import com.meteor.kit.PgsqlKit;
-import com.meteor.kit.getpage.PageManager;
-import com.meteor.kit.getpage.PageRun;
-import com.meteor.model.po.errpage;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -13,9 +11,12 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.meteor.kit.ClassKit;
+import com.meteor.kit.PageKit;
+import com.meteor.kit.PgsqlKit;
+import com.meteor.kit.getpage.PageManager;
+import com.meteor.kit.getpage.PageRun;
+import com.meteor.model.po.errpage;
 
 public class HandleErrTask implements Job{
 	private final Logger logger = LoggerFactory.getLogger(HandleErrTask.class);

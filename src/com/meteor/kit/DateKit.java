@@ -1164,7 +1164,6 @@ public class DateKit {
 			Date date = format.parse(d);
 			return date;
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
