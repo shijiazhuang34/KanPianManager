@@ -6,7 +6,7 @@
 	<base href="<%=basePath%>">
 	<meta charset="UTF-8">
 	<title>下载测试页面</title>
-	<script type="text/javascript" src="../../js/jq1.11.1_min.js"></script>
+	<script type="text/javascript" src="js/jq1.11.1_min.js"></script>
 	<style type="text/css">
 	.data #datehead tr td{
 		text-align: center;

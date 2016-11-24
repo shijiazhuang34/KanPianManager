@@ -116,10 +116,16 @@ public class HttpClientHelp {
 			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, hostnameVerifier);
 			Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create().register("http", PlainConnectionSocketFactory.getSocketFactory()).register("https", sslsf).build();
 			connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
-			// 将最大连接数增加到128
+			// 将最大连接数增加到100
 			connectionManager.setMaxTotal(DEFAULT_MAX_TOTAL_CONNECTIONS);
-			// 将每个路由基础的连接增加到50
+			// 将每个路由基础的连接增加到25
 			connectionManager.setDefaultMaxPerRoute(DEFAULT_MAX_CONNECTIONS_PER_ROUTE);
+			
+			other_connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+			// 将最大连接数增加到100
+			other_connectionManager.setMaxTotal(DEFAULT_MAX_TOTAL_CONNECTIONS);
+			// 将每个路由基础的连接增加到25
+			other_connectionManager.setDefaultMaxPerRoute(DEFAULT_MAX_CONNECTIONS_PER_ROUTE);
 		} catch (Exception e) {
 			logger.error("初始化cm线程池异常", e);
 		}
@@ -484,6 +490,7 @@ public class HttpClientHelp {
 			mp.put("contentLength", contentLength);
 			mp.put("filename", filename);
 			mp.put("ctype", ctype);
+			mp.put("httpstatus", response.getStatusLine().getStatusCode());
 			return mp;
 		} finally {
 			if (response != null)
@@ -507,7 +514,9 @@ public class HttpClientHelp {
 				String filetype = ".*";
 				try {
 					Prop p = PropKit.getProp("contenttype.properties");
-					filetype = p.get(ctype);
+					if(p.get(ctype)!=null){
+						filetype = p.get(ctype);
+					}
 				} catch (Exception e) {
 					
 				}
@@ -517,15 +526,17 @@ public class HttpClientHelp {
 		return filename;
 	}
 
-	private static void checkFileAllDownload(CloseableHttpResponse response, File f) throws Exception {
+	private static boolean checkFileAllDownload(CloseableHttpResponse response, File f) throws Exception {
 		Header hd = response.getFirstHeader("Content-Length");
 		if (hd != null) {
 			int length = Integer.valueOf(hd.getValue());
 			int filelength = FileUtils.readFileToByteArray(f).length;
 			if (length != filelength) {
-				throw new Exception("资源下载不完整，需重新下载");
+				logger.error("资源下载不完整，需重新下载");
+				return true;
 			}
 		}
+		return false;
 	}
 
 	private static String FileDownload(CloseableHttpResponse response, String filedest, String filename, int isdir) {
@@ -539,12 +550,11 @@ public class HttpClientHelp {
 		}
 		try {
 			File f = new File(fullpath);
-			if (!f.exists()) {
+			boolean needNew = checkFileAllDownload(response, f);
+			if (!f.exists() || needNew) {
 				InputStream is = null;
-				Header header = entity.getContentEncoding();
 				is = entity.getContent();
-				FileUtils.copyInputStreamToFile(is, f);
-				checkFileAllDownload(response, f);
+				FileUtils.copyInputStreamToFile(is, f);	
 			}
 			res.put("status", 0);
 			res.put("filepath", f.toString());
